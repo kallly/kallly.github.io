@@ -26,10 +26,10 @@
       content="Plan your Tower Defense Simulator strategies online with an interactive map editor.">
 
 <meta property="og:url"
-      content="https://kallly.github.io/Tower-Defense-Simulator-Mapper/">
+      content="https://kallly.github.io/">
 
 <meta property="og:image"
-      content="https://kallly.github.io/Tower-Defense-Simulator-Mapper/images/preview.png">
+      content="https://kallly.github.io/images/preview.png">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2139584209201341"
      crossorigin="anonymous"></script>
     <title>TDS Placement Editor</title>
@@ -104,19 +104,7 @@
         <hr>
 
         <div class="panel">
-            <button id="toggleRange">
-                Hide Ranges
-            </button>
-
-            <button id="deleteSelected">
-                Delete Tower
-            </button>
-
-            <button id="clearMap">
-                Clear Map
-            </button>
-
-            <button id="saveMap">
+           <button id="saveMap">
                 Save JSON
             </button>
 
@@ -143,7 +131,22 @@
         <select id="mapSelect">
         </select>
         </div>
-
+        <div id="canvasTools">
+        
+            <button id="resetMapPosition" title="Reset the map position" class="canvas-button">
+                ◎
+            </button>
+            <button id="toggleRange" title="Show/Hide ranges" class="canvas-button">
+                🏹
+            </button>
+            <button id="deleteSelected" title="Delete selected" class="canvas-button">
+                🗑️
+            </button>
+            <button id="clearMap" title="Clear the map" class="canvas-button">
+                🧹
+            </button>
+        
+        </div>
         <canvas
             id="gameCanvas">
         </canvas>
@@ -173,8 +176,7 @@ Made for the community ❤️ © 2026 Tower Defense Simulator Mapper
 <!-- Logique principale -->
 <!-- ========================= -->
 
-<script src="data/maps.js"></script>
-<script src="script.js"></script>
+<script type="module" src="src/app.js"></script>
 
 </body>
 </html>
