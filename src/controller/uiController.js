@@ -1,4 +1,4 @@
-import { createSaveData, parseSaveData } from "../service/saveService.js";
+import { createSaveData, parseSaveData, saveToStorage, loadFromStorage } from "../service/saveService.js";
 
 // Contrôleur central de l'application.
 // Il gère la synchronisation entre l'état, la vue et les modèles.
@@ -12,6 +12,7 @@ export class UIController {
         this.canvas = canvas;
         this.canvasRenderer = canvasRenderer;
         this.attachViewCallbacks();
+        this.canvasRenderer.setRenderCallback(() => this.saveCurrentState());
     }
 
     // Enregistre les callbacks provenant de la vue.
@@ -88,9 +89,13 @@ export class UIController {
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
     }
 
-    // Sauve l'état actuel dans le textarea JSON.
+    saveCurrentState() {
+        saveToStorage(createSaveData(this.placementModel.placedTroops, this.state.currentMap));
+    }
+
+    // Sauve l'état actuel uniquement dans le textarea JSON.
     handleSave() {
-        const payload = createSaveData(this.placementModel.placedTroops);
+        const payload = createSaveData(this.placementModel.placedTroops, this.state.currentMap);
         this.sidebarView.setJsonArea(JSON.stringify(payload, null, 4));
     }
 
@@ -122,6 +127,7 @@ export class UIController {
                 });
             }
 
+            this.state.currentMap = parsed.mapName || this.state.currentMap;
             alert("Carte chargée.");
         }
         catch (error) {
@@ -132,9 +138,51 @@ export class UIController {
 
     // Change de carte et redimensionne le canvas.
     async handleMapSelect(mapName) {
+        this.state.currentMap = mapName;
         await this.mapModel.loadMap(mapName, this.canvas);
         this.canvasRenderer.resize();
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
+    }
+
+    // Charge le dernier état auto-sauvegardé depuis localStorage.
+    async loadAutoSave(defaultMapName) {
+        const stored = loadFromStorage();
+        if (!stored || !Array.isArray(stored.troops)) {
+            return false;
+        }
+
+        const mapName = stored.mapName || defaultMapName;
+        this.state.currentMap = mapName;
+
+        await this.mapModel.loadMap(mapName, this.canvas);
+        this.canvasRenderer.resize();
+        if (this.sidebarView.elements.mapSelect) {
+            this.sidebarView.elements.mapSelect.value = mapName;
+        }
+
+        this.placementModel.clear();
+        this.sidebarView.setJsonArea(JSON.stringify(stored, null, 4));
+
+        for (const troopData of stored.troops) {
+            if (!this.troopModel.getTroop(troopData.troop)) {
+                continue;
+            }
+
+            const collision = this.mapModel.collisionMapMult * this.troopModel.getCollision(troopData.troop);
+            const range = this.mapModel.rangeMapMult * this.troopModel.getRange(troopData.troop, troopData.level);
+            this.placementModel.add({
+                troop: troopData.troop,
+                level: troopData.level,
+                x: troopData.x,
+                y: troopData.y,
+                collision,
+                range,
+                color: troopData.color || this.state.troopColors[troopData.troop] || "#FFD54A"
+            });
+        }
+
+        this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
+        return true;
     }
 
     // Met à jour le panneau de la troupe sélectionnée ou l'aperçu.

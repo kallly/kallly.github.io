@@ -7,7 +7,12 @@ export class CanvasRenderer {
         this.placementModel = placementModel;
         this.state = state;
         this.ctx = this.canvas.getContext("2d");
+        this.onRenderCallback = null;
         this.render = this.render.bind(this);
+    }
+
+    setRenderCallback(callback) {
+        this.onRenderCallback = callback;
     }
 
     // Actualise la taille du canvas avec sa taille CSS.
@@ -34,6 +39,9 @@ export class CanvasRenderer {
         this.drawTroops();
         this.drawSelection();
         this.drawPlacementPreview();
+        if (typeof this.onRenderCallback === "function") {
+            this.onRenderCallback();
+        }
         requestAnimationFrame(this.render);
     }
 

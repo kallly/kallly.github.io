@@ -102,8 +102,13 @@ async function init() {
     sidebarView.setToggleRangeButton(state.showRanges);
     sidebarView.buildTroopMenu();
 
-    // Chargement de la première carte et démarrage du rendu.
-    await uiController.handleMapSelect(Object.keys(data.maps)[0]);
+    // Restauration automatique de la dernière progression sauvegardée.
+    const defaultMap = Object.keys(data.maps)[0];
+    const restored = await uiController.loadAutoSave(defaultMap);
+    if (!restored) {
+        await uiController.handleMapSelect(defaultMap);
+    }
+
     canvasRenderer.resize();
     canvasRenderer.start();
 }
