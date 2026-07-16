@@ -2,4 +2,4 @@ User-agent: *
 
 Allow: /
 
-Sitemap: https://kallly.github.io/Tower-Defense-Simulator-Mapper/sitemap.xml
+Sitemap: https://kallly.github.io/sitemap.xml
