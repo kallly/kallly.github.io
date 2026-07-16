@@ -27,23 +27,6 @@ const mapSelect = document.getElementById("mapSelect");
 const mapImage = new Image();
 mapImage.src = "images/Wretched_Front.webp";
 
-// =====================================
-// Caméra
-// =====================================
-
-const camera = {
-
-    x: 0,
-    y: 0,
-
-    zoom: 1,
-
-    dragging: false,
-
-    lastMouseX: 0,
-    lastMouseY: 0
-
-};
 
 // =====================================
 // Souris
@@ -74,6 +57,8 @@ let showRanges = true;
 let mapScale = 1;
 let mapX = 0;
 let mapY = 0;
+
+let mapZoom = 1;
 
 let TROOPS = {};
 
@@ -278,6 +263,32 @@ function updateTroopButtons() {
 // =====================================
 // Informations de la troupe sélectionnée
 // =====================================
+
+window.addEventListener("keydown", (event)=>{
+
+    const moveAmount = canvas.width * 0.05;
+    switch(event.key){
+        case "q":
+        case "a":
+        case "ArrowLeft":
+            mapX += moveAmount;
+            break;
+        case "d":
+        case "ArrowRight":
+            mapX -= moveAmount;
+            break;
+        case "z":
+        case "w":
+        case "ArrowUp":
+            mapY += moveAmount;
+            break;
+        case "s":
+        case "ArrowDown":
+            mapY -= moveAmount;
+            break;
+    }
+
+});
 
 function updateSelectedTroopPanel() {
 
@@ -670,16 +681,12 @@ function drawMap() {
 
     if (!mapImage.complete) return;
 
-    mapScale = Math.min(
-        canvas.width / mapImage.width,
-        canvas.height / mapImage.height
-    );
+
+    mapScale = canvas.width / mapImage.width;
+    mapScale *= mapZoom;
 
     const drawWidth = mapImage.width * mapScale;
     const drawHeight = mapImage.height * mapScale;
-
-    mapX = (canvas.width - drawWidth) / 2;
-    mapY = (canvas.height - drawHeight) / 2;
 
     ctx.drawImage(
         mapImage,
@@ -688,7 +695,35 @@ function drawMap() {
         drawWidth,
         drawHeight
     );
+
 }
+
+canvas.addEventListener("wheel", (event)=>{
+
+    event.preventDefault();
+    // Sens du zoom
+    if(event.deltaY < 0){
+
+        const worldX = (mouse.x - mapX) / mapZoom;
+        const worldY = (mouse.y - mapY) / mapZoom;
+        // Zoom
+        mapZoom *= 1.15;
+        // Replacer la map pour garder le même point sous la souris
+        mapX = mouse.x - worldX * mapZoom;
+        mapY = mouse.y - worldY * mapZoom;
+
+    }else{
+
+        const worldX = (mouse.x - mapX) / mapZoom;
+        const worldY = (mouse.y - mapY) / mapZoom;
+        // Zoom
+        mapZoom /= 1.15;
+        // Replacer la map pour garder le même point sous la souris
+        mapX = mouse.x - worldX * mapZoom;
+        mapY = mouse.y - worldY * mapZoom;
+
+    }
+});
 
 // Dessine une troupe
 function drawTroop(troop) {
@@ -809,17 +844,6 @@ function render() {
     );
 
     ctx.save();
-
-    // Caméra
-    ctx.scale(
-        camera.zoom,
-        camera.zoom
-    );
-
-    ctx.translate(
-        -camera.x,
-        -camera.y
-    );
 
     // Carte
     drawMap();
