@@ -25,7 +25,8 @@ async function init() {
         deleteSelected: document.getElementById("deleteSelected"),
         clearMap: document.getElementById("clearMap"),
         saveMap: document.getElementById("saveMap"),
-        loadMap: document.getElementById("loadMap")
+        loadMap: document.getElementById("loadMap"),
+        resetMapPosition: document.getElementById("resetMapPosition"),
     };
 
     // État partagé entre les composants.
@@ -99,11 +100,11 @@ async function init() {
     mapModel.setMaps(data.maps);
 
     sidebarView.buildMapMenu(Object.keys(data.maps));
-    sidebarView.setToggleRangeButton(state.showRanges);
     sidebarView.buildTroopMenu();
 
     // Restauration automatique de la dernière progression sauvegardée.
     const defaultMap = Object.keys(data.maps)[0];
+    
     const restored = await uiController.loadAutoSave(defaultMap);
     if (!restored) {
         await uiController.handleMapSelect(defaultMap);

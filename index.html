@@ -104,19 +104,7 @@
         <hr>
 
         <div class="panel">
-            <button id="toggleRange">
-                Hide Ranges
-            </button>
-
-            <button id="deleteSelected">
-                Delete Tower
-            </button>
-
-            <button id="clearMap">
-                Clear Map
-            </button>
-
-            <button id="saveMap">
+           <button id="saveMap">
                 Save JSON
             </button>
 
@@ -143,7 +131,22 @@
         <select id="mapSelect">
         </select>
         </div>
-
+        <div id="canvasTools">
+        
+            <button id="resetMapPosition" title="Reset the map position" class="canvas-button">
+                ◎
+            </button>
+            <button id="toggleRange" title="Show/Hide ranges" class="canvas-button">
+                🏹
+            </button>
+            <button id="deleteSelected" title="Delete selected" class="canvas-button">
+                🗑️
+            </button>
+            <button id="clearMap" title="Clear the map" class="canvas-button">
+                🧹
+            </button>
+        
+        </div>
         <canvas
             id="gameCanvas">
         </canvas>

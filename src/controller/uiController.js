@@ -26,6 +26,7 @@ export class UIController {
         this.sidebarView.on("onSave", () => this.handleSave());
         this.sidebarView.on("onLoad", () => this.handleLoad());
         this.sidebarView.on("onMapSelect", (mapName) => this.handleMapSelect(mapName));
+        this.sidebarView.on("onResetMapPosition", () => this.handleResetMapPosition());
     }
 
     // Sélection d'une troupe depuis la liste.
@@ -68,7 +69,6 @@ export class UIController {
     // Bascule l'affichage des portées.
     handleToggleRange() {
         this.state.showRanges = !this.state.showRanges;
-        this.sidebarView.setToggleRangeButton(this.state.showRanges);
     }
 
     // Supprime la troupe sélectionnée.
@@ -142,6 +142,11 @@ export class UIController {
         await this.mapModel.loadMap(mapName, this.canvas);
         this.canvasRenderer.resize();
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
+    }
+
+    // Réinitialise la position de la carte.
+    handleResetMapPosition() {
+        this.mapModel.resetPosition(this.canvas);
     }
 
     // Charge le dernier état auto-sauvegardé depuis localStorage.

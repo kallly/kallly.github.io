@@ -100,4 +100,10 @@ export class MapModel {
         }
         this.updateBaseScale(canvas);
     }
+
+    resetPosition(canvas) {
+        this.zoom = 1;
+        this.offsetX = 0;
+        this.offsetY = (canvas.height - this.image.height * this.scale) / 2;
+    }
 }

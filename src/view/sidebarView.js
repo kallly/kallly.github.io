@@ -20,6 +20,7 @@ export class SidebarView {
         this.elements.saveMap.addEventListener("click", () => this.dispatch("onSave"));
         this.elements.loadMap.addEventListener("click", () => this.dispatch("onLoad"));
         this.elements.mapSelect.addEventListener("change", () => this.dispatch("onMapSelect", this.elements.mapSelect.value));
+        this.elements.resetMapPosition.addEventListener("click", () => this.dispatch("onResetMapPosition"));
     }
 
     // Enregistre un callback pour une action.
@@ -93,11 +94,6 @@ export class SidebarView {
     // Définition de la couleur sélectionnée.
     setSelectedColor(color) {
         this.elements.troopColor.value = color;
-    }
-
-    // Mise à jour du texte du bouton de portée.
-    setToggleRangeButton(showRanges) {
-        this.elements.toggleRangeButton.textContent = showRanges ? "Masquer les portées" : "Afficher les portées";
     }
 
     setJsonArea(text) {
