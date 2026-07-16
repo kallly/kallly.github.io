@@ -19,6 +19,8 @@ const jsonArea = document.getElementById("jsonArea");
 
 const troopSearch = document.getElementById("troopSearch");
 const troopColor = document.getElementById("troopColor");
+
+const mapSelect = document.getElementById("mapSelect");
 // =====================================
 // Carte
 // =====================================
@@ -105,6 +107,76 @@ loadTroopsData();
 // Création du menu
 // =====================================
 
+let currentMap = null;
+
+function loadMap(mapName){
+
+    const mapData = maps[mapName];
+
+    if(!mapData)
+        return;
+
+
+    currentMap = mapName;
+
+
+    rangeMapMult =
+        mapData.rangeMapMult;
+
+
+    collisionMapMult =
+        mapData.collisionMapMult;
+
+    mapImage.onload = ()=>{
+
+        resizeCanvas();
+
+        render();
+
+    };
+
+
+    mapImage.src =
+        mapData.url;
+
+}
+
+mapSelect.addEventListener(
+"change",
+()=>{
+
+    loadMap(
+        mapSelect.value
+    );
+
+});
+
+buildMapMenu();
+
+loadMap(
+    Object.keys(maps)[0]
+);
+
+function buildMapMenu(){
+
+    mapSelect.innerHTML = "";
+
+
+    for(const mapName in maps){
+
+        const option = document.createElement("option");
+
+        option.value = mapName;
+
+        option.textContent = mapName;
+
+
+        mapSelect.appendChild(option);
+
+    }
+
+}
+
 function buildTroopMenu(search = "") {
 
     troopList.innerHTML = "";
@@ -141,8 +213,6 @@ function buildTroopMenu(search = "") {
             updateTroopButtons();
 
             updateSelectedTroopPanel();
-            
-            updateCursor();
 
         };
 
@@ -170,17 +240,17 @@ troopSearch.addEventListener(
 troopColor.addEventListener(
     "input",
     ()=>{
-        if(!selectedTroop)
+        if(!selectedTroop && !selectedPlacedTroop)
             return;
 
         const color = troopColor.value;
         
+        const troopName = selectedTroop || selectedPlacedTroop.troop;
         // Change la couleur du type
-        troopColors[selectedTroop] = color;
-
+        troopColors[troopName] = color;
         // Change toutes les troupes déjà posées
         for(const troop of placedTroops){
-            if(troop.troop === selectedTroop){
+            if(troop.troop === troopName){
                 troop.color = color;
             }
         }
