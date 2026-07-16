@@ -1,0 +1,5 @@
+User-agent: *
+
+Allow: /
+
+Sitemap: https://kallly.github.io/Tower-Defense-Simulator-Mapper/sitemap.xml

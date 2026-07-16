@@ -13,7 +13,6 @@ const levelSelect = document.getElementById("level");
 
 const selectedTroopText = document.getElementById("selectedTroop");
 const selectedRangeText = document.getElementById("selectedRange");
-const selectedCollisionText = document.getElementById("selectedCollision");
 
 const jsonArea = document.getElementById("jsonArea");
 
@@ -288,8 +287,6 @@ function updateSelectedTroopPanel() {
 
         selectedRangeText.textContent = "-";
 
-        selectedCollisionText.textContent = "-";
-
         return;
 
     }
@@ -306,9 +303,6 @@ function updateSelectedTroopPanel() {
 
     selectedRangeText.textContent =
         range.toFixed(2);
-
-    selectedCollisionText.textContent =
-        troop.collision;
 
 }
 
@@ -521,8 +515,6 @@ function updateSelectedPlacedPanel(){
     selectedRangeText.textContent =
         selectedPlacedTroop.range.toFixed(1);
 
-
-    selectedCollisionText.textContent = selectedPlacedTroop.collision;
 
 }
 
