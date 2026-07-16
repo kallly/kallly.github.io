@@ -143,6 +143,12 @@
             20.0
         ]
     },
+    "Farm": {
+        "collision": "1",
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
     "Electroshocker": {
         "collision": "1",
         "rangeMultiplier": [
