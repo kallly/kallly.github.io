@@ -1,0 +1,793 @@
+{
+    "Scout": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            12.0,
+            12.0,
+            14.0,
+            16.0,
+            16.0
+        ]
+    },
+    "Sniper": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            28.0,
+            28.0,
+            30.0,
+            35.0,
+            45.0
+        ]
+    },
+    "Paintballer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            7.5,
+            9.0,
+            9.0,
+            9.0,
+            10.5,
+            10.5
+        ]
+    },
+    "Demoman": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            10.0,
+            12.0,
+            12.0,
+            14.0,
+            16.0
+        ]
+    },
+    "Slime Trooper": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            11.5,
+            13.0,
+            15.5,
+            17.0,
+            17.0
+        ]
+    },
+    "Soldier": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            17.0,
+            17.0,
+            19.0,
+            19.0,
+            22.0
+        ]
+    },
+    "Freezer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            12.0,
+            12.0,
+            14.0,
+            14.0,
+            16.0
+        ]
+    },
+    "Assassin": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            6.0,
+            6.0,
+            6.0,
+            6.0,
+            6.5
+        ]
+    },
+    "Militant": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            14.0,
+            17.0,
+            17.0,
+            17.0,
+            20.0
+        ]
+    },
+    "Shotgunner": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            8.0,
+            8.0,
+            9.5,
+            11.0,
+            13.5
+        ]
+    },
+    "Hunter": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            22.0,
+            22.0,
+            24.0,
+            26.0,
+            27.5
+        ]
+    },
+    "Pyromancer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            9.0,
+            11.0,
+            11.0,
+            12.5,
+            12.5,
+            14.0
+        ]
+    },
+    "Ace Pilot": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            9.0,
+            9.0,
+            9.0,
+            10.0,
+            10.0,
+            10.0
+        ]
+    },
+    "Medic": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            12.0,
+            12.0,
+            14.0,
+            15.0,
+            18.0,
+            20.0
+        ]
+    },
+    "Electroshocker": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            10.0,
+            12.0,
+            13.0,
+            13.0,
+            13.0,
+            15.0
+        ]
+    },
+    "Rocketeer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            20.0,
+            20.0,
+            22.5,
+            22.5,
+            24.0
+        ]
+    },
+    "Trapper": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            6.0,
+            6.0,
+            7.0,
+            9.0,
+            13.0
+        ]
+    },
+    "Military Base": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            5.0,
+            5.0,
+            5.0,
+            30.0,
+            30.0,
+            30.0
+        ]
+    },
+    "Crook Boss": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            11.11,
+            20.0,
+            40.0,
+            120.0,
+            300.0
+        ]
+    },
+    "Commander": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            8.33,
+            16.67,
+            27.78
+        ]
+    },
+    "Warden": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            0.5,
+            0.5,
+            0.75,
+            0.75,
+            1.25
+        ]
+    },
+    "Cowboy": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            13.0,
+            15.0,
+            15.0,
+            17.5,
+            20.0,
+            20.0
+        ]
+    },
+    "Tesla": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            17.0,
+            17.0,
+            18.5,
+            18.5,
+            20.0
+        ]
+    },
+    "Saboteur": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            11.5,
+            11.5,
+            13.5,
+            14.5,
+            16.0
+        ]
+    },
+    "Minigunner": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            16.0,
+            16.0,
+            18.0,
+            18.0,
+            21.0
+        ]
+    },
+    "Ranger": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            70.0,
+            70.0,
+            70.0,
+            70.0,
+            70.0
+        ]
+    },
+    "Pursuit": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            14.0,
+            14.0,
+            16.0,
+            16.0
+        ]
+    },
+    "Gatling Gun": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            25.0,
+            30.0,
+            30.0,
+            35.0,
+            45.0,
+            50.0,
+            50.0
+        ]
+    },
+    "Turret": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            19.0,
+            19.0,
+            22.0,
+            22.0,
+            24.0,
+            27.0
+        ]
+    },
+    "Mortar": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            24.0,
+            27.0,
+            27.0,
+            30.0,
+            34.0,
+            34.0
+        ]
+    },
+    "Mercenary Base": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            1.0,
+            1.0,
+            2.0,
+            2.0,
+            3.0,
+            3.0,
+            3.0
+        ]
+    },
+    "Brawler": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            6.0,
+            6.5,
+            6.5,
+            6.5,
+            7.0,
+            8.0
+        ]
+    },
+    "Necromancer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            5.0
+        ]
+    },
+    "Accelerator": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            19.0,
+            19.0,
+            21.0,
+            21.0,
+            22.5,
+            24.0
+        ]
+    },
+    "Engineer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5
+        ]
+    },
+    "Hacker": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            0.45,
+            0.45,
+            0.55,
+            0.625,
+            0.675
+        ]
+    },
+    "Operator": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            14.0,
+            14.0,
+            16.0,
+            16.0,
+            16.0,
+            17.0,
+            17.0
+        ]
+    },
+    "Juggernaut": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            60.0,
+            75.0,
+            116.67,
+            233.33
+        ]
+    },
+    "Golden Minigunner": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            16.0,
+            16.0,
+            20.0,
+            20.0,
+            22.0
+        ]
+    },
+    "Golden Pyromancer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            9.0,
+            11.0,
+            11.0,
+            13.5,
+            13.5,
+            15.0
+        ]
+    },
+    "Golden Crook Boss": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            15.0,
+            23.64,
+            43.64,
+            133.33,
+            333.33
+        ]
+    },
+    "Golden Scout": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            14.0,
+            15.0,
+            15.0,
+            17.5,
+            17.5
+        ]
+    },
+    "Golden Cowboy": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            13.0,
+            15.0,
+            15.0,
+            17.5,
+            20.0,
+            20.0
+        ]
+    },
+    "Golden Soldier": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            17.0,
+            17.0,
+            20.0,
+            20.0,
+            22.0
+        ]
+    },
+    "Golden Snowballer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            14.0,
+            14.0,
+            15.0,
+            19.0
+        ]
+    },
+    "Gladiator": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            1.25,
+            1.25,
+            1.25,
+            1.25,
+            1.25,
+            1.25
+        ]
+    },
+    "Commando": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            16.67,
+            21.13,
+            37.95,
+            84.85,
+            198.92
+        ]
+    },
+    "Slasher": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0
+        ]
+    },
+    "Frost Blaster": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            12.0,
+            15.0,
+            15.0,
+            17.5,
+            22.5
+        ]
+    },
+    "Archer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            2.0,
+            2.0,
+            2.0,
+            3.0,
+            4.0,
+            8.0
+        ]
+    },
+    "Swarmer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            13.0,
+            13.0,
+            15.0,
+            18.0,
+            20.0,
+            20.0
+        ]
+    },
+    "Toxic Gunner": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            10.0,
+            10.0,
+            14.0,
+            14.0,
+            18.0
+        ]
+    },
+    "Sledger": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            6.5,
+            6.5,
+            7.0,
+            7.0,
+            7.5,
+            7.5
+        ]
+    },
+    "Executioner": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            14.0,
+            14.0,
+            14.0,
+            18.0,
+            18.0,
+            18.0
+        ]
+    },
+    "Jester": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            6.0,
+            6.0,
+            6.0,
+            6.0,
+            6.0
+        ]
+    },
+    "Cryomancer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            11.0,
+            13.5,
+            13.5,
+            13.5,
+            15.0
+        ]
+    },
+    "Hallow Punk": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            18.0,
+            21.0,
+            21.0,
+            21.0
+        ]
+    },
+    "Harvester": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            50.0,
+            50.0,
+            50.0,
+            50.0,
+            50.0,
+            75.0
+        ]
+    },
+    "Snowballer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            15.0,
+            17.5,
+            17.5,
+            20.0
+        ]
+    },
+    "Elementalist": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            2.0,
+            3.0,
+            4.0,
+            2.0,
+            4.0
+        ]
+    },
+    "Firework Technician": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            10.0,
+            10.0,
+            15.0,
+            15.0,
+            20.0
+        ]
+    },
+    "Biologist": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5
+        ]
+    },
+    "Warlock": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            15.0,
+            17.5,
+            17.5,
+            20.0
+        ]
+    },
+    "Spotlight Tech": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            30.0,
+            30.0,
+            35.0,
+            35.0,
+            40.0
+        ]
+    },
+    "War Machine": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            12.0,
+            18.0,
+            22.0,
+            22.0,
+            24.0,
+            26.0
+        ]
+    },
+    "Mecha Base": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            30.0,
+            30.0,
+            35.0,
+            35.0,
+            50.0,
+            50.0
+        ]
+    },
+    "Sentry": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            15.0,
+            17.0,
+            18.0,
+            19.0,
+            21.0,
+            23.0
+        ]
+    },
+    "Twitgunner": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            12.0,
+            14.0,
+            16.0,
+            17.0,
+            17.0,
+            18.0
+        ]
+    },
+    "Combatant": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            6.0
+        ]
+    },
+    "Crystallizer": {
+        "collision": 18,
+        "rangeBase": "1",
+        "rangeMultiplier": [
+            8.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            12.0
+        ]
+    }
+}

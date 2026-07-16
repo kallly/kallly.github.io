@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDS Placement Editor</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+    <!-- ========================= -->
+    <!-- Barre latérale -->
+    <!-- ========================= -->
+
+    <aside id="sidebar">
+
+        <h2>Troupes</h2>
+
+        <div id="troopList">
+            <!-- Généré automatiquement -->
+        </div>
+
+        <hr>
+
+        <div class="panel">
+
+            <label for="level">
+                Niveau
+            </label>
+
+            <select id="level">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+
+        </div>
+
+        <div class="panel">
+
+            <h3>Troupe sélectionnée</h3>
+
+            <p>
+                <b>Nom :</b>
+                <span id="selectedTroop">Aucune</span>
+            </p>
+
+            <p>
+                <b>Portée :</b>
+                <span id="selectedRange">0</span>
+            </p>
+
+            <p>
+                <b>Collision :</b>
+                <span id="selectedCollision">0</span>
+            </p>
+
+        </div>
+
+        <hr>
+
+        <div class="panel">
+            <button id="toggleRange">
+                Masquer les portées
+            </button>
+
+            <button id="deleteSelected">
+                Supprimer la troupe
+            </button>
+
+            <button id="clearMap">
+                Vider la carte
+            </button>
+
+            <button id="saveMap">
+                Sauvegarder JSON
+            </button>
+
+            <button id="loadMap">
+                Charger JSON
+            </button>
+
+        </div>
+
+        <textarea
+            id="jsonArea"
+            placeholder="Le JSON de sauvegarde apparaîtra ici..."
+        ></textarea>
+
+    </aside>
+
+    <!-- ========================= -->
+    <!-- Zone principale -->
+    <!-- ========================= -->
+
+    <main id="main">
+
+        <div id="topbar">
+
+            <span>Carte :</span>
+
+            <b>Wretched_Front.webp</b>
+
+            <span id="cameraInfo">
+                Zoom : 100%
+            </span>
+
+        </div>
+
+        <canvas
+            id="gameCanvas">
+        </canvas>
+
+    </main>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- Logique principale -->
+<!-- ========================= -->
+
+<script src="script.js"></script>
+
+</body>
+</html>

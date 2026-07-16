@@ -1,0 +1,316 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    background:#202020;
+    color:white;
+}
+
+#app{
+    display:flex;
+    width:100vw;
+    height:100vh;
+}
+
+/* ========================= */
+/* Sidebar */
+/* ========================= */
+
+#sidebar{
+
+    width:280px;
+
+    background:#2a2a2a;
+
+    border-right:3px solid #444;
+
+    display:flex;
+    flex-direction:column;
+
+    padding:15px;
+
+    overflow-y:auto;
+
+}
+
+#sidebar h2{
+
+    text-align:center;
+
+    margin-bottom:15px;
+
+    color:#FFD54A;
+
+}
+
+#sidebar h3{
+
+    margin-bottom:10px;
+
+    color:#6ec6ff;
+
+}
+
+#sidebar hr{
+
+    margin:15px 0;
+
+    border:none;
+
+    border-top:1px solid #555;
+
+}
+
+/* ========================= */
+/* Liste des troupes */
+/* ========================= */
+
+#troopList{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+.troopButton{
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#444;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    transition:0.2s;
+
+}
+
+.troopButton:hover{
+
+    background:#5a5a5a;
+
+}
+
+.troopButton.selected{
+
+    background:#2b84ff;
+
+    color:white;
+
+}
+
+/* ========================= */
+/* Panel */
+/* ========================= */
+
+.panel{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+.panel label{
+
+    font-weight:bold;
+
+}
+
+.panel p{
+
+    font-size:14px;
+
+}
+
+/* ========================= */
+/* Inputs */
+/* ========================= */
+
+select{
+
+    width:100%;
+
+    padding:8px;
+
+    border:none;
+
+    border-radius:5px;
+
+    background:#444;
+
+    color:white;
+
+}
+
+textarea{
+
+    margin-top:10px;
+
+    width:100%;
+
+    height:180px;
+
+    resize:none;
+
+    padding:10px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#1f1f1f;
+
+    color:#6eff6e;
+
+    font-family:Consolas, monospace;
+
+    font-size:13px;
+
+}
+
+/* ========================= */
+/* Boutons */
+/* ========================= */
+
+button{
+
+    padding:10px;
+
+    border:none;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    background:#3b82f6;
+
+    color:white;
+
+    font-size:14px;
+
+    transition:0.2s;
+
+}
+
+button:hover{
+
+    background:#5ea0ff;
+
+}
+
+button:active{
+
+    transform:scale(0.97);
+
+}
+
+/* ========================= */
+/* Partie principale */
+/* ========================= */
+
+#main{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+}
+
+/* ========================= */
+/* Barre du haut */
+/* ========================= */
+
+#topbar{
+
+    height:50px;
+
+    background:#303030;
+
+    border-bottom:2px solid #444;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:0 15px;
+
+    color:white;
+
+}
+
+/* ========================= */
+/* Canvas */
+/* ========================= */
+
+#gameCanvas{
+
+    flex:1;
+
+    display:block;
+
+    background:#111;
+
+    cursor:crosshair;
+
+}
+
+/* ========================= */
+/* Scrollbar */
+/* ========================= */
+
+::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#2b2b2b;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#666;
+
+    border-radius:5px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#888;
+
+}

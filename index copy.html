@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>TDS - Placement de troupes</title>
+
+<style>
+body{
+    margin:0;
+    background:#222;
+    color:white;
+    font-family:Arial;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+#toolbar{
+    width:1200px;
+    padding:10px;
+    background:#333;
+    display:flex;
+    gap:20px;
+    align-items:center;
+}
+
+canvas{
+    border:2px solid #666;
+    cursor:crosshair;
+}
+</style>
+</head>
+
+<body>
+
+<div id="toolbar">
+
+<label>
+Niveau
+<select id="level">
+<option value="0">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+</select>
+</label>
+
+<label>
+Portée de référence
+<input id="baseRange" type="number" value="10">
+</label>
+
+</div>
+
+<canvas id="game" width="1200" height="700"></canvas>
+
+<script>
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const map = new Image();
+map.src = "images/Wretched_Front.webp";
+
+const collisionRadius = 18;
+
+const levelMultiplier = [
+    1.0,
+    1.35,
+    1.7,
+    2.1,
+    2.6,
+    3.2
+];
+
+const towers = [];
+
+let mouseX = 0;
+let mouseY = 0;
+
+function rangeForLevel(level){
+
+    const base = Number(document.getElementById("baseRange").value);
+
+    return base * levelMultiplier[level];
+
+}
+
+function canPlace(x,y){
+
+    for(const tower of towers){
+
+        const dx = x - tower.x;
+        const dy = y - tower.y;
+
+        const d = Math.sqrt(dx*dx+dy*dy);
+
+        if(d < collisionRadius*2)
+            return false;
+
+    }
+
+    return true;
+
+}
+
+canvas.addEventListener("mousemove",e=>{
+
+    const rect = canvas.getBoundingClientRect();
+
+    mouseX = e.clientX-rect.left;
+    mouseY = e.clientY-rect.top;
+
+});
+
+canvas.addEventListener("click",()=>{
+
+    if(!canPlace(mouseX,mouseY))
+        return;
+
+    const level = Number(document.getElementById("level").value);
+
+    towers.push({
+
+        x:mouseX,
+        y:mouseY,
+        level:level,
+        range:rangeForLevel(level)
+
+    });
+
+});
+
+function drawTower(tower){
+
+    // portée
+    ctx.beginPath();
+    ctx.arc(tower.x,tower.y,tower.range*10,0,Math.PI*2);
+    ctx.fillStyle="rgba(0,150,255,0.15)";
+    ctx.fill();
+
+    ctx.strokeStyle="rgba(0,180,255,.8)";
+    ctx.lineWidth=2;
+    ctx.stroke();
+
+    // collision
+    ctx.beginPath();
+    ctx.arc(tower.x,tower.y,collisionRadius,0,Math.PI*2);
+
+    ctx.fillStyle="#ffd84d";
+    ctx.fill();
+
+    ctx.strokeStyle="#000";
+    ctx.stroke();
+
+    ctx.fillStyle="black";
+    ctx.font="14px Arial";
+    ctx.textAlign="center";
+    ctx.fillText("L"+tower.level,tower.x,tower.y+5);
+
+}
+
+function drawGhost(){
+
+    const level = Number(document.getElementById("level").value);
+
+    const range = rangeForLevel(level);
+
+    const valid = canPlace(mouseX,mouseY);
+
+    ctx.beginPath();
+    ctx.arc(mouseX,mouseY,range*10,0,Math.PI*2);
+
+    ctx.fillStyle = valid ?
+        "rgba(0,255,0,.15)" :
+        "rgba(255,0,0,.15)";
+
+    ctx.fill();
+
+    ctx.strokeStyle = valid ? "#0f0" : "#f00";
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(mouseX,mouseY,collisionRadius,0,Math.PI*2);
+
+    ctx.fillStyle = valid ?
+        "rgba(0,255,0,.6)" :
+        "rgba(255,0,0,.6)";
+
+    ctx.fill();
+
+}
+
+function loop(){
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    if(map.complete)
+        ctx.drawImage(map,0,0,canvas.width,canvas.height);
+
+    for(const tower of towers)
+        drawTower(tower);
+
+    drawGhost();
+
+    requestAnimationFrame(loop);
+
+}
+
+map.onload=loop;
+
+</script>
+
+</body>
+</html>
