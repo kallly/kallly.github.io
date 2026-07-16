@@ -141,8 +141,6 @@ function buildTroopMenu(search = "") {
             updateTroopButtons();
 
             updateSelectedTroopPanel();
-            
-            updateCursor();
 
         };
 
@@ -170,17 +168,17 @@ troopSearch.addEventListener(
 troopColor.addEventListener(
     "input",
     ()=>{
-        if(!selectedTroop)
+        if(!selectedTroop && !selectedPlacedTroop)
             return;
 
         const color = troopColor.value;
         
+        const troopName = selectedTroop || selectedPlacedTroop.troop;
         // Change la couleur du type
-        troopColors[selectedTroop] = color;
-
+        troopColors[troopName] = color;
         // Change toutes les troupes déjà posées
         for(const troop of placedTroops){
-            if(troop.troop === selectedTroop){
+            if(troop.troop === troopName){
                 troop.color = color;
             }
         }
