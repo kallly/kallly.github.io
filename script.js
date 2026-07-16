@@ -17,6 +17,8 @@ const selectedCollisionText = document.getElementById("selectedCollision");
 
 const jsonArea = document.getElementById("jsonArea");
 
+const troopSearch = document.getElementById("troopSearch");
+const troopColor = document.getElementById("troopColor");
 // =====================================
 // Carte
 // =====================================
@@ -74,10 +76,17 @@ let mapY = 0;
 
 let TROOPS = {};
 
+let rangeMapMult = 14;
+let collisionMapMult = 20;
+
+let troopColors = {};
+
 async function loadTroopsData(){
 
     const response = await fetch("data/troops.json");
-
+    for(const troopName in TROOPS){
+        troopColors[troopName] = "#FFD54A";
+    }
     TROOPS = await response.json();
 
     console.log("Troupes chargées :", TROOPS);
@@ -96,13 +105,25 @@ loadTroopsData();
 // Création du menu
 // =====================================
 
-function buildTroopMenu() {
+function buildTroopMenu(search = "") {
 
     troopList.innerHTML = "";
 
+    search = search.toLowerCase();
+
+
     for (const troopName in TROOPS) {
 
-        const troop = TROOPS[troopName];
+
+        // Filtre recherche
+        if(
+            !troopName
+            .toLowerCase()
+            .includes(search)
+        ){
+            continue;
+        }
+
 
         const button = document.createElement("button");
 
@@ -110,21 +131,60 @@ function buildTroopMenu() {
 
         button.textContent = troopName;
 
+
         button.onclick = () => {
 
+
             selectedTroop = troopName;
+            troopColor.value = troopColors[troopName];
 
             updateTroopButtons();
 
             updateSelectedTroopPanel();
+            
+            updateCursor();
 
         };
+
 
         troopList.appendChild(button);
 
     }
 
+
+    updateTroopButtons();
+
 }
+
+troopSearch.addEventListener(
+    "input",
+    () => {
+
+        buildTroopMenu(
+            troopSearch.value
+        );
+
+    }
+);
+
+troopColor.addEventListener(
+    "input",
+    ()=>{
+        if(!selectedTroop)
+            return;
+
+        const color = troopColor.value;
+        
+        // Change la couleur du type
+        troopColors[selectedTroop] = color;
+
+        // Change toutes les troupes déjà posées
+        for(const troop of placedTroops){
+            if(troop.troop === selectedTroop){
+                troop.color = color;
+            }
+        }
+});
 
 function updateTroopButtons() {
 
@@ -169,7 +229,7 @@ function updateSelectedTroopPanel() {
     const level = Number(levelSelect.value);
 
     const range =
-        troop.rangeBase *
+        rangeMapMult *
         troop.rangeMultiplier[level];
 
     selectedTroopText.textContent = selectedTroop;
@@ -295,8 +355,18 @@ console.log("Initialisation terminée.");
 function getTroopRange(troopName, level) {
 
     const troop = TROOPS[troopName];
+    if (level >= troop.rangeMultiplier.length) {
+        return rangeMapMult * troop.rangeMultiplier[troop.rangeMultiplier.length-1];
+    }
+    return rangeMapMult * troop.rangeMultiplier[level];
 
-    return troop.rangeBase * troop.rangeMultiplier[level];
+}
+
+function getTroopSize(troopName) {
+
+    const troop = TROOPS[troopName];
+
+    return collisionMapMult * troop.collision;
 
 }
 
@@ -315,7 +385,7 @@ function canPlaceTroop(x, y) {
 
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < troop.collision + placed.collision) {
+        if (distance < getTroopSize(selectedTroop) + getTroopSize(placed.troop)) {
 
             return false;
 
@@ -382,8 +452,7 @@ function updateSelectedPlacedPanel(){
         selectedPlacedTroop.range.toFixed(1);
 
 
-    selectedCollisionText.textContent =
-        selectedPlacedTroop.collision;
+    selectedCollisionText.textContent = selectedPlacedTroop.collision;
 
 }
 
@@ -393,26 +462,23 @@ canvas.addEventListener("click", () => {
     const clickedTroop = getTroopAt(mouse.worldX, mouse.worldY);
 
     if (clickedTroop) {
-
         selectedPlacedTroop = clickedTroop;
-
 
         // Affiche son niveau actuel
         levelSelect.value =
             clickedTroop.level;
 
-
         updateSelectedPlacedPanel();
 
-
         return;
-
     }
 
     // Aucune troupe choisie
-    if (selectedTroop == null)
+    if (selectedTroop == null){
+        unselectTroop();
         return;
-
+    }
+    
     // Position invalide
     if (!canPlaceTroop(mouse.worldX, mouse.worldY))
         return;
@@ -431,13 +497,14 @@ canvas.addEventListener("click", () => {
 
         y: mouse.worldY,
 
-        collision: troopData.collision,
+        collision: getTroopSize(selectedTroop),
 
-        range: getTroopRange(selectedTroop, level)
+        range: getTroopRange(selectedTroop, level),
+        color: troopColors[selectedTroop],
 
     });
 
-    selectedPlacedTroop = null;
+    selectedPlacedTroop = placedTroops[placedTroops.length - 1];
 
 });
 
@@ -492,6 +559,7 @@ function drawPlacementPreview() {
     const level = Number(levelSelect.value);
 
     const range = getTroopRange(selectedTroop, level);
+    const collision = getTroopSize(selectedTroop);
 
     const valid = canPlaceTroop(
         mouse.worldX,
@@ -521,7 +589,7 @@ function drawPlacementPreview() {
 
     // Cercle de collision
     ctx.beginPath();
-    ctx.arc(x, y, troop.collision * mapScale, 0, Math.PI * 2);
+    ctx.arc(x, y, collision * mapScale, 0, Math.PI * 2);
 
     ctx.fillStyle = valid
         ? "#00cc00"
@@ -594,7 +662,7 @@ function drawTroop(troop) {
     Math.PI * 2
     );
 
-    ctx.fillStyle = "#FFD54A";
+    ctx.fillStyle = troopColors[troop.troop] ||troop.color || "#FFD54A";
     ctx.fill();
 
     ctx.lineWidth = 2;
@@ -713,17 +781,23 @@ function render() {
 // Sortie du mode placement (clic droit)
 // =====================================
 
-canvas.addEventListener("contextmenu", (event) => {
+function unselectTroop() {
 
     event.preventDefault();
 
     // Quitte le mode placement
     selectedTroop = null;
 
+    // Déséléctionne la troupe sélectionnée
+    selectedPlacedTroop = null;
+
     updateTroopButtons();
 
     updateSelectedTroopPanel();
+}
 
+canvas.addEventListener("contextmenu", (event) => {
+    unselectTroop();
 });
 
 // Lancement de la boucle
@@ -757,7 +831,9 @@ saveButton.onclick = () => {
 
             x: Math.round(troop.x),
 
-            y: Math.round(troop.y)
+            y: Math.round(troop.y),
+            
+            color: troop.color,
 
         });
 
@@ -800,12 +876,13 @@ loadButton.onclick = () => {
 
                 y: data.y,
 
-                collision: troop.collision,
+                collision: getTroopSize(data.troop),
 
                 range: getTroopRange(
                     data.troop,
                     data.level
-                )
+                ),
+                color: troopColors[selectedTroop],
 
             });
 
@@ -819,7 +896,6 @@ loadButton.onclick = () => {
     catch (e) {
 
         alert("JSON invalide.");
-
         console.error(e);
 
     }

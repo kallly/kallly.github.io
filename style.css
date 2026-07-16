@@ -75,6 +75,7 @@ body{
 /* Liste des troupes */
 /* ========================= */
 
+
 #troopList{
 
     display:flex;
@@ -82,6 +83,18 @@ body{
     flex-direction:column;
 
     gap:8px;
+
+
+    /* Taille fixe */
+    height:40%;
+    min-height:200px;
+
+    overflow-y:auto;
+    /* Scroll uniquement si nécessaire */
+    overflow-y:auto;
+
+
+    padding-right:5px;
 
 }
 
@@ -312,5 +325,196 @@ button:active{
 ::-webkit-scrollbar-thumb:hover{
 
     background:#888;
+
+}
+
+/* ========================= */
+/* Recherche troupe */
+/* ========================= */
+
+#troopSearch{
+
+    width:100%;
+
+    padding:12px;
+
+    margin-bottom:12px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#1f1f1f;
+
+    color:white;
+
+    font-size:15px;
+
+    outline:none;
+
+    border:2px solid #444;
+
+    transition:0.2s;
+
+}
+
+
+#troopSearch::placeholder{
+
+    color:#aaa;
+
+}
+
+
+#troopSearch:focus{
+
+    border-color:#3b82f6;
+
+    background:#252525;
+
+}
+
+
+/* ========================= */
+/* Liste des troupes */
+/* ========================= */
+
+#troopList{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+
+    /*
+      Maximum moitié de la zone sidebar
+    */
+    max-height:50vh;
+
+
+    overflow-y:auto;
+
+
+    padding-right:5px;
+
+}
+
+
+/* Scrollbar de la liste */
+
+#troopList::-webkit-scrollbar{
+
+    width:7px;
+
+}
+
+
+#troopList::-webkit-scrollbar-track{
+
+    background:#1c1c1c;
+
+    border-radius:5px;
+
+}
+
+
+#troopList::-webkit-scrollbar-thumb{
+
+    background:#555;
+
+    border-radius:5px;
+
+}
+
+
+#troopList::-webkit-scrollbar-thumb:hover{
+
+    background:#777;
+
+}
+
+
+/* Boutons troupe */
+
+.troopButton{
+
+    flex-shrink:0;
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#444;
+
+    color:white;
+
+    cursor:pointer;
+
+    text-align:left;
+
+    font-size:15px;
+
+    transition:0.15s;
+
+}
+
+
+.troopButton:hover{
+
+    background:#555;
+
+}
+
+
+.troopButton.selected{
+
+    background:#2b84ff;
+
+}
+
+
+
+#colorList{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:8px;
+
+}
+
+
+.colorButton{
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:50%;
+
+    border:2px solid #555;
+
+    cursor:pointer;
+
+}
+
+
+.colorButton:hover{
+
+    transform:scale(1.1);
+
+}
+
+
+.colorButton.selected{
+
+    border:3px solid white;
 
 }
