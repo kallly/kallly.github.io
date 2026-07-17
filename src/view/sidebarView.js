@@ -19,6 +19,7 @@ export class SidebarView {
         this.elements.toggleLevelButton.addEventListener("click", () => this.dispatch("onToggleLevel"));
         this.elements.deleteSelected.addEventListener("click", () => this.dispatch("onDeleteSelected"));
         this.elements.clearMap.addEventListener("click", () => this.dispatch("onClearMap"));
+        this.elements.urlShareMap.addEventListener("click", () => this.dispatch("onUrlShare"));
         this.elements.saveMap.addEventListener("click", () => this.dispatch("onSave"));
         this.elements.loadMap.addEventListener("click", () => this.dispatch("onLoad"));
         this.elements.mapSelect.addEventListener("change", () => this.dispatch("onMapSelect", this.elements.mapSelect.value));

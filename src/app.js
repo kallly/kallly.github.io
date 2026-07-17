@@ -26,6 +26,7 @@ async function init() {
         toggleLevelButton: document.getElementById("toggleLevel"),
         deleteSelected: document.getElementById("deleteSelected"),
         clearMap: document.getElementById("clearMap"),
+        urlShareMap: document.getElementById("urlShareMap"),
         saveMap: document.getElementById("saveMap"),
         loadMap: document.getElementById("loadMap"),
         resetMapPosition: document.getElementById("resetMapPosition"),
@@ -109,7 +110,17 @@ async function init() {
     // Restauration automatique de la dernière progression sauvegardée.
     const defaultMap = Object.keys(data.maps)[0];
     
-    const restored = await uiController.loadAutoSave(defaultMap);
+    const searchParams = new URLSearchParams(window.location.search);
+    let restored = null;
+    
+    if (searchParams.has("data")) 
+    {
+        restored = await uiController.loadBase64(defaultMap, searchParams.get("data"));
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    if (!restored) {
+        restored = await uiController.loadAutoSave(defaultMap);
+    }
     if (!restored) {
         await uiController.handleMapSelect(defaultMap);
     }

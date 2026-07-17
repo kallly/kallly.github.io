@@ -1,4 +1,4 @@
-import { createSaveData, parseSaveData, saveToStorage, loadFromStorage } from "../service/saveService.js";
+import { createSaveData, parseSaveData, saveToStorage, loadFromStorage, loadFromBase64, encodeBase64 } from "../service/saveService.js";
 
 // Contrôleur central de l'application.
 // Il gère la synchronisation entre l'état, la vue et les modèles.
@@ -25,6 +25,7 @@ export class UIController {
         this.sidebarView.on("onToggleLevel", () => this.handleToggleLevel());
         this.sidebarView.on("onDeleteSelected", () => this.handleDeleteSelected());
         this.sidebarView.on("onClearMap", () => this.handleClearMap());
+        this.sidebarView.on("onUrlShare", () => this.handleShareUrl());
         this.sidebarView.on("onSave", () => this.handleSave());
         this.sidebarView.on("onLoad", () => this.handleLoad());
         this.sidebarView.on("onMapSelect", (mapName) => this.handleMapSelect(mapName));
@@ -103,6 +104,15 @@ export class UIController {
         saveToStorage(createSaveData(this.placementModel.placedTroops, this.state.currentMap));
     }
 
+    handleShareUrl() {
+        const payload = createSaveData(this.placementModel.placedTroops, this.state.currentMap);
+        const data = encodeBase64(JSON.stringify(payload, null, 4));
+        const url = `${window.location.origin}${window.location.pathname}?data=${encodeURIComponent(data)}`;
+
+         navigator.clipboard.writeText(url)
+            .then(() => alert("URL copied !"))
+            .catch(err => alert("Unable to copy :", err));
+    }
     // Sauve l'état actuel uniquement dans le textarea JSON.
     handleSave() {
         const payload = createSaveData(this.placementModel.placedTroops, this.state.currentMap);
@@ -159,14 +169,12 @@ export class UIController {
         this.mapModel.resetPosition(this.canvas);
     }
 
-    // Charge le dernier état auto-sauvegardé depuis localStorage.
-    async loadAutoSave(defaultMapName) {
-        const stored = loadFromStorage();
-        if (!stored || !Array.isArray(stored.troops)) {
+    async loadFromData(defaultMapName, data) {
+        if (!data || !Array.isArray(data.troops)) {
             return false;
         }
 
-        const mapName = stored.mapName || defaultMapName;
+        const mapName = data.mapName || defaultMapName;
         this.state.currentMap = mapName;
 
         await this.mapModel.loadMap(mapName, this.canvas);
@@ -176,9 +184,9 @@ export class UIController {
         }
 
         this.placementModel.clear();
-        this.sidebarView.setJsonArea(JSON.stringify(stored, null, 4));
+        this.sidebarView.setJsonArea(JSON.stringify(data, null, 4));
 
-        for (const troopData of stored.troops) {
+        for (const troopData of data.troops) {
             if (!this.troopModel.getTroop(troopData.troop)) {
                 continue;
             }
@@ -197,7 +205,19 @@ export class UIController {
         }
 
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
-        return true;
+        return true
+    }
+    // Charge le dernier état auto-sauvegardé depuis localStorage.
+    async loadAutoSave(defaultMapName) {
+        const stored = loadFromStorage();
+        console.log(stored)
+        return this.loadFromData(defaultMapName, stored);
+    }
+    // Charge l'état depuis le Base64.
+    async loadBase64(defaultMapName, base64) {
+        const data = loadFromBase64(base64);
+        console.log(data)
+        return this.loadFromData(defaultMapName, data);
     }
 
     // Met à jour le panneau de la troupe sélectionnée ou l'aperçu.
