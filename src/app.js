@@ -133,5 +133,10 @@ async function init() {
 init().catch(error => {
     console.error("Erreur lors de l'initialisation :", error);
     clearStorage()
-    alert("Impossible de démarrer l'application. Vérifiez la console.");
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    init().catch(error => {
+        console.error("Erreur lors de l'initialisation :", error);
+        alert("Impossible de démarrer l'application. Vérifiez la console.");
+    });
 });
