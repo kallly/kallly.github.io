@@ -31,7 +31,14 @@ content="Tower Defense Simulator mapper, TDS, strategy planner, tower placement,
      crossorigin="anonymous"></script>
     <title>Tower Defense Simulator Mapper - TDS Hardcore Strategy Planner</title>
 
+    <link rel="preload"
+      href="style.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'">
+
+    <noscript>
     <link rel="stylesheet" href="style.css">
+    </noscript>
 
     <script type="application/ld+json">
 {
@@ -140,6 +147,8 @@ content="Tower Defense Simulator mapper, TDS, strategy planner, tower placement,
 
     <main id="main">
         <div id="topbar">
+        
+        <label for="mapSelect"></label>
         <select id="mapSelect">
         </select>
         </div>
@@ -234,7 +243,7 @@ and prepare for the hardest waves.
 <!-- Logique principale -->
 <!-- ========================= -->
 
-<script type="module" src="src/app.js" defer></script>
+<script type="module" src="dist/app.min.js" defer></script>
 
 </body>
 </html>
