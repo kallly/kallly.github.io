@@ -22,7 +22,7 @@ export function parseSaveData(jsonText) {
     return JSON.parse(jsonText);
 }
 
-function encodeBase64(text) {
+export function encodeBase64(text) {
     const uint8 = new TextEncoder().encode(text);
     let binary = "";
     for (let i = 0; i < uint8.length; i += 1) {
@@ -57,12 +57,21 @@ export function loadFromStorage() {
         if (!encoded) {
             return null;
         }
-
-        const json = decodeBase64(encoded);
-        return parseSaveData(json);
+        return loadFromBase64(encoded);
     }
     catch (error) {
         console.error("Impossible de charger depuis localStorage :", error);
+        return null;
+    }
+}
+
+export function loadFromBase64(base64) {
+    try {
+        const json = decodeBase64(base64);
+        return parseSaveData(json);
+    }
+    catch (error) {
+        console.error("Impossible de charger depuis la base64 :", error);
         return null;
     }
 }
