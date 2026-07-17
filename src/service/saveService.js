@@ -1,3 +1,4 @@
+import LZString from "../util/lz-string.js";
 // Service de sauvegarde et de chargement des données de placement.
 
 const AUTO_SAVE_KEY = "tds-mapper-autosave";
@@ -75,6 +76,19 @@ export function loadFromBase64(base64) {
         return null;
     }
 }
+
+export function loadFromLZString(encoded) {
+    try {
+        const json = LZString.decompressFromEncodedURIComponent(encoded);
+        return parseSaveData(json);
+    }
+    catch (error) {
+        console.error("Impossible de charger depuis la base64 :", error);
+        return null;
+    }
+}
+
+
 
 export function clearStorage() {
     localStorage.removeItem(AUTO_SAVE_KEY);

@@ -116,7 +116,7 @@ async function init() {
     
     if (searchParams.has("data")) 
     {
-        restored = await uiController.loadBase64(defaultMap, searchParams.get("data"));
+        restored = await uiController.loadLZString(defaultMap, searchParams.get("data"));
         window.history.replaceState({}, document.title, window.location.pathname);
     }
     if (!restored) {

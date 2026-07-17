@@ -63,3 +63,6 @@ Ce projet peut être ouvert directement dans un navigateur supportant les module
 - Ajouter un mode de suppression par glisser.
 - Ajouter un rail de grille pour le placement.
 - Ajouter une interface mobile.
+
+
+npx esbuild src/app.js --bundle --minify --outfile=dist/app.min.js

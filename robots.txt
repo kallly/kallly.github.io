@@ -1,5 +1,3 @@
 User-agent: *
-
 Allow: /
-
 Sitemap: https://kallly.github.io/sitemap.xml
