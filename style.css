@@ -631,17 +631,42 @@ body {
 }
 
 #menu-toggle2:checked ~ .content {
-    margin-right: -260px;
+    margin-right: -360px;
 }
 
 #rightsidebar {
-    width: 260px;
+    width: 360px;
     height: 100vh;
     background: #222;
     color: white;
     padding-top: 70px;
     position: fixed;
-    right: -260px;
+    right: -360px;
     top: 0;
     transition: 0.3s ease;
+}
+
+ a {
+
+    display:flex;
+    align-items:center;
+    margin-top: 12px;
+    width:100%;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    background:#444;
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:0.15s ease;
+
 }
