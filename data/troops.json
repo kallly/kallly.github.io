@@ -1,6 +1,6 @@
 {
     "Scout": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             12.0,
             12.0,
@@ -10,7 +10,7 @@
         ]
     },
     "Sniper": {
-        "collision": "1",
+        "collision": 1.25,
         "rangeMultiplier": [
             28.0,
             28.0,
@@ -20,7 +20,7 @@
         ]
     },
     "Paintballer": {
-        "collision": "1",
+        "collision": 1.25,
         "rangeMultiplier": [
             7.5,
             9.0,
@@ -31,7 +31,7 @@
         ]
     },
     "Demoman": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             10.0,
             12.0,
@@ -41,7 +41,7 @@
         ]
     },
     "Slime Trooper": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             11.5,
             13.0,
@@ -51,7 +51,7 @@
         ]
     },
     "Soldier": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             17.0,
             17.0,
@@ -61,7 +61,7 @@
         ]
     },
     "Freezer": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             12.0,
             12.0,
@@ -71,7 +71,7 @@
         ]
     },
     "Assassin": {
-        "collision": "1",
+        "collision": 1.0,
         "rangeMultiplier": [
             6.0,
             6.0,
@@ -81,7 +81,7 @@
         ]
     },
     "Militant": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             14.0,
             17.0,
@@ -91,7 +91,7 @@
         ]
     },
     "Shotgunner": {
-        "collision": "1",
+        "collision": 1.0,
         "rangeMultiplier": [
             8.0,
             8.0,
@@ -101,7 +101,7 @@
         ]
     },
     "Hunter": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             22.0,
             22.0,
@@ -111,7 +111,7 @@
         ]
     },
     "Pyromancer": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             9.0,
             11.0,
@@ -122,7 +122,7 @@
         ]
     },
     "Ace Pilot": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             9.0,
             9.0,
@@ -133,7 +133,7 @@
         ]
     },
     "Medic": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             12.0,
             12.0,
@@ -144,13 +144,13 @@
         ]
     },
     "Farm": {
-        "collision": "1",
+        "collision": 1.75,
         "rangeMultiplier": [
             0.1
         ]
     },
     "Electroshocker": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             10.0,
             12.0,
@@ -161,7 +161,7 @@
         ]
     },
     "Rocketeer": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             20.0,
             20.0,
@@ -171,7 +171,7 @@
         ]
     },
     "Trapper": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             7.0,
             7.0,
@@ -181,7 +181,7 @@
         ]
     },
     "Military Base": {
-        "collision": "1",
+        "collision": 2.25,
         "rangeMultiplier": [
             5.0,
             5.0,
@@ -192,7 +192,7 @@
         ]
     },
     "Crook Boss": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             16.5,
             16.5,
@@ -202,7 +202,7 @@
         ]
     },
     "Commander": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             10.0,
             10.0,
@@ -212,7 +212,7 @@
         ]
     },
     "Warden": {
-        "collision": "1",
+        "collision": 1.0,
         "rangeMultiplier": [
             6.5,
             7.0,
@@ -222,7 +222,7 @@
         ]
     },
     "Cowboy": {
-        "collision": "1",
+        "collision": 1.25,
         "rangeMultiplier": [
             13.0,
             15.0,
@@ -233,7 +233,7 @@
         ]
     },
     "DJ Booth": {
-        "collision": "1",
+        "collision": 2.5,
         "rangeMultiplier": [
             12.0,
             15.0,
@@ -244,7 +244,7 @@
         ]
     },
     "Tesla": {
-        "collision": "1",
+        "collision": 2.0,
         "rangeMultiplier": [
             17.0,
             17.0,
@@ -254,7 +254,7 @@
         ]
     },
     "Saboteur": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             11.5,
             11.5,
@@ -264,7 +264,7 @@
         ]
     },
     "Minigunner": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             16.0,
             16.0,
@@ -274,7 +274,7 @@
         ]
     },
     "Ranger": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             70.0,
             70.0,
@@ -283,17 +283,32 @@
             70.0
         ]
     },
-    "Pursuit": {
-        "collision": "1",
+    "Pursuit (Top)": {
+        "collision": 1.5,
         "rangeMultiplier": [
+            7.0,
+            7.0,
+            8.0,
+            8.0,
             7.0,
             7.0,
             8.0,
             8.0
         ]
     },
+    "Pursuit (Bottom)": {
+        "collision": 1.5,
+        "rangeMultiplier": [
+            7.0,
+            7.0,
+            8.0,
+            8.0,
+            11.0,
+            11.0
+        ]
+    },
     "Gatling Gun": {
-        "collision": "1",
+        "collision": 2.0,
         "rangeMultiplier": [
             25.0,
             30.0,
@@ -305,7 +320,7 @@
         ]
     },
     "Turret": {
-        "collision": "1",
+        "collision": 2.0,
         "rangeMultiplier": [
             19.0,
             19.0,
@@ -316,7 +331,7 @@
         ]
     },
     "Mortar": {
-        "collision": "1",
+        "collision": 1.75,
         "rangeMultiplier": [
             24.0,
             27.0,
@@ -327,7 +342,7 @@
         ]
     },
     "Mercenary Base": {
-        "collision": "1",
+        "collision": 2.25,
         "rangeMultiplier": [
             6.0,
             8.0,
@@ -339,7 +354,7 @@
         ]
     },
     "Brawler": {
-        "collision": "1",
+        "collision": 1.0,
         "rangeMultiplier": [
             6.0,
             6.5,
@@ -350,7 +365,7 @@
         ]
     },
     "Necromancer": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             23.0,
             23.0,
@@ -360,7 +375,7 @@
         ]
     },
     "Accelerator": {
-        "collision": "1",
+        "collision": 1.75,
         "rangeMultiplier": [
             19.0,
             19.0,
@@ -371,7 +386,7 @@
         ]
     },
     "Engineer": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             13.0,
             16.0,
@@ -382,9 +397,14 @@
             22.5
         ]
     },
-    "Hacker": {
-        "collision": "1",
+    "Hacker (Top)": {
+        "collision": 1.5,
         "rangeMultiplier": [
+            11.0,
+            12.5,
+            14.0,
+            15.0,
+            16.0,
             11.0,
             12.5,
             14.0,
@@ -392,8 +412,19 @@
             16.0
         ]
     },
+    "Hacker (Bottom)": {
+        "collision": 1.5,
+        "rangeMultiplier": [
+            11.0,
+            12.5,
+            14.0,
+            15.0,
+            16.0,
+            18.5
+        ]
+    },
     "Operator": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             14.0,
             14.0,
@@ -404,17 +435,34 @@
             17.0
         ]
     },
-    "Juggernaut": {
-        "collision": "1",
+    "Juggernaut (Top)": {
+        "collision": 2.5,
         "rangeMultiplier": [
+            17.5,
+            17.5,
+            20.0,
+            22.0,
             17.5,
             17.5,
             20.0,
             22.0
         ]
     },
+    "Juggernaut (Bottom)": {
+        "collision": 2.5,
+        "rangeMultiplier": [
+            17.5,
+            17.5,
+            20.0,
+            22.0,
+            22.0,
+            26.0,
+            26.0,
+            26.0
+        ]
+    },
     "Golden Minigunner": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             16.0,
             16.0,
@@ -424,7 +472,7 @@
         ]
     },
     "Golden Pyromancer": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             9.0,
             11.0,
@@ -435,7 +483,7 @@
         ]
     },
     "Golden Crook Boss": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             16.5,
             16.5,
@@ -445,7 +493,7 @@
         ]
     },
     "Golden Scout": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             14.0,
             15.0,
@@ -455,7 +503,7 @@
         ]
     },
     "Golden Cowboy": {
-        "collision": "1",
+        "collision": 1.25,
         "rangeMultiplier": [
             13.0,
             15.0,
@@ -466,7 +514,7 @@
         ]
     },
     "Golden Soldier": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             17.0,
             17.0,
@@ -476,7 +524,7 @@
         ]
     },
     "Golden Snowballer": {
-        "collision": "1",
+        "collision": 1.25,
         "rangeMultiplier": [
             14.0,
             14.0,
@@ -485,7 +533,7 @@
         ]
     },
     "Gladiator": {
-        "collision": "1",
+        "collision": 1.0,
         "rangeMultiplier": [
             5.5,
             5.5,
@@ -496,7 +544,7 @@
         ]
     },
     "Commando": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             16.0,
             16.0,
@@ -506,7 +554,7 @@
         ]
     },
     "Slasher": {
-        "collision": "1",
+        "collision": 1.0,
         "rangeMultiplier": [
             5.0,
             5.0,
@@ -516,7 +564,7 @@
         ]
     },
     "Frost Blaster": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             12.0,
             15.0,
@@ -526,7 +574,7 @@
         ]
     },
     "Archer": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             16.5,
             20.0,
@@ -536,8 +584,32 @@
             24.0
         ]
     },
+    "The Heights": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
+    "Area 51": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
+    "Nightmare Carnival": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
+    "Village of Despair": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
     "Swarmer": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             13.0,
             13.0,
@@ -548,7 +620,7 @@
         ]
     },
     "Toxic Gunner": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             10.0,
             10.0,
@@ -558,7 +630,7 @@
         ]
     },
     "Sledger": {
-        "collision": "1",
+        "collision": 1.0,
         "rangeMultiplier": [
             6.5,
             6.5,
@@ -569,7 +641,7 @@
         ]
     },
     "Executioner": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             14.0,
             14.0,
@@ -579,8 +651,38 @@
             18.0
         ]
     },
+    "Elf Camp": {
+        "collision": 1.5,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
+    "Eggy Island": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
+    "Trick or Threat Town": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
+    "Totality Tower": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
+    "Cold Ambush": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
     "Jester": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             10.0,
             12.3,
@@ -590,7 +692,7 @@
         ]
     },
     "Cryomancer": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             11.0,
             13.5,
@@ -600,7 +702,7 @@
         ]
     },
     "Hallow Punk": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             18.0,
             21.0,
@@ -609,7 +711,7 @@
         ]
     },
     "Harvester": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             20.0,
             20.0,
@@ -620,7 +722,7 @@
         ]
     },
     "Snowballer": {
-        "collision": "1",
+        "collision": 1.25,
         "rangeMultiplier": [
             15.0,
             17.5,
@@ -628,8 +730,26 @@
             20.0
         ]
     },
+    "The Great Finale": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
+    "Krampus Frosthold": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
+    "Hexscape Event": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
     "Elementalist": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             12.0,
             15.0,
@@ -639,7 +759,7 @@
         ]
     },
     "Firework Technician": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             10.0,
             10.0,
@@ -649,7 +769,7 @@
         ]
     },
     "Biologist": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             4.0,
             4.0,
@@ -659,7 +779,7 @@
         ]
     },
     "Warlock": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             18.0,
             19.0,
@@ -670,7 +790,7 @@
         ]
     },
     "Spotlight Tech": {
-        "collision": "1",
+        "collision": 2.25,
         "rangeMultiplier": [
             30.0,
             30.0,
@@ -679,8 +799,26 @@
             40.0
         ]
     },
+    "Mission Quests": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
+    "Bathroom Approach": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
+    "The Narratorium": {
+        "collision": 1,
+        "rangeMultiplier": [
+            0.1
+        ]
+    },
     "War Machine": {
-        "collision": "1",
+        "collision": 1.5,
         "rangeMultiplier": [
             12.0,
             18.0,
@@ -691,7 +829,7 @@
         ]
     },
     "Mecha Base": {
-        "collision": "1",
+        "collision": 2.25,
         "rangeMultiplier": [
             30.0,
             30.0,
@@ -699,50 +837,6 @@
             35.0,
             50.0,
             50.0
-        ]
-    },
-    "Sentry": {
-        "collision": "1",
-        "rangeMultiplier": [
-            15.0,
-            17.0,
-            18.0,
-            19.0,
-            21.0,
-            23.0
-        ]
-    },
-    "Twitgunner": {
-        "collision": "1",
-        "rangeMultiplier": [
-            12.0,
-            14.0,
-            16.0,
-            17.0,
-            17.0,
-            18.0
-        ]
-    },
-    "Combatant": {
-        "collision": "1",
-        "rangeMultiplier": [
-            5.0,
-            5.0,
-            5.0,
-            5.0,
-            5.0,
-            6.0
-        ]
-    },
-    "Crystallizer": {
-        "collision": "1",
-        "rangeMultiplier": [
-            8.0,
-            10.0,
-            10.0,
-            10.0,
-            10.0,
-            12.0
         ]
     }
 }
