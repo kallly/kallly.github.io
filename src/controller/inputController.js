@@ -112,12 +112,25 @@ export class InputController {
         }
     }
 
+    isMouseOnCanvas() {
+        const element = document.activeElement;
+
+        if (
+            element instanceof HTMLInputElement ||
+            element instanceof HTMLSelectElement ||
+            element instanceof HTMLTextAreaElement
+        ) {
+            return false;
+        }
+        return true;
+    }
+
     // Clavier : navigation de la carte, suppression et raccourcis.
     handleKeyDown(event) {
         const moveAmount = this.canvas.width * 0.05;
         let moved = false;
-        
-        if (this.mouse.x > 10) {
+
+        if (this.isMouseOnCanvas(event)) {
             if (["q", "a", "ArrowLeft"].includes(event.key)) {
                 this.mapModel.pan(moveAmount, 0);
                 moved = true;
@@ -142,7 +155,7 @@ export class InputController {
             }
         }
 
-        if (event.key === "Delete") {
+        if (this.isMouseOnCanvas(event) && event.key === "Delete") {
             const selected = this.placementModel.getSelected();
             if (selected) {
                 this.placementModel.remove(selected);
