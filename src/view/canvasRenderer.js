@@ -9,6 +9,7 @@ export class CanvasRenderer {
         this.ctx = this.canvas.getContext("2d");
         this.onRenderCallback = null;
         this.render = this.render.bind(this);
+        this.imagesCache = {};
     }
 
     setRenderCallback(callback) {
@@ -42,7 +43,7 @@ export class CanvasRenderer {
         if (typeof this.onRenderCallback === "function") {
             this.onRenderCallback();
         }
-        requestAnimationFrame(this.render);
+        requestAnimationFrame(this.render)
     }
 
     // Affiche l'image de la carte à l'endroit et à l'échelle.
@@ -63,6 +64,23 @@ export class CanvasRenderer {
         }
     }
 
+    getTroopImage(troopName) {
+        let imageName = troopName.replaceAll(" ", "").replace("(Top)", "").replace("(Bottom)", "");
+        if (!this.imagesCache[imageName]) {
+            let image = new Image();
+            image.src = `images/troops/${imageName}.webp`;
+            image.onload = () => {
+                this.imagesCache[imageName] = image;
+            };
+            image.onerror = () => {
+                image.src = "";
+                this.imagesCache[imageName] = image;
+            };
+            return null;
+        }
+        return this.imagesCache[imageName];
+    }
+
     // Dessine une troupe avec sa collision, sa portée et son étiquette.
     drawTroop(troop) {
         const screen = this.mapModel.worldToScreen(troop.x, troop.y);
@@ -80,19 +98,37 @@ export class CanvasRenderer {
         this.ctx.beginPath();
         this.ctx.arc(screen.x, screen.y, troop.collision * this.mapModel.scale, 0, Math.PI * 2);
         this.ctx.fillStyle = this.state.troopColors[troop.troop] || troop.color || "#FFD54A";
+        this.ctx.globalAlpha = 0.7;
         this.ctx.fill();
         this.ctx.lineWidth = 2;
         this.ctx.strokeStyle = "#222";
         this.ctx.stroke();
 
+        let image = this.getTroopImage(troop.troop);
+        if (image) {
+            this.ctx.drawImage(
+                image,
+                screen.x - (troop.collision * this.mapModel.scale) * 1.7 / 2,
+                screen.y - (troop.collision * this.mapModel.scale) * 1.7 / 2,
+                troop.collision * this.mapModel.scale * 1.7,
+                troop.collision * this.mapModel.scale * 1.7
+            );
+        }
+       
+
         this.ctx.fillStyle = "white";
         this.ctx.font = `bold ${16 * this.mapModel.scale}px Arial`;
         this.ctx.textAlign = "center";
-        this.ctx.fillText(troop.troop, screen.x, screen.y - troop.collision * this.mapModel.scale - 8);
-
-        this.ctx.fillStyle = "black";
-        this.ctx.font = `bold ${13 * this.mapModel.scale}px Arial`;
-        this.ctx.fillText("L" + troop.level, screen.x, screen.y + 4 * this.mapModel.scale);
+        if (this.state.showNames) {
+            this.ctx.fillText(troop.troop, screen.x, screen.y - troop.collision * this.mapModel.scale - 8);
+        }
+ 
+        this.ctx.globalAlpha = 1;
+        if (this.state.showLevels) {
+            this.ctx.fillStyle = "black";
+            this.ctx.font = `bold ${20 * this.mapModel.scale}px Arial`;
+            this.ctx.fillText("L" + troop.level, screen.x, screen.y + 6 * this.mapModel.scale);
+        }
     }
 
     // Dessine le cercle de sélection autour de la troupe actuelle.
@@ -115,7 +151,6 @@ export class CanvasRenderer {
         if (!this.state.selectedTroop) {
             return;
         }
-
         const screen = this.mapModel.worldToScreen(this.state.pointerX, this.state.pointerY);
         const radius = this.state.previewCollision * this.mapModel.scale;
         const rangeRadius = this.state.previewRange * this.mapModel.scale;
@@ -132,5 +167,16 @@ export class CanvasRenderer {
         this.ctx.arc(screen.x, screen.y, radius, 0, Math.PI * 2);
         this.ctx.fillStyle = this.state.isPlacementValid ? "#00cc00" : "#ff3333";
         this.ctx.fill();
+
+        let image = this.getTroopImage(this.state.selectedTroop);
+        if (image) {
+            this.ctx.drawImage(
+                image,
+                screen.x - radius * 1.7 / 2,
+                screen.y - radius * 1.7 / 2,
+                radius * 1.7,
+                radius * 1.7
+            );
+        }
     }
 }

@@ -20,7 +20,6 @@ export class InputController {
         this.canvas.addEventListener("wheel", (event) => this.handleWheel(event));
         document.addEventListener("keydown", (event) => this.handleKeyDown(event));
     }
-
     // Met à jour les coordonnées du pointeur et le mode d'aperçu.
     updatePointer(event) {
         const rect = this.canvas.getBoundingClientRect();
@@ -117,24 +116,25 @@ export class InputController {
     handleKeyDown(event) {
         const moveAmount = this.canvas.width * 0.05;
         let moved = false;
-
-        if (["q", "a", "ArrowLeft"].includes(event.key)) {
-            this.mapModel.pan(moveAmount, 0);
-            moved = true;
+        
+        if (this.mouse.x > 10) {
+            if (["q", "a", "ArrowLeft"].includes(event.key)) {
+                this.mapModel.pan(moveAmount, 0);
+                moved = true;
+            }
+            if (["d", "ArrowRight"].includes(event.key)) {
+                this.mapModel.pan(-moveAmount, 0);
+                moved = true;
+            }
+            if (["z", "w", "ArrowUp"].includes(event.key)) {
+                this.mapModel.pan(0, moveAmount);
+                moved = true;
+            }
+            if (["s", "ArrowDown"].includes(event.key)) {
+                this.mapModel.pan(0, -moveAmount);
+                moved = true;
+            }
         }
-        if (["d", "ArrowRight"].includes(event.key)) {
-            this.mapModel.pan(-moveAmount, 0);
-            moved = true;
-        }
-        if (["z", "w", "ArrowUp"].includes(event.key)) {
-            this.mapModel.pan(0, moveAmount);
-            moved = true;
-        }
-        if (["s", "ArrowDown"].includes(event.key)) {
-            this.mapModel.pan(0, -moveAmount);
-            moved = true;
-        }
-
         if (moved) {
             event.preventDefault();
             if (typeof this.callbacks?.onViewportChanged === "function") {
