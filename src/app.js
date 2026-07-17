@@ -8,6 +8,7 @@ import { SidebarView } from "./view/sidebarView.js";
 import { CanvasRenderer } from "./view/canvasRenderer.js";
 import { InputController } from "./controller/inputController.js";
 import { UIController } from "./controller/uiController.js";
+import { clearStorage } from "./service/saveService.js";
 
 async function init() {
     // Sélection des éléments du DOM nécessaires à l'application.
@@ -131,5 +132,6 @@ async function init() {
 
 init().catch(error => {
     console.error("Erreur lors de l'initialisation :", error);
+    clearStorage()
     alert("Impossible de démarrer l'application. Vérifiez la console.");
 });

@@ -294,7 +294,9 @@ button:active{
 
     background:#111;
 
-    cursor:crosshair;
+    cursor:crosshair;;
+    width:100%;
+    height:auto;
 
 }
 

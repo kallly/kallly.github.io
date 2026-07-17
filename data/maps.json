@@ -1,6 +1,21 @@
 {
-    "Wretched_Front": {
-        "url": "images/Wretched_Front.webp",
+    "Wretched Front": {
+        "url": "images/maps/WretchedFront.webp",
+        "rangeMapMult": 14,
+        "collisionMapMult": 14
+    },
+    "Unknown Garden": {
+        "url": "images/maps/UnknownGarden.webp",
+        "rangeMapMult": 9,
+        "collisionMapMult": 9
+    },
+    "Outskirts Commune": {
+        "url": "images/maps/OutskirtsCommune.webp",
+        "rangeMapMult": 14,
+        "collisionMapMult": 14
+    },
+    "Wrecked Battlefiel": {
+        "url": "images/maps/WreckedBattlefield.webp",
         "rangeMapMult": 14,
         "collisionMapMult": 14
     }
