@@ -21,6 +21,8 @@ export class UIController {
         this.sidebarView.on("onLevelChange", (level) => this.handleLevelChange(level));
         this.sidebarView.on("onColorChange", (color) => this.handleColorChange(color));
         this.sidebarView.on("onToggleRange", () => this.handleToggleRange());
+        this.sidebarView.on("onToggleName", () => this.handleToggleName());
+        this.sidebarView.on("onToggleLevel", () => this.handleToggleLevel());
         this.sidebarView.on("onDeleteSelected", () => this.handleDeleteSelected());
         this.sidebarView.on("onClearMap", () => this.handleClearMap());
         this.sidebarView.on("onSave", () => this.handleSave());
@@ -69,6 +71,14 @@ export class UIController {
     // Bascule l'affichage des portées.
     handleToggleRange() {
         this.state.showRanges = !this.state.showRanges;
+    }
+    // Bascule l'affichage des noms.
+    handleToggleName() {
+        this.state.showNames = !this.state.showNames;
+    }
+    // Bascule l'affichage des levels.
+    handleToggleLevel() {
+        this.state.showLevels = !this.state.showLevels;
     }
 
     // Supprime la troupe sélectionnée.

@@ -15,6 +15,8 @@ export class SidebarView {
         this.elements.levelSelect.addEventListener("change", () => this.dispatch("onLevelChange", Number(this.elements.levelSelect.value)));
         this.elements.troopColor.addEventListener("input", () => this.dispatch("onColorChange", this.elements.troopColor.value));
         this.elements.toggleRangeButton.addEventListener("click", () => this.dispatch("onToggleRange"));
+        this.elements.toggleNameButton.addEventListener("click", () => this.dispatch("onToggleName"));
+        this.elements.toggleLevelButton.addEventListener("click", () => this.dispatch("onToggleLevel"));
         this.elements.deleteSelected.addEventListener("click", () => this.dispatch("onDeleteSelected"));
         this.elements.clearMap.addEventListener("click", () => this.dispatch("onClearMap"));
         this.elements.saveMap.addEventListener("click", () => this.dispatch("onSave"));

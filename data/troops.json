@@ -584,30 +584,6 @@
             24.0
         ]
     },
-    "The Heights": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
-    "Area 51": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
-    "Nightmare Carnival": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
-    "Village of Despair": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
     "Swarmer": {
         "collision": 1.5,
         "rangeMultiplier": [
@@ -653,30 +629,6 @@
     },
     "Elf Camp": {
         "collision": 1.5,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
-    "Eggy Island": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
-    "Trick or Threat Town": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
-    "Totality Tower": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
-    "Cold Ambush": {
-        "collision": 1,
         "rangeMultiplier": [
             0.1
         ]
@@ -730,24 +682,6 @@
             20.0
         ]
     },
-    "The Great Finale": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
-    "Krampus Frosthold": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
-    "Hexscape Event": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
     "Elementalist": {
         "collision": 1.5,
         "rangeMultiplier": [
@@ -797,24 +731,6 @@
             35.0,
             35.0,
             40.0
-        ]
-    },
-    "Mission Quests": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
-    "Bathroom Approach": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
-        ]
-    },
-    "The Narratorium": {
-        "collision": 1,
-        "rangeMultiplier": [
-            0.1
         ]
     },
     "War Machine": {
