@@ -210,13 +210,11 @@ export class UIController {
     // Charge le dernier état auto-sauvegardé depuis localStorage.
     async loadAutoSave(defaultMapName) {
         const stored = loadFromStorage();
-        console.log(stored)
         return this.loadFromData(defaultMapName, stored);
     }
     // Charge l'état depuis le Base64.
     async loadBase64(defaultMapName, base64) {
         const data = loadFromBase64(base64);
-        console.log(data)
         return this.loadFromData(defaultMapName, data);
     }
 
