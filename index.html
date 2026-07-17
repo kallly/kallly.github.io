@@ -59,8 +59,21 @@ content="Tower Defense Simulator mapper, TDS, strategy planner, tower placement,
     <!-- ========================= -->
     <!-- Barre latérale -->
     <!-- ========================= -->
+    <!-- Case cachée -->
+    <input type="checkbox" id="menu-toggle">
 
-    <aside id="sidebar">
+    <!-- Bouton -->
+    <label for="menu-toggle" class="menu-btn">
+        ☰
+    </label>
+    <input type="checkbox" id="menu-toggle2">
+    <label for="menu-toggle2" class="menu-btn2">
+        ☰
+    </label>
+    <nav id="rightsidebar">
+        <h1>Strats</h1>
+    </nav>
+    <nav id="sidebar">
         <label for="troopSearch">Towers</label>
         <input 
             id="troopSearch"
@@ -105,9 +118,6 @@ content="Tower Defense Simulator mapper, TDS, strategy planner, tower placement,
         </div>
 
         <div class="panel">
-
-            <h3>Selected Tower</h3>
-
             <p>
                 <b>Name :</b>
                 <span id="selectedTroop">Aucune</span>
@@ -139,8 +149,8 @@ content="Tower Defense Simulator mapper, TDS, strategy planner, tower placement,
             placeholder="The JSON save data will appear here..."
         ></textarea>
 
-    </aside>
-
+    </nav>
+    <label for="menu-toggle" class="overlay"></label>
     <!-- ========================= -->
     <!-- Zone principale -->
     <!-- ========================= -->
@@ -148,8 +158,8 @@ content="Tower Defense Simulator mapper, TDS, strategy planner, tower placement,
     <main id="main">
         <div id="topbar">
         
-        <label for="mapSelect"></label>
-        <select id="mapSelect">
+        <label for="mapSelect">Map: </label>
+        <select id="mapSelect" style="max-width: 50%;">
         </select>
         </div>
         <div id="canvasTools">
