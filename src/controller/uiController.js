@@ -1,4 +1,5 @@
-import { createSaveData, parseSaveData, saveToStorage, loadFromStorage, loadFromBase64, encodeBase64 } from "../service/saveService.js";
+import { createSaveData, parseSaveData, saveToStorage, loadFromStorage, loadFromLZString, encodeBase64 } from "../service/saveService.js";
+import LZString from "../util/lz-string.js";
 
 // Contrôleur central de l'application.
 // Il gère la synchronisation entre l'état, la vue et les modèles.
@@ -106,7 +107,7 @@ export class UIController {
 
     handleShareUrl() {
         const payload = createSaveData(this.placementModel.placedTroops, this.state.currentMap);
-        const data = encodeBase64(JSON.stringify(payload, null, 4));
+        const data = LZString.compressToEncodedURIComponent((JSON.stringify(payload, null, 4)));
         const url = `${window.location.origin}${window.location.pathname}?data=${encodeURIComponent(data)}`;
 
          navigator.clipboard.writeText(url)
@@ -213,8 +214,8 @@ export class UIController {
         return this.loadFromData(defaultMapName, stored);
     }
     // Charge l'état depuis le Base64.
-    async loadBase64(defaultMapName, base64) {
-        const data = loadFromBase64(base64);
+    async loadLZString(defaultMapName, lzString) {
+        const data = loadFromLZString(lzString);
         return this.loadFromData(defaultMapName, data);
     }
 
