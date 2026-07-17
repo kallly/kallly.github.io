@@ -222,13 +222,19 @@ button{
 
     background:#7DADF7;
 
-    color:white;
+    color:#000000;
 
     font-size:14px;
 
     transition:0.2s;
 
 }
+
+a{
+    color:#7DADF7;
+}
+
+
 
 button:hover{
 
