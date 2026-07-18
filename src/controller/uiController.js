@@ -4,7 +4,7 @@ import LZString from "../util/lz-string.js";
 // Contrôleur central de l'application.
 // Il gère la synchronisation entre l'état, la vue et les modèles.
 export class UIController {
-    constructor({ state, mapModel, troopModel, placementModel, sidebarView, canvas, canvasRenderer }) {
+    constructor({ state, mapModel, troopModel, placementModel, sidebarView, canvas, canvasRenderer, collabController = null }) {
         this.state = state;
         this.mapModel = mapModel;
         this.troopModel = troopModel;
@@ -12,6 +12,7 @@ export class UIController {
         this.sidebarView = sidebarView;
         this.canvas = canvas;
         this.canvasRenderer = canvasRenderer;
+        this.collabController = collabController;
         this.attachViewCallbacks();
         this.canvasRenderer.setRenderCallback(() => this.saveCurrentState());
     }
@@ -65,7 +66,7 @@ export class UIController {
         this.state.troopColors[selectedName] = color;
         for (const troop of this.placementModel.placedTroops) {
             if (troop.troop === selectedName) {
-                troop.color = color;
+                this.placementModel.updatePlacement(troop, { color });
             }
         }
     }
@@ -163,6 +164,7 @@ export class UIController {
         await this.mapModel.loadMap(mapName, this.canvas);
         this.canvasRenderer.resize();
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
+        this.collabController?.notifyMapChanged(mapName);
     }
 
     // Réinitialise la position de la carte.

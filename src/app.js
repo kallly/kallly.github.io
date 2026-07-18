@@ -8,7 +8,9 @@ import { SidebarView } from "./view/sidebarView.js";
 import { CanvasRenderer } from "./view/canvasRenderer.js";
 import { InputController } from "./controller/inputController.js";
 import { UIController } from "./controller/uiController.js";
+import { CollabController } from "./controller/collabController.js";
 import { clearStorage } from "./service/saveService.js";
+import { initCollab } from "./service/collabService.js";
 
 async function init() {
     // Sélection des éléments du DOM nécessaires à l'application.
@@ -31,6 +33,11 @@ async function init() {
         saveMap: document.getElementById("saveMap"),
         loadMap: document.getElementById("loadMap"),
         resetMapPosition: document.getElementById("resetMapPosition"),
+        collabStatus: document.getElementById("collabStatus"),
+        collabCreateSession: document.getElementById("collabCreateSession"),
+        collabRoomCodeInput: document.getElementById("collabRoomCodeInput"),
+        collabJoinSession: document.getElementById("collabJoinSession"),
+        collabLeaveSession: document.getElementById("collabLeaveSession"),
     };
 
     // État partagé entre les composants.
@@ -71,6 +78,45 @@ async function init() {
         canvas,
         canvasRenderer
     });
+
+    // Collaboration en temps réel : indisponible si Firebase n'est pas configuré,
+    // ce qui ne doit pas empêcher le reste de l'application de démarrer.
+    try {
+        await initCollab();
+    } catch (error) {
+        console.warn("Collaboration temps réel indisponible (configuration Firebase manquante ou invalide) :", error);
+    }
+
+    const collabController = new CollabController({
+        state,
+        mapModel,
+        troopModel,
+        placementModel,
+        uiController,
+        sidebarView
+    });
+    uiController.collabController = collabController;
+
+    sidebarView.on("onCreateSession", async () => {
+        try {
+            await collabController.createSession();
+        } catch (error) {
+            alert("Impossible de créer la session.");
+            console.error(error);
+        }
+    });
+    sidebarView.on("onJoinSession", async (roomCode) => {
+        if (!roomCode) {
+            return;
+        }
+        try {
+            await collabController.joinSession(roomCode);
+        } catch (error) {
+            alert(error.message || "Impossible de rejoindre la session.");
+            console.error(error);
+        }
+    });
+    sidebarView.on("onLeaveSession", () => collabController.leaveSession());
 
     const inputController = new InputController({
         canvas,

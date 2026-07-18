@@ -4,13 +4,38 @@ export class PlacementModel {
     constructor() {
         this.placedTroops = [];
         this.selectedPlacedTroop = null;
+        this.listeners = [];
+    }
+
+    // Enregistre un callback appelé à chaque mutation (add/remove/update/clear).
+    // Plusieurs abonnés sont possibles (contrairement au on/dispatch de SidebarView).
+    onChange(callback) {
+        this.listeners.push(callback);
+    }
+
+    // Notifie les abonnés d'une mutation.
+    emitChange(type, placement = null) {
+        for (const listener of this.listeners) {
+            listener({ type, placement });
+        }
     }
 
     // Ajoute une nouvelle troupe posée et la sélectionne.
+    // Un id stable est nécessaire pour cibler cette troupe depuis un événement
+    // distant (collaboration) ; on en génère un si aucun n'est fourni.
     add(placement) {
+        if (!placement.id) {
+            placement.id = crypto.randomUUID();
+        }
         this.placedTroops.push(placement);
         this.selectedPlacedTroop = placement;
+        this.emitChange("add", placement);
         return placement;
+    }
+
+    // Recherche une troupe posée par son id.
+    findById(id) {
+        return this.placedTroops.find(troop => troop.id === id) || null;
     }
 
     // Supprime une troupe posée.
@@ -25,6 +50,7 @@ export class PlacementModel {
             this.selectedPlacedTroop = null;
         }
 
+        this.emitChange("remove", placement);
         return true;
     }
 
@@ -32,6 +58,7 @@ export class PlacementModel {
     clear() {
         this.placedTroops.length = 0;
         this.selectedPlacedTroop = null;
+        this.emitChange("clear");
     }
 
     // Sélectionne une troupe existante.
@@ -74,5 +101,6 @@ export class PlacementModel {
     // Met à jour les propriétés d'une troupe posée.
     updatePlacement(placement, updates) {
         Object.assign(placement, updates);
+        this.emitChange("update", placement);
     }
 }
