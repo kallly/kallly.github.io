@@ -7,7 +7,7 @@ import { PlacementModel } from "./model/placementModel.js";
 import { SidebarView } from "./view/sidebarView.js";
 import { CanvasRenderer } from "./view/canvasRenderer.js";
 import { InputController } from "./controller/inputController.js";
-import { UIController } from "./controller/uiController.js";
+import { UIController, playerFilterFromParam } from "./controller/uiController.js";
 import { CollabController } from "./controller/collabController.js";
 import { HistoryController } from "./controller/historyController.js";
 import { clearStorage } from "./service/saveService.js";
@@ -216,6 +216,15 @@ async function init() {
     }
     if (!restored) {
         await uiController.handleMapSelect(defaultMap);
+    }
+
+    // Filtre joueur pré-sélectionné via ?p= (0=All, 1..3=playerN) : applicable quelle que soit
+    // la façon dont la carte a été chargée ci-dessus (data/map/autosave/défaut).
+    if (searchParams.has("p")) {
+        state.playerFilter = playerFilterFromParam(searchParams.get("p"));
+        if (elements.playerFilterSelect) {
+            elements.playerFilterSelect.value = state.playerFilter;
+        }
     }
 
     // Simple garde avant de considérer l'appli prête : ne bloque plus le rendu de la carte,
