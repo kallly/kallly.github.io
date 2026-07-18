@@ -28,7 +28,8 @@ export class CollabController {
             level: placement.level,
             x: placement.x,
             y: placement.y,
-            color: placement.color
+            color: placement.color,
+            player: placement.player
         };
     }
 

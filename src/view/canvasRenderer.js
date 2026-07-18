@@ -97,7 +97,7 @@ export class CanvasRenderer {
 
         this.ctx.beginPath();
         this.ctx.arc(screen.x, screen.y, troop.collision * this.mapModel.scale, 0, Math.PI * 2);
-        this.ctx.fillStyle = this.state.troopColors[troop.troop] || troop.color || "#FFD54A";
+        this.ctx.fillStyle = troop.color || "#FFD54A";
         this.ctx.globalAlpha = 0.7;
         this.ctx.fill();
         this.ctx.lineWidth = 2;

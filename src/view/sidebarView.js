@@ -13,6 +13,7 @@ export class SidebarView {
     attachEvents() {
         this.elements.troopSearch.addEventListener("input", () => this.buildTroopMenu(this.elements.troopSearch.value));
         this.elements.levelSelect.addEventListener("change", () => this.dispatch("onLevelChange", Number(this.elements.levelSelect.value)));
+        this.elements.playerSelect.addEventListener("change", () => this.dispatch("onPlayerChange", this.elements.playerSelect.value));
         this.elements.troopColor.addEventListener("input", () => this.dispatch("onColorChange", this.elements.troopColor.value));
         this.elements.toggleRangeButton.addEventListener("click", () => this.dispatch("onToggleRange"));
         this.elements.toggleNameButton.addEventListener("click", () => this.dispatch("onToggleName"));
@@ -95,6 +96,11 @@ export class SidebarView {
     // Définition du niveau sélectionné.
     setSelectedLevel(level) {
         this.elements.levelSelect.value = String(level);
+    }
+
+    // Définition du joueur sélectionné.
+    setSelectedPlayer(player) {
+        this.elements.playerSelect.value = player;
     }
 
     // Définition de la couleur sélectionnée.
