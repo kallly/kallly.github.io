@@ -48,6 +48,7 @@ async function init() {
         undoAction: document.getElementById("undoAction"),
         deleteSelected: document.getElementById("deleteSelected"),
         clearMap: document.getElementById("clearMap"),
+        exportPng: document.getElementById("exportPng"),
         urlShareMap: document.getElementById("urlShareMap"),
         saveMap: document.getElementById("saveMap"),
         loadMap: document.getElementById("loadMap"),

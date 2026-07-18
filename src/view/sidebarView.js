@@ -21,6 +21,7 @@ export class SidebarView {
         this.elements.undoAction.addEventListener("click", () => this.dispatch("onUndo"));
         this.elements.deleteSelected.addEventListener("click", () => this.dispatch("onDeleteSelected"));
         this.elements.clearMap.addEventListener("click", () => this.dispatch("onClearMap"));
+        this.elements.exportPng.addEventListener("click", () => this.dispatch("onExportPng"));
         this.elements.urlShareMap.addEventListener("click", () => this.dispatch("onUrlShare"));
         this.elements.saveMap.addEventListener("click", () => this.dispatch("onSave"));
         this.elements.loadMap.addEventListener("click", () => this.dispatch("onLoad"));

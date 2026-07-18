@@ -30,6 +30,7 @@ export class UIController {
         this.sidebarView.on("onUndo", () => this.handleUndo());
         this.sidebarView.on("onDeleteSelected", () => this.handleDeleteSelected());
         this.sidebarView.on("onClearMap", () => this.handleClearMap());
+        this.sidebarView.on("onExportPng", () => this.handleExportPng());
         this.sidebarView.on("onUrlShare", () => this.handleShareUrl());
         this.sidebarView.on("onSave", () => this.handleSave());
         this.sidebarView.on("onLoad", () => this.handleLoad());
@@ -131,6 +132,12 @@ export class UIController {
     handleClearMap() {
         this.placementModel.clear();
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
+    }
+
+    // Télécharge le plan actuel en PNG.
+    handleExportPng() {
+        const mapPart = (this.state.currentMap || "map").trim().toLowerCase().replace(/\s+/g, "-");
+        this.canvasRenderer.exportPng(`tds-mapper-${mapPart}.png`);
     }
 
     saveCurrentState() {
