@@ -809,6 +809,29 @@ a{
 }
 
 /* ========================= */
+/* Text label input, positioned over the click point when placing a text label */
+/* ========================= */
+
+.text-label-input{
+    position:absolute;
+    z-index:20;
+    transform:translate(-50%, -50%);
+    width:140px;
+    padding:4px 8px;
+    border:1px solid var(--accent);
+    border-radius:var(--radius-sm);
+    background:var(--bg-input);
+    color:var(--text);
+    font-size:13px;
+    text-align:center;
+    box-shadow:var(--shadow-sm);
+}
+
+.text-label-input:focus{
+    outline:none;
+}
+
+/* ========================= */
 /* Floating placement panel (bottom-left of the canvas) */
 /* ========================= */
 

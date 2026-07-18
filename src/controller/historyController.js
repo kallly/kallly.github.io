@@ -5,15 +5,17 @@
 const MAX_HISTORY = 50;
 
 export class HistoryController {
-    constructor({ state, placementModel, polygonModel = null }) {
+    constructor({ state, placementModel, polygonModel = null, textLabelModel = null }) {
         this.state = state;
         this.placementModel = placementModel;
         this.polygonModel = polygonModel;
+        this.textLabelModel = textLabelModel;
         this.stack = [];
         this.isApplyingUndo = false;
 
         this.placementModel.onChange((event) => this.recordChange("placement", event.type, event.placement, event.previous));
         this.polygonModel?.onChange((event) => this.recordChange("polygon", event.type, event.polygon, event.previous));
+        this.textLabelModel?.onChange((event) => this.recordChange("label", event.type, event.label, event.previous));
     }
 
     // Empile l'action inverse de la mutation reçue, sauf si elle vient d'un undo ou du réseau.
@@ -59,7 +61,10 @@ export class HistoryController {
             return false;
         }
 
-        const model = action.source === "polygon" ? this.polygonModel : this.placementModel;
+        const model = action.source === "polygon" ? this.polygonModel
+            : action.source === "label" ? this.textLabelModel
+            : this.placementModel;
+        // Seules les troupes et les zones ont des mutations "update" (les textes n'en émettent jamais).
         const updateMethod = action.source === "polygon" ? "updatePolygon" : "updatePlacement";
 
         this.isApplyingUndo = true;

@@ -272,6 +272,9 @@ content="Tower Defense Simulator, mapper, TDS, strategy, Hardcore, SOLO, DUO, TR
                 </button>
                 <input type="color" id="zoneColor" value="#5b8cff" title="Zone color" aria-label="Color for the next drawn zone" class="canvas-button canvas-color-swatch">
             </div>
+            <button id="addText" title="Add a text label (max 20 characters), click on the map to place it" aria-label="Toggle text placement mode" class="canvas-button">
+                🔤
+            </button>
         </div>
         <div id="canvasPlayerFilter">
             <label for="playerFilterSelect" title="Filter by player" aria-hidden="true">👥</label>
@@ -311,10 +314,17 @@ content="Tower Defense Simulator, mapper, TDS, strategy, Hardcore, SOLO, DUO, TR
 
             <h3>Zones</h3>
             <ul>
-                <li>Pick a color, then click 🔺 to start drawing a zone.</li>
+                <li>Pick a color, then click 🖌️ to start drawing a zone.</li>
                 <li>Click on the map to add points; click the first point again (or press <kbd>Enter</kbd>) to close the shape.</li>
                 <li>Right-click or <kbd>Esc</kbd> cancels the zone being drawn.</li>
                 <li>Click a finished zone to select it, then <kbd>Delete</kbd> or 🗑️ to remove it.</li>
+            </ul>
+
+            <h3>Text labels</h3>
+            <ul>
+                <li>Click 🔤, then click on the map to place a text label (20 characters max).</li>
+                <li>Right-click or <kbd>Esc</kbd> cancels the text placement.</li>
+                <li>Click a placed label to select it, then <kbd>Delete</kbd> or 🗑️ to remove it.</li>
             </ul>
 
             <h3>Collaboration</h3>
@@ -334,13 +344,23 @@ content="Tower Defense Simulator, mapper, TDS, strategy, Hardcore, SOLO, DUO, TR
                 <li>"Share the map" copies a link that reloads your exact plan (and current player filter) for anyone who opens it.</li>
                 <li>Save/Load JSON lets you copy your plan as text to store it yourself.</li>
                 <li>🖼️ downloads the full map as a PNG image.</li>
-                <li>Zones are saved and shared right along with your towers.</li>
+                <li>Zones and text labels are saved and shared right along with your towers.</li>
             </ul>
 
         </div>
         <canvas
             id="gameCanvas" width="1200" height="800">
         </canvas>
+
+        <input
+            type="text"
+            id="textLabelInput"
+            class="text-label-input"
+            maxlength="20"
+            placeholder="Text..."
+            autocomplete="off"
+            style="display:none;"
+        >
 
         <div id="placementPanel">
             <div class="floating-panel-header">

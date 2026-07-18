@@ -1,11 +1,12 @@
 // Composant de rendu pour le canvas.
 // Il dessine la carte, les troupes, la sélection active et l'aperçu de placement.
 export class CanvasRenderer {
-    constructor(canvas, mapModel, placementModel, polygonModel, state) {
+    constructor(canvas, mapModel, placementModel, polygonModel, textLabelModel, state) {
         this.canvas = canvas;
         this.mapModel = mapModel;
         this.placementModel = placementModel;
         this.polygonModel = polygonModel;
+        this.textLabelModel = textLabelModel;
         this.state = state;
         this.ctx = this.canvas.getContext("2d");
         this.onRenderCallback = null;
@@ -41,6 +42,7 @@ export class CanvasRenderer {
         this.drawMap();
         this.drawPolygons();
         this.drawTroops();
+        this.drawTextLabels();
 
         this.ctx = originalCtx;
         this.mapModel.baseScale = baseScale;
@@ -87,6 +89,7 @@ export class CanvasRenderer {
         this.drawMap();
         this.drawPolygons();
         this.drawTroops();
+        this.drawTextLabels();
         this.drawSelection();
         this.drawPlacementPreview();
         this.drawPolygonDraft();
@@ -256,6 +259,42 @@ export class CanvasRenderer {
             this.ctx.font = `bold ${20 * this.mapModel.scale}px Arial`;
             this.ctx.fillText("L" + troop.level, screen.x, screen.y + 6 * this.mapModel.scale);
         }
+    }
+
+    // Dessine toutes les étiquettes de texte posées.
+    drawTextLabels() {
+        for (const label of this.textLabelModel.labels) {
+            this.drawTextLabel(label);
+        }
+        // Réinitialisé pour ne pas affecter le textBaseline "alphabetic" implicite
+        // utilisé par drawTroop d'une frame à l'autre (le contexte persiste entre les rendus).
+        this.ctx.textBaseline = "alphabetic";
+    }
+
+    // Trace une étiquette de texte centrée sur son point d'ancrage, avec un fond pour la lisibilité.
+    drawTextLabel(label) {
+        const screen = this.mapModel.worldToScreen(label.x, label.y);
+        const fontSize = 16 * this.mapModel.scale;
+        const isSelected = this.textLabelModel.getSelected() === label;
+
+        this.ctx.font = `bold ${fontSize}px Arial`;
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+
+        const paddingX = 8 * this.mapModel.scale;
+        const paddingY = 5 * this.mapModel.scale;
+        const textWidth = this.ctx.measureText(label.text).width;
+
+        this.ctx.fillStyle = isSelected ? "rgba(0,255,0,0.35)" : "rgba(0,0,0,0.55)";
+        this.ctx.fillRect(
+            screen.x - textWidth / 2 - paddingX,
+            screen.y - fontSize / 2 - paddingY,
+            textWidth + paddingX * 2,
+            fontSize + paddingY * 2
+        );
+
+        this.ctx.fillStyle = "white";
+        this.ctx.fillText(label.text, screen.x, screen.y);
     }
 
     // Dessine le cercle de sélection autour de la troupe actuelle, ainsi que sa portée
