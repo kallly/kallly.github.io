@@ -84,7 +84,7 @@ export class SidebarView {
     // Met à jour le panneau d'information sur la troupe sélectionnée.
     updateSelectedTroopPanel({ troopName, range }) {
         if (!troopName) {
-            this.elements.selectedTroopText.textContent = "Aucune";
+            this.elements.selectedTroopText.textContent = "None";
             this.elements.selectedRangeText.textContent = "-";
             return;
         }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -56,21 +56,30 @@ content="Tower Defense Simulator mapper, TDS, strategy planner, tower placement,
 <div id="app">
 
     <!-- ========================= -->
-    <!-- Barre latérale -->
+    <!-- Sidebars -->
     <!-- ========================= -->
-    <!-- Case cachée -->
+    <!-- Hidden checkboxes driving the off-canvas drawers -->
     <input type="checkbox" id="menu-toggle">
 
-    <!-- Bouton -->
-    <label for="menu-toggle" class="menu-btn">
-        ☰
+    <!-- Hamburger buttons -->
+    <label for="menu-toggle" class="menu-btn" aria-label="Toggle tower list">
+        <div class="sidebar-brand">
+            <span class="sidebar-brand__logo" aria-hidden="true">🗺️</span>
+            <span class="sidebar-brand__name">TDS Mapper</span>
+        </div>
     </label>
     <input type="checkbox" id="menu-toggle2">
-    <label for="menu-toggle2" class="menu-btn2">
-        ☰
+    <label for="menu-toggle2" class="menu-btn2" aria-label="Toggle strategies panel">
+        <div class="sidebar-brand">
+            <span class="sidebar-brand__logo" aria-hidden="true">🧠</span>
+            <span class="sidebar-brand__name">TDS Strategies</span>
+        </div>
     </label>
     <nav id="rightsidebar">
-        <h1>Strats</h1>
+        <div class="panel-header">
+            <h1>Community Strategies</h1>
+            <p class="panel-header__subtitle">Curated Hardcore guides and Google Docs shared by the community.</p>
+        </div>
         <h2>Hardcore</h2>
         <h3>Duo</h3>
         <details class="strat">
@@ -86,7 +95,7 @@ content="Tower Defense Simulator mapper, TDS, strategy planner, tower placement,
                 </a>
                 <a
                     class="load"
-                    href="https://kallly.github.io/index.html?data=...">
+                    href="file:///c%3A/Users/Kally/Documents/Roblox%20TDS/Tower-Defense-Simulator-Mapper/index.html?data=N4IgbgpgTgzglgewHYgFwCYA0IC2BDABwDk8cI0QB1KCAFwGMALCAEwAIAxKZWkbWlmgDaIAMLcEAazYAhBDBh8QAEQBSshAlqMlAWVZx6SgCoBXKDV4BdbPUGoRAYgAMzgGZvXSxx9cfvHBzKAKwALACC3r6uziA2ILwOQs6YKQCMzgDsaZiZABwAbKmYaTbJxRl5AJy5oZkVZSnpaWmhuXlY6Y0VzlXBmB05XZhCQyUtRQVVRTmlI02YVdMDaXkNI53jafV5wfVYc0KbGWk1u20HZcfoWbkF-ZcbFejoAMy5b5iPQu-NBfV7LDvQ6-EpZNbBMKYYFlUEZKEFW4wqwAXyAA">
                     Player1
                 </a>
             </div>
@@ -145,154 +154,172 @@ content="Tower Defense Simulator mapper, TDS, strategy planner, tower placement,
         </details>
     </nav>
     <nav id="sidebar">
-        <label for="troopSearch">Towers</label>
-        <input 
-            id="troopSearch"
-            type="text"
-            placeholder="Search for a Tower..."
-        >
 
-        <div id="troopList">
-        </div>
+        
 
-        <hr>
-
-        <div class="panel">
-
-            <label for="level">
-                Level
-            </label>
-
-            <select id="level">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-            </select>
-
-        </div>
-        <div class="panel">
-
-            <label for="playerSelect">
-                Player
-            </label>
-
-            <select id="playerSelect">
-                <option value="player1">Player 1</option>
-                <option value="player2">Player 2</option>
-                <option value="player3">Player 3</option>
-            </select>
-
-        </div>
-        <div class="panel">
-            <label for="troopColor">Towers  colors</label>
+        <section class="sidebar-section">
+            <label for="troopSearch" class="sidebar-section__title">Towers</label>
             <input
-                type="color"
-                id="troopColor"
-                value="#FFD54A"
-            >
-
-        </div>
-
-        <div class="panel">
-            <p>
-                <b>Name :</b>
-                <span id="selectedTroop">Aucune</span>
-            </p>
-
-            <p>
-                <b>Range :</b>
-                <span id="selectedRange">0</span>
-            </p>
-        </div>
-
-        <hr>
-
-        <div class="panel">
-           <button id="urlShareMap">
-                Share the map
-            </button>
-           <button id="saveMap">
-                Save JSON
-            </button>
-            <button id="loadMap">
-                Load JSON
-            </button>
-
-        </div>
-
-        <hr>
-
-        <div class="panel">
-            <p id="collabStatus">Hors ligne</p>
-            <button id="collabCreateSession">
-                Créer une session
-            </button>
-            <input
+                id="troopSearch"
                 type="text"
-                id="collabRoomCodeInput"
-                placeholder="Code de session"
-                maxlength="6"
-                style="text-transform: uppercase;"
+                placeholder="Search for a Tower..."
             >
-            <button id="collabJoinSession">
-                Rejoindre
-            </button>
-            <button id="collabLeaveSession" style="display: none;">
-                Quitter la session
-            </button>
-        </div>
 
-        <textarea
-            id="jsonArea"
-            placeholder="The JSON save data will appear here..."
-        ></textarea>
+            <div id="troopList">
+            </div>
+        </section>
+
+        <section class="sidebar-section">
+            <h2 class="sidebar-section__title">Collaboration</h2>
+
+            <p id="collabStatus" class="collab-status">Offline</p>
+
+            <div class="button-row">
+                <button id="collabCreateSession" class="btn btn-ghost">
+                    Create session
+                </button>
+            </div>
+
+            <div class="input-row">
+                <input
+                    type="text"
+                    id="collabRoomCodeInput"
+                    placeholder="Session code"
+                    maxlength="6"
+                    style="text-transform: uppercase;"
+                >
+                <button id="collabJoinSession" class="btn btn-ghost">
+                    Join
+                </button>
+            </div>
+
+            <button id="collabLeaveSession" class="btn btn-danger" style="display: none;">
+                Leave session
+            </button>
+        </section>
+         <section class="sidebar-section">
+            <h2 class="sidebar-section__title">Share &amp; Save</h2>
+
+            <div class="button-row">
+                <button id="urlShareMap" class="btn btn-primary">
+                    Share the map
+                </button>
+                <button id="saveMap" class="btn btn-ghost">
+                    Save JSON
+                </button>
+                <button id="loadMap" class="btn btn-ghost">
+                    Load JSON
+                </button>
+            </div>
+
+            <textarea
+                id="jsonArea"
+                class="json-area"
+                placeholder="The JSON save data will appear here..."
+            ></textarea>
+        </section>
 
     </nav>
-    <label for="menu-toggle" class="overlay"></label>
+    <label for="menu-toggle" class="overlay overlay-left" aria-hidden="true"></label>
+    <label for="menu-toggle2" class="overlay overlay-right" aria-hidden="true"></label>
     <!-- ========================= -->
-    <!-- Zone principale -->
+    <!-- Main area -->
     <!-- ========================= -->
 
     <main id="main">
         <div id="topbar">
-        
-        <label for="mapSelect">Map: </label>
-        <select id="mapSelect" style="max-width: 50%;">
-        </select>
+            <div class="topbar__map">
+                <label for="mapSelect">Map</label>
+                <select id="mapSelect">
+                </select>
+            </div>
         </div>
         <div id="canvasTools">
-        
-            <button id="resetMapPosition" title="Reset the map position" class="canvas-button">
+            <button id="resetMapPosition" title="Reset the map position" aria-label="Reset the map position" class="canvas-button">
                 ◎
             </button>
-            <button id="toggleRange" title="Show/Hide ranges" class="canvas-button">
+            <button id="toggleRange" title="Show/Hide ranges" aria-label="Show or hide tower ranges" class="canvas-button">
                 🏹
             </button>
-            <button id="toggleName" title="Show/Hide names" class="canvas-button">
+            <button id="toggleName" title="Show/Hide names" aria-label="Show or hide tower names" class="canvas-button">
                 💬
             </button>
-            <button id="toggleLevel" title="Show/Hide levels" class="canvas-button">
+            <button id="toggleLevel" title="Show/Hide levels" aria-label="Show or hide tower levels" class="canvas-button">
                 L
             </button>
-            <button id="deleteSelected" title="Delete selected" class="canvas-button">
+            <button id="deleteSelected" title="Delete selected" aria-label="Delete selected tower" class="canvas-button">
                 🗑️
             </button>
-            <button id="clearMap" title="Clear the map" class="canvas-button">
+            <button id="clearMap" title="Clear the map" aria-label="Clear the map" class="canvas-button">
                 🧹
             </button>
-        
         </div>
         <canvas
             id="gameCanvas" width="1200" height="800">
         </canvas>
+
+        <div id="placementPanel">
+            <div class="floating-panel-header">
+                <h2 class="sidebar-section__title">Placement</h2>
+                <button id="placementPanelClose" class="panel-close" aria-label="Hide the placement panel">✕</button>
+            </div>
+
+            <div class="placement-grid">
+                <div class="panel">
+                    <label for="level">
+                        Level
+                    </label>
+
+                    <select id="level">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+
+                <div class="panel">
+                    <label for="playerSelect">
+                        Player
+                    </label>
+
+                    <select id="playerSelect">
+                        <option value="player1">Player 1</option>
+                        <option value="player2">Player 2</option>
+                        <option value="player3">Player 3</option>
+                    </select>
+                </div>
+                <div class="panel">
+                    <label for="troopColor">
+                        Color
+                    </label>
+
+                    <input
+                        type="color"
+                        id="troopColor"
+                        value="#FFD54A"
+                    >
+                </div>
+            </div>
+
+            <div class="selected-info">
+                <div class="selected-info__row">
+                    <span class="selected-info__label">Name</span>
+                    <span id="selectedTroop" class="selected-info__value">None</span>
+                </div>
+                <div class="selected-info__row">
+                    <span class="selected-info__label">Range</span>
+                    <span id="selectedRange" class="selected-info__value">0</span>
+                </div>
+            </div>
+        </div>
 
     </main>
 
@@ -371,7 +398,7 @@ pre-selected.
 
 </section>
 <!-- ========================= -->
-<!-- Logique principale -->
+<!-- Main logic -->
 <!-- ========================= -->
 
 <script type="module" src="dist/app.min.js" defer></script>

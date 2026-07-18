@@ -12,9 +12,23 @@ import { CollabController } from "./controller/collabController.js";
 import { clearStorage } from "./service/saveService.js";
 import { initCollab } from "./service/collabService.js";
 
+// Le panneau de placement flottant peut être masqué via sa croix ; un clic sur le
+// canvas le fait réapparaître. Comportement purement visuel, indépendant du reste de l'UI.
+function initPlacementPanelToggle(canvas) {
+    const panel = document.getElementById("placementPanel");
+    const closeButton = document.getElementById("placementPanelClose");
+    if (!panel || !closeButton) {
+        return;
+    }
+
+    closeButton.addEventListener("click", () => panel.classList.add("panel-hidden"));
+    canvas.addEventListener("mousedown", () => panel.classList.remove("panel-hidden"));
+}
+
 async function init() {
     // Sélection des éléments du DOM nécessaires à l'application.
     const canvas = document.getElementById("gameCanvas");
+    initPlacementPanelToggle(canvas);
     const elements = {
         troopList: document.getElementById("troopList"),
         levelSelect: document.getElementById("level"),
@@ -93,7 +107,7 @@ async function init() {
     try {
         await initCollab();
     } catch (error) {
-        console.warn("Collaboration temps réel indisponible (configuration Firebase manquante ou invalide) :", error);
+        console.warn("Real-time collaboration unavailable (missing or invalid Firebase configuration):", error);
     }
 
     const collabController = new CollabController({
@@ -110,7 +124,7 @@ async function init() {
         try {
             await collabController.createSession();
         } catch (error) {
-            alert("Impossible de créer la session.");
+            alert("Unable to create the session.");
             console.error(error);
         }
     });
@@ -121,7 +135,7 @@ async function init() {
         try {
             await collabController.joinSession(roomCode);
         } catch (error) {
-            alert(error.message || "Impossible de rejoindre la session.");
+            alert(error.message || "Unable to join the session.");
             console.error(error);
         }
     });
@@ -196,12 +210,12 @@ async function init() {
 }
 
 init().catch(error => {
-    console.error("Erreur lors de l'initialisation :", error);
+    console.error("Error during initialization:", error);
     clearStorage()
     window.history.replaceState({}, document.title, window.location.pathname);
 
     init().catch(error => {
-        console.error("Erreur lors de l'initialisation :", error);
-        alert("Impossible de démarrer l'application. Vérifiez la console.");
+        console.error("Error during initialization:", error);
+        alert("Unable to start the application. Check the console.");
     });
 });

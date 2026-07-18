@@ -134,8 +134,8 @@ export class UIController {
         console.log(data.length)
 
         navigator.clipboard.writeText(url)
-            .then(() => alert("URL copied !"))
-            .catch(err => alert("Unable to copy : " + err));
+            .then(() => alert("URL copied!"))
+            .catch(err => alert("Unable to copy: " + err));
     }
     // Sauve l'état actuel uniquement dans le textarea JSON.
     handleSave() {
@@ -174,10 +174,10 @@ export class UIController {
             }
 
             this.state.currentMap = parsed.mapName || this.state.currentMap;
-            alert("Carte chargée.");
+            alert("Map loaded.");
         }
         catch (error) {
-            alert("JSON invalide.");
+            alert("Invalid JSON.");
             console.error(error);
         }
     }

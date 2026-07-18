@@ -20,7 +20,7 @@ export class MapModel {
     async loadMap(mapName, canvas) {
         const mapData = this.maps[mapName];
         if (!mapData) {
-            throw new Error(`Carte introuvable : ${mapName}`);
+            throw new Error(`Map not found: ${mapName}`);
         }
 
         this.currentMap = mapData;
