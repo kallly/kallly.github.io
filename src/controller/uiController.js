@@ -1,4 +1,4 @@
-import { createSaveData, parseSaveData, saveToStorage, loadFromStorage, loadFromLZString, encodeBase64 } from "../service/saveService.js";
+import { createSaveData, createCompactSaveData, parseSaveData, saveToStorage, loadFromStorage, loadFromLZString, encodeBase64 } from "../service/saveService.js";
 import LZString from "../util/lz-string.js";
 
 // Contrôleur central de l'application.
@@ -128,12 +128,14 @@ export class UIController {
 
     handleShareUrl() {
         const payload = createSaveData(this.placementModel.placedTroops, this.state.currentMap);
-        const data = LZString.compressToEncodedURIComponent((JSON.stringify(payload, null, 4)));
+        const compactPayload = createCompactSaveData(this.placementModel.placedTroops, this.state.currentMap);
+        const data = LZString.compressToEncodedURIComponent(JSON.stringify(compactPayload));
         const url = `${window.location.origin}${window.location.pathname}?data=${encodeURIComponent(data)}`;
+        console.log(data.length)
 
-         navigator.clipboard.writeText(url)
+        navigator.clipboard.writeText(url)
             .then(() => alert("URL copied !"))
-            .catch(err => alert("Unable to copy :", err));
+            .catch(err => alert("Unable to copy : " + err));
     }
     // Sauve l'état actuel uniquement dans le textarea JSON.
     handleSave() {

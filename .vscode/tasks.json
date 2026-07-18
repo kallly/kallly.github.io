@@ -1,0 +1,34 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "esbuild: watch",
+            "type": "shell",
+            "command": "npx esbuild src/app.js --bundle --minify --outfile=dist/app.min.js --watch=forever",
+            "isBackground": true,
+            "presentation": {
+                "reveal": "silent",
+                "panel": "dedicated",
+                "clear": true,
+                "close": false
+            },
+            "problemMatcher": {
+                "owner": "esbuild",
+                "fileLocation": "relative",
+                "pattern": {
+                    "regexp": "^(ERROR|WARNING): (.*)$",
+                    "severity": 1,
+                    "message": 2
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^\\[watch\\] build started",
+                    "endsPattern": "^\\[watch\\] build finished"
+                }
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
+        }
+    ]
+}
