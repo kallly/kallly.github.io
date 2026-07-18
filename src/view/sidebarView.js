@@ -25,6 +25,7 @@ export class SidebarView {
         this.elements.saveMap.addEventListener("click", () => this.dispatch("onSave"));
         this.elements.loadMap.addEventListener("click", () => this.dispatch("onLoad"));
         this.elements.mapSelect.addEventListener("change", () => this.dispatch("onMapSelect", this.elements.mapSelect.value));
+        this.elements.playerFilterSelect.addEventListener("change", () => this.dispatch("onPlayerFilterChange", this.elements.playerFilterSelect.value));
         this.elements.resetMapPosition.addEventListener("click", () => this.dispatch("onResetMapPosition"));
         this.elements.collabCreateSession.addEventListener("click", () => this.dispatch("onCreateSession"));
         this.elements.collabJoinSession.addEventListener("click", () => this.dispatch("onJoinSession", this.elements.collabRoomCodeInput.value.trim().toUpperCase()));

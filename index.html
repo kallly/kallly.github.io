@@ -12,11 +12,10 @@
     </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description"
-      content="Interactive Tower Defense Simulator Mapper for Roblox. Plan tower placements, build strategies, visualize your defense and improve your gameplay with this free online mapping tool.">
+    <meta name="description" content="Mapper TDS interactif : stratégies Hardcore, Modifier, NST, No Special, Coins & Gems. Solo/Duo/Trio, carte collaborative + Google Docs de stratégies existantes.">
 
 <meta name="keywords"
-content="Tower Defense Simulator, mapper, TDS, strategy, tower placement, Hardcore, SOLO, DUO, TRIO, HC, NST, Roblox">
+content="Tower Defense Simulator, mapper, TDS, strategy, Hardcore, SOLO, DUO, TRIO, HC, NST, Roblox, Google Docs guides">
 
 <meta name="author"
       content="Kallly">
@@ -37,7 +36,9 @@ content="Tower Defense Simulator, mapper, TDS, strategy, tower placement, Hardco
 <meta property="og:image"
       content="https://kallly.github.io/images/preview.png">
 
-    <title>Tower Defense Simulator Mapper - TDS Hardcore Strategy Planner</title>
+    <link rel="canonical" href="https://kallly.github.io/">
+
+    <title>Tower Defense Simulator Mapper - TDS Hardcore Strategy Mapper</title>
 
     <link rel="stylesheet" href="style.css">
 
@@ -82,7 +83,7 @@ content="Tower Defense Simulator, mapper, TDS, strategy, tower placement, Hardco
     </label>
     <nav id="rightsidebar">
         <div class="panel-header">
-            <h1>Community Strategies</h1>
+            <h2 class="panel-header__title">Community Strategies</h2>
             <p class="panel-header__subtitle">Curated Hardcore guides and Google Docs shared by the community.</p>
         </div>
         <h2>Hardcore</h2>
@@ -261,6 +262,15 @@ content="Tower Defense Simulator, mapper, TDS, strategy, tower placement, Hardco
             <button id="clearMap" title="Clear the map" aria-label="Clear the map" class="canvas-button">
                 🧹
             </button>
+        </div>
+        <div id="canvasPlayerFilter">
+            <label for="playerFilterSelect" title="Filter by player" aria-hidden="true">👥</label>
+            <select id="playerFilterSelect" aria-label="Filter displayed towers by player">
+                <option value="all">All</option>
+                <option value="player1">Player 1</option>
+                <option value="player2">Player 2</option>
+                <option value="player3">Player 3</option>
+            </select>
         </div>
         <canvas
             id="gameCanvas" width="1200" height="800">
