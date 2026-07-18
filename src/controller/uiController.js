@@ -1,6 +1,20 @@
 import { createSaveData, createCompactSaveData, parseSaveData, saveToStorage, loadFromStorage, loadFromLZString, encodeBase64 } from "../service/saveService.js";
 import LZString from "../util/lz-string.js";
 
+// Ordre des index utilisés par le paramètre d'URL "p" (0 = All, 1..3 = playerN).
+// Partagé entre la génération des liens (handleShareUrl) et leur lecture (app.js).
+export const PLAYER_FILTER_VALUES = ["all", "player1", "player2", "player3"];
+
+export function playerFilterToParam(filter) {
+    const index = PLAYER_FILTER_VALUES.indexOf(filter);
+    return index === -1 ? 0 : index;
+}
+
+export function playerFilterFromParam(param) {
+    const index = Number(param);
+    return PLAYER_FILTER_VALUES[index] || "all";
+}
+
 // Contrôleur central de l'application.
 // Il gère la synchronisation entre l'état, la vue et les modèles.
 export class UIController {
@@ -30,6 +44,7 @@ export class UIController {
         this.sidebarView.on("onUndo", () => this.handleUndo());
         this.sidebarView.on("onDeleteSelected", () => this.handleDeleteSelected());
         this.sidebarView.on("onClearMap", () => this.handleClearMap());
+        this.sidebarView.on("onExportPng", () => this.handleExportPng());
         this.sidebarView.on("onUrlShare", () => this.handleShareUrl());
         this.sidebarView.on("onSave", () => this.handleSave());
         this.sidebarView.on("onLoad", () => this.handleLoad());
@@ -133,6 +148,12 @@ export class UIController {
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
     }
 
+    // Télécharge le plan actuel en PNG.
+    handleExportPng() {
+        const mapPart = (this.state.currentMap || "map").trim().toLowerCase().replace(/\s+/g, "-");
+        this.canvasRenderer.exportPng(`tds-mapper-${mapPart}.png`);
+    }
+
     saveCurrentState() {
         saveToStorage(createSaveData(this.placementModel.placedTroops, this.state.currentMap));
     }
@@ -141,7 +162,8 @@ export class UIController {
         const payload = createSaveData(this.placementModel.placedTroops, this.state.currentMap);
         const compactPayload = createCompactSaveData(this.placementModel.placedTroops, this.state.currentMap);
         const data = LZString.compressToEncodedURIComponent(JSON.stringify(compactPayload));
-        const url = `${window.location.origin}${window.location.pathname}?data=${encodeURIComponent(data)}`;
+        const playerFilterParam = playerFilterToParam(this.state.playerFilter);
+        const url = `${window.location.origin}${window.location.pathname}?data=${encodeURIComponent(data)}&p=${playerFilterParam}`;
         console.log(data.length)
 
         navigator.clipboard.writeText(url)

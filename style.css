@@ -919,6 +919,12 @@ a{
     #canvasPlayerFilter select{
         min-width: 90px;
     }
+    #canvasTools {
+        display: none;
+    }
+    #placementPanel {
+        display: none;
+    }
 }
 
 /* Desktop: the primary sidebar is docked and always visible, only the */

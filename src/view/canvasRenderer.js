@@ -16,6 +16,52 @@ export class CanvasRenderer {
         this.onRenderCallback = callback;
     }
 
+    // Exporte le plan à la résolution native de l'image de carte (pas celle de l'écran) :
+    // dessine sur un canvas hors-DOM avec scale=1/offset=0 en réutilisant drawMap/drawTroops
+    // tels quels, puisqu'ils ne lisent que this.ctx et this.mapModel.* à chaque appel.
+    exportPng(filename = "tds-mapper-plan.png") {
+        if (!this.mapModel.image.complete) {
+            return;
+        }
+
+        const exportCanvas = document.createElement("canvas");
+        exportCanvas.width = this.mapModel.image.width;
+        exportCanvas.height = this.mapModel.image.height;
+
+        const originalCtx = this.ctx;
+        const { baseScale, zoom, offsetX, offsetY } = this.mapModel;
+
+        this.ctx = exportCanvas.getContext("2d");
+        this.mapModel.baseScale = 1;
+        this.mapModel.zoom = 1;
+        this.mapModel.offsetX = 0;
+        this.mapModel.offsetY = 0;
+
+        this.drawMap();
+        this.drawTroops();
+
+        this.ctx = originalCtx;
+        this.mapModel.baseScale = baseScale;
+        this.mapModel.zoom = zoom;
+        this.mapModel.offsetX = offsetX;
+        this.mapModel.offsetY = offsetY;
+
+        this.downloadCanvas(exportCanvas, filename);
+    }
+
+    // Déclenche le téléchargement du contenu d'un canvas.
+    downloadCanvas(canvas, filename) {
+        try {
+            const link = document.createElement("a");
+            link.download = filename;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        } catch (error) {
+            console.error("PNG export failed:", error);
+            alert("Unable to export the map as PNG.");
+        }
+    }
+
     // Actualise la taille du canvas avec sa taille CSS.
     resize() {
         this.canvas.width = this.canvas.clientWidth;
@@ -142,7 +188,8 @@ export class CanvasRenderer {
         }
     }
 
-    // Dessine le cercle de sélection autour de la troupe actuelle.
+    // Dessine le cercle de sélection autour de la troupe actuelle, ainsi que sa portée
+    // (toujours visible pour la troupe sélectionnée, même si l'affichage global des portées est désactivé).
     drawSelection() {
         const selected = this.placementModel.getSelected();
         if (!selected) {
@@ -150,6 +197,17 @@ export class CanvasRenderer {
         }
 
         const screen = this.mapModel.worldToScreen(selected.x, selected.y);
+
+        if (!this.state.showRanges) {
+            this.ctx.beginPath();
+            this.ctx.arc(screen.x, screen.y, selected.range * this.mapModel.scale, 0, Math.PI * 2);
+            this.ctx.fillStyle = "rgba(0,170,255,0.15)";
+            this.ctx.fill();
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeStyle = "#00BFFF";
+            this.ctx.stroke();
+        }
+
         this.ctx.beginPath();
         this.ctx.arc(screen.x, screen.y, (selected.collision + 5) * this.mapModel.scale, 0, Math.PI * 2);
         this.ctx.lineWidth = 3;
