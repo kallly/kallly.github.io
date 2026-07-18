@@ -142,7 +142,8 @@ export class CanvasRenderer {
         }
     }
 
-    // Dessine le cercle de sélection autour de la troupe actuelle.
+    // Dessine le cercle de sélection autour de la troupe actuelle, ainsi que sa portée
+    // (toujours visible pour la troupe sélectionnée, même si l'affichage global des portées est désactivé).
     drawSelection() {
         const selected = this.placementModel.getSelected();
         if (!selected) {
@@ -150,6 +151,17 @@ export class CanvasRenderer {
         }
 
         const screen = this.mapModel.worldToScreen(selected.x, selected.y);
+
+        if (!this.state.showRanges) {
+            this.ctx.beginPath();
+            this.ctx.arc(screen.x, screen.y, selected.range * this.mapModel.scale, 0, Math.PI * 2);
+            this.ctx.fillStyle = "rgba(0,170,255,0.15)";
+            this.ctx.fill();
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeStyle = "#00BFFF";
+            this.ctx.stroke();
+        }
+
         this.ctx.beginPath();
         this.ctx.arc(screen.x, screen.y, (selected.collision + 5) * this.mapModel.scale, 0, Math.PI * 2);
         this.ctx.lineWidth = 3;
