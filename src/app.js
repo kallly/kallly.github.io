@@ -23,6 +23,7 @@ async function init() {
         jsonArea: document.getElementById("jsonArea"),
         troopSearch: document.getElementById("troopSearch"),
         troopColor: document.getElementById("troopColor"),
+        playerSelect: document.getElementById("playerSelect"),
         mapSelect: document.getElementById("mapSelect"),
         toggleRangeButton: document.getElementById("toggleRange"),
         toggleNameButton: document.getElementById("toggleName"),
@@ -48,7 +49,15 @@ async function init() {
         showRanges: false,
         showNames: false,
         showLevels: false,
-        troopColors: {},
+        selectedPlayer: "player1",
+        playerColors: {
+            player1: "#FFD54A",
+            player2: "#4A90E2",
+            player3: "#E24A4A"
+        },
+        // Surcharges de couleur par troupe, par joueur : playerTroopColors[player][troopName].
+        // playerColors sert de couleur par défaut tant qu'aucune surcharge n'existe pour ce couple.
+        playerTroopColors: {},
         pointerX: 0,
         pointerY: 0,
         isPlacementValid: false,
@@ -130,8 +139,9 @@ async function init() {
                 if (selected) {
                     state.selectedTroop = null;
                     sidebarView.setSelectedLevel(selected.level);
+                    sidebarView.setSelectedPlayer(selected.player || state.selectedPlayer);
                     sidebarView.updateSelectedTroopPanel({ troopName: selected.troop, range: selected.range });
-                    sidebarView.setSelectedColor(state.troopColors[selected.troop] || selected.color || state.selectedColor);
+                    sidebarView.setSelectedColor(selected.color || state.playerColors[selected.player] || state.selectedColor);
                 } else {
                     uiController.updateSelectedTroopPanel();
                 }

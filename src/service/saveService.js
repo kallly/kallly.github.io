@@ -13,7 +13,8 @@ export function createSaveData(placedTroops, mapName = null) {
             level: troop.level,
             x: Math.round(troop.x),
             y: Math.round(troop.y),
-            color: troop.color
+            color: troop.color,
+            player: troop.player
         }))
     };
 }

@@ -21,6 +21,7 @@ export class UIController {
     attachViewCallbacks() {
         this.sidebarView.on("onTroopSelected", (troopName) => this.handleTroopSelected(troopName));
         this.sidebarView.on("onLevelChange", (level) => this.handleLevelChange(level));
+        this.sidebarView.on("onPlayerChange", (player) => this.handlePlayerChange(player));
         this.sidebarView.on("onColorChange", (color) => this.handleColorChange(color));
         this.sidebarView.on("onToggleRange", () => this.handleToggleRange());
         this.sidebarView.on("onToggleName", () => this.handleToggleName());
@@ -56,16 +57,35 @@ export class UIController {
         this.updateSelectedTroopPanel();
     }
 
-    // Changement de couleur appliqué aux troupes de même type.
+    // Couleur effective pour un couple joueur/troupe : surcharge par troupe si elle existe, sinon couleur du joueur.
+    getColorFor(player, troopName) {
+        return this.state.playerTroopColors[player]?.[troopName] || this.state.playerColors[player] || this.state.selectedColor || "#FFD54A";
+    }
+
+    // Changement de joueur appliqué à la sélection ou à l'aperçu.
+    handlePlayerChange(player) {
+        this.state.selectedPlayer = player;
+        const selected = this.placementModel.getSelected();
+        if (selected) {
+            this.placementModel.updatePlacement(selected, { player, color: this.getColorFor(player, selected.troop) });
+        }
+        this.updateSelectedColor();
+    }
+
+    // Changement de couleur appliqué aux troupes du même type ET du même joueur que la sélection.
     handleColorChange(color) {
-        const selectedName = this.state.selectedTroop || this.placementModel.getSelected()?.troop;
+        const selected = this.placementModel.getSelected();
+        const selectedName = this.state.selectedTroop || selected?.troop;
+        const player = selected?.player || this.state.selectedPlayer;
         if (!selectedName) {
             return;
         }
 
-        this.state.troopColors[selectedName] = color;
+        this.state.playerTroopColors[player] = this.state.playerTroopColors[player] || {};
+        this.state.playerTroopColors[player][selectedName] = color;
+
         for (const troop of this.placementModel.placedTroops) {
-            if (troop.troop === selectedName) {
+            if (troop.troop === selectedName && troop.player === player) {
                 this.placementModel.updatePlacement(troop, { color });
             }
         }
@@ -138,6 +158,7 @@ export class UIController {
 
                 const collision = this.mapModel.collisionMapMult * this.troopModel.getCollision(troopData.troop);
                 const range = this.mapModel.rangeMapMult * this.troopModel.getRange(troopData.troop, troopData.level);
+                const player = troopData.player || "player1";
                 this.placementModel.add({
                     troop: troopData.troop,
                     level: troopData.level,
@@ -145,7 +166,8 @@ export class UIController {
                     y: troopData.y,
                     collision,
                     range,
-                    color: troopData.color || this.state.troopColors[troopData.troop] || "#FFD54A"
+                    player,
+                    color: troopData.color || this.getColorFor(player, troopData.troop)
                 });
             }
 
@@ -196,6 +218,7 @@ export class UIController {
 
             const collision = this.mapModel.collisionMapMult * this.troopModel.getCollision(troopData.troop);
             const range = this.mapModel.rangeMapMult * this.troopModel.getRange(troopData.troop, troopData.level);
+            const player = troopData.player || "player1";
             this.placementModel.add({
                 troop: troopData.troop,
                 level: troopData.level,
@@ -203,7 +226,8 @@ export class UIController {
                 y: troopData.y,
                 collision,
                 range,
-                color: troopData.color || this.state.troopColors[troopData.troop] || "#FFD54A"
+                player,
+                color: troopData.color || this.getColorFor(player, troopData.troop)
             });
         }
 
@@ -239,13 +263,14 @@ export class UIController {
         this.sidebarView.updateSelectedTroopPanel({ troopName: this.state.selectedTroop, range });
     }
 
-    // Met à jour la couleur sélectionnée de la troupe.
+    // Met à jour la couleur affichée pour le couple joueur/troupe actuellement sélectionné.
     updateSelectedColor() {
-        const selectedName = this.state.selectedTroop || this.placementModel.getSelected()?.troop;
-        if (!selectedName) {
-            return;
-        }
-        const color = this.state.troopColors[selectedName] || this.state.selectedColor || "#FFD54A";
+        const selected = this.placementModel.getSelected();
+        const selectedName = this.state.selectedTroop || selected?.troop;
+        const player = selected?.player || this.state.selectedPlayer;
+        const color = selectedName
+            ? this.getColorFor(player, selectedName)
+            : (this.state.playerColors[player] || this.state.selectedColor || "#FFD54A");
         this.sidebarView.setSelectedColor(color);
     }
 }

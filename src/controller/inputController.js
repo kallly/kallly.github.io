@@ -82,7 +82,11 @@ export class InputController {
             y: pointerY,
             collision: this.state.previewCollision,
             range: this.state.previewRange,
-            color: this.state.troopColors[this.state.selectedTroop] || this.state.selectedColor || "#FFD54A"
+            player: this.state.selectedPlayer,
+            color: this.state.playerTroopColors[this.state.selectedPlayer]?.[this.state.selectedTroop]
+                || this.state.playerColors[this.state.selectedPlayer]
+                || this.state.selectedColor
+                || "#FFD54A"
         };
 
         const placed = this.placementModel.add(placement);
