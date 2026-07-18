@@ -869,6 +869,16 @@ a{
     display: block;
 }
 
+/* Mobile: no toggle button for the primary sidebar (it stays closed/unreachable there). */
+@media ((max-width: 500px) and (orientation: portrait)) or ((max-height: 500px) and (orientation: landscape)) {
+    .menu-btn {
+        display: none;
+    }
+    .topbar__map{
+        left: 10px;
+    }
+}
+
 /* Desktop: the primary sidebar is docked and always visible, only the */
 /* secondary strategies panel keeps working as an on-demand drawer.    */
 @media (min-width: 900px) {

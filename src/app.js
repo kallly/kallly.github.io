@@ -23,6 +23,7 @@ function initPlacementPanelToggle(canvas) {
 
     closeButton.addEventListener("click", () => panel.classList.add("panel-hidden"));
     canvas.addEventListener("mousedown", () => panel.classList.remove("panel-hidden"));
+    canvas.addEventListener("touchstart", () => panel.classList.remove("panel-hidden"), { passive: true });
 }
 
 async function init() {
