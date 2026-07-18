@@ -116,7 +116,7 @@ export class CollabController {
             troops
         });
 
-        this.sidebarView.setCollabStatus(`Session active : ${code}`);
+        this.sidebarView.setCollabStatus(`Active session: ${code}`);
         this.sidebarView.setCollabActive(true);
         return code;
     }
@@ -125,19 +125,19 @@ export class CollabController {
     async joinSession(roomCode) {
         const exists = await collabService.sessionExists(roomCode);
         if (!exists) {
-            throw new Error("Session introuvable.");
+            throw new Error("Session not found.");
         }
 
         this.placementModel.clear();
         collabService.joinSession(roomCode);
-        this.sidebarView.setCollabStatus(`Session active : ${roomCode}`);
+        this.sidebarView.setCollabStatus(`Active session: ${roomCode}`);
         this.sidebarView.setCollabActive(true);
     }
 
     // Quitte la session courante et repasse en mode 100% local.
     leaveSession() {
         collabService.leaveSession();
-        this.sidebarView.setCollabStatus("Hors ligne");
+        this.sidebarView.setCollabStatus("Offline");
         this.sidebarView.setCollabActive(false);
     }
 

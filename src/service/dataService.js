@@ -7,11 +7,11 @@ export async function loadData() {
     ]);
 
     if (!mapsResponse.ok) {
-        throw new Error(`Impossible de charger maps.json (${mapsResponse.status})`);
+        throw new Error(`Unable to load maps.json (${mapsResponse.status})`);
     }
 
     if (!troopsResponse.ok) {
-        throw new Error(`Impossible de charger troops.json (${troopsResponse.status})`);
+        throw new Error(`Unable to load troops.json (${troopsResponse.status})`);
     }
 
     const maps = await mapsResponse.json();
