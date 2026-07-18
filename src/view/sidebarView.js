@@ -18,6 +18,7 @@ export class SidebarView {
         this.elements.toggleRangeButton.addEventListener("click", () => this.dispatch("onToggleRange"));
         this.elements.toggleNameButton.addEventListener("click", () => this.dispatch("onToggleName"));
         this.elements.toggleLevelButton.addEventListener("click", () => this.dispatch("onToggleLevel"));
+        this.elements.undoAction.addEventListener("click", () => this.dispatch("onUndo"));
         this.elements.deleteSelected.addEventListener("click", () => this.dispatch("onDeleteSelected"));
         this.elements.clearMap.addEventListener("click", () => this.dispatch("onClearMap"));
         this.elements.urlShareMap.addEventListener("click", () => this.dispatch("onUrlShare"));

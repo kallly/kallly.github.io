@@ -268,7 +268,7 @@ export class InputController {
         const moveAmount = this.canvas.width * 0.05;
         let moved = false;
 
-        if (this.isMouseOnCanvas(event)) {
+        if (this.isMouseOnCanvas(event) && !event.ctrlKey) {
             if (["q", "a", "ArrowLeft"].includes(event.key)) {
                 this.mapModel.pan(moveAmount, 0);
                 moved = true;
@@ -301,6 +301,14 @@ export class InputController {
                 if (typeof this.callbacks?.onSelectionChanged === "function") {
                     this.callbacks.onSelectionChanged(null);
                 }
+            }
+        }
+
+        // Ctrl+Z : uniquement hors saisie, pour laisser l'annulation native fonctionner dans les champs texte.
+        if (this.isMouseOnCanvas(event) && event.ctrlKey && event.key.toLowerCase() === "z") {
+            event.preventDefault();
+            if (typeof this.callbacks?.onUndoRequested === "function") {
+                this.callbacks.onUndoRequested();
             }
         }
 

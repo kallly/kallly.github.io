@@ -9,6 +9,7 @@ import { CanvasRenderer } from "./view/canvasRenderer.js";
 import { InputController } from "./controller/inputController.js";
 import { UIController } from "./controller/uiController.js";
 import { CollabController } from "./controller/collabController.js";
+import { HistoryController } from "./controller/historyController.js";
 import { clearStorage } from "./service/saveService.js";
 import { initCollab } from "./service/collabService.js";
 
@@ -43,6 +44,7 @@ async function init() {
         toggleRangeButton: document.getElementById("toggleRange"),
         toggleNameButton: document.getElementById("toggleName"),
         toggleLevelButton: document.getElementById("toggleLevel"),
+        undoAction: document.getElementById("undoAction"),
         deleteSelected: document.getElementById("deleteSelected"),
         clearMap: document.getElementById("clearMap"),
         urlShareMap: document.getElementById("urlShareMap"),
@@ -85,6 +87,9 @@ async function init() {
     const mapModel = new MapModel();
     const placementModel = new PlacementModel();
 
+    // Historique local (annulation des dernières actions), indépendant de la collaboration.
+    const historyController = new HistoryController({ state, placementModel });
+
     // Vue latérale et rendu de canvas.
     const sidebarView = new SidebarView({
         ...elements,
@@ -100,7 +105,8 @@ async function init() {
         placementModel,
         sidebarView,
         canvas,
-        canvasRenderer
+        canvasRenderer,
+        historyController
     });
 
     // Collaboration en temps réel : indisponible si Firebase n'est pas configuré,
@@ -162,7 +168,8 @@ async function init() {
                 }
             },
             onSaveRequested: () => uiController.handleSave(),
-            onLoadRequested: () => uiController.handleLoad()
+            onLoadRequested: () => uiController.handleLoad(),
+            onUndoRequested: () => uiController.handleUndo()
         }
     });
 

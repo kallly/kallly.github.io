@@ -13,10 +13,11 @@ export class PlacementModel {
         this.listeners.push(callback);
     }
 
-    // Notifie les abonnés d'une mutation.
-    emitChange(type, placement = null) {
+    // Notifie les abonnés d'une mutation. `previous` porte de quoi l'inverser
+    // (anciennes valeurs pour "update", liste complète pour "clear") — utilisé par HistoryController.
+    emitChange(type, placement = null, previous = null) {
         for (const listener of this.listeners) {
-            listener({ type, placement });
+            listener({ type, placement, previous });
         }
     }
 
@@ -56,9 +57,10 @@ export class PlacementModel {
 
     // Vide toutes les troupes posées.
     clear() {
+        const previous = [...this.placedTroops];
         this.placedTroops.length = 0;
         this.selectedPlacedTroop = null;
-        this.emitChange("clear");
+        this.emitChange("clear", null, previous);
     }
 
     // Sélectionne une troupe existante.
@@ -100,7 +102,11 @@ export class PlacementModel {
 
     // Met à jour les propriétés d'une troupe posée.
     updatePlacement(placement, updates) {
+        const previous = {};
+        for (const key of Object.keys(updates)) {
+            previous[key] = placement[key];
+        }
         Object.assign(placement, updates);
-        this.emitChange("update", placement);
+        this.emitChange("update", placement, previous);
     }
 }
