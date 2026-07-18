@@ -170,9 +170,18 @@ async function init() {
     const searchParams = new URLSearchParams(window.location.search);
     let restored = null;
     
-    if (searchParams.has("data")) 
+    if (searchParams.has("data"))
     {
         restored = await uiController.loadLZString(defaultMap, searchParams.get("data"));
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    else if (searchParams.has("map") && data.maps[searchParams.get("map")]) {
+        const requestedMap = searchParams.get("map");
+        await uiController.handleMapSelect(requestedMap);
+        if (elements.mapSelect) {
+            elements.mapSelect.value = requestedMap;
+        }
+        restored = true;
         window.history.replaceState({}, document.title, window.location.pathname);
     }
     if (!restored) {
