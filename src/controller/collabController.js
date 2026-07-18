@@ -11,7 +11,7 @@ export class CollabController {
         this.uiController = uiController;
         this.sidebarView = sidebarView;
         // Empêche les mutations appliquées depuis le réseau de repartir vers le réseau.
-        this.isApplyingRemote = false;
+        this.state.isApplyingRemoteChange = false;
 
         this.placementModel.onChange((event) => this.handleLocalChange(event));
         collabService.onRemoteTroopAdded((id, data) => this.applyRemoteTroop(id, data));
@@ -35,7 +35,7 @@ export class CollabController {
 
     // Mutation locale du plan -> répercutée vers Firebase si une session est active.
     handleLocalChange({ type, placement }) {
-        if (this.isApplyingRemote || !collabService.isSessionActive()) {
+        if (this.state.isApplyingRemoteChange || !collabService.isSessionActive()) {
             return;
         }
 
@@ -57,7 +57,7 @@ export class CollabController {
 
     // Applique un ajout/modification distant (idempotent par id).
     applyRemoteTroop(id, data) {
-        this.isApplyingRemote = true;
+        this.state.isApplyingRemoteChange = true;
         const collision = this.mapModel.collisionMapMult * this.troopModel.getCollision(data.troop);
         const range = this.mapModel.rangeMapMult * this.troopModel.getRange(data.troop, data.level);
         const existing = this.placementModel.findById(id);
@@ -69,7 +69,7 @@ export class CollabController {
         }
 
         this.uiController.updateSelectedTroopPanel();
-        this.isApplyingRemote = false;
+        this.state.isApplyingRemoteChange = false;
     }
 
     // Applique une suppression distante.
@@ -79,10 +79,10 @@ export class CollabController {
             return;
         }
 
-        this.isApplyingRemote = true;
+        this.state.isApplyingRemoteChange = true;
         this.placementModel.remove(existing);
         this.uiController.updateSelectedTroopPanel();
-        this.isApplyingRemote = false;
+        this.state.isApplyingRemoteChange = false;
     }
 
     // Applique un changement de carte distant.
@@ -91,14 +91,14 @@ export class CollabController {
             return;
         }
 
-        this.isApplyingRemote = true;
+        this.state.isApplyingRemoteChange = true;
         await this.uiController.handleMapSelect(mapName);
-        this.isApplyingRemote = false;
+        this.state.isApplyingRemoteChange = false;
     }
 
     // Notifié explicitement par UIController.handleMapSelect (changement de carte local).
     notifyMapChanged(mapName) {
-        if (this.isApplyingRemote || !collabService.isSessionActive()) {
+        if (this.state.isApplyingRemoteChange || !collabService.isSessionActive()) {
             return;
         }
         collabService.pushMapChange(mapName);

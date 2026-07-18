@@ -30,14 +30,10 @@ content="Tower Defense Simulator mapper, TDS, strategy planner, tower placement,
 
     <title>Tower Defense Simulator Mapper - TDS Hardcore Strategy Planner</title>
 
-    <link rel="preload"
-      href="style.css"
-      as="style"
-      onload="this.onload=null;this.rel='stylesheet'">
-
-    <noscript>
     <link rel="stylesheet" href="style.css">
-    </noscript>
+
+    <link rel="preload" href="data/maps.json" as="fetch" type="application/json" crossorigin>
+    <link rel="preload" href="data/troops.json" as="fetch" type="application/json" crossorigin>
 
     <script type="application/ld+json">
 {
@@ -235,6 +231,9 @@ content="Tower Defense Simulator mapper, TDS, strategy planner, tower placement,
             </div>
         </div>
         <div id="canvasTools">
+            <button id="undoAction" title="Undo last action" aria-label="Undo last action" class="canvas-button">
+                ↩️
+            </button>
             <button id="resetMapPosition" title="Reset the map position" aria-label="Reset the map position" class="canvas-button">
                 ◎
             </button>

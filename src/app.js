@@ -9,6 +9,7 @@ import { CanvasRenderer } from "./view/canvasRenderer.js";
 import { InputController } from "./controller/inputController.js";
 import { UIController } from "./controller/uiController.js";
 import { CollabController } from "./controller/collabController.js";
+import { HistoryController } from "./controller/historyController.js";
 import { clearStorage } from "./service/saveService.js";
 import { initCollab } from "./service/collabService.js";
 
@@ -43,6 +44,7 @@ async function init() {
         toggleRangeButton: document.getElementById("toggleRange"),
         toggleNameButton: document.getElementById("toggleName"),
         toggleLevelButton: document.getElementById("toggleLevel"),
+        undoAction: document.getElementById("undoAction"),
         deleteSelected: document.getElementById("deleteSelected"),
         clearMap: document.getElementById("clearMap"),
         urlShareMap: document.getElementById("urlShareMap"),
@@ -85,6 +87,9 @@ async function init() {
     const mapModel = new MapModel();
     const placementModel = new PlacementModel();
 
+    // Historique local (annulation des dernières actions), indépendant de la collaboration.
+    const historyController = new HistoryController({ state, placementModel });
+
     // Vue latérale et rendu de canvas.
     const sidebarView = new SidebarView({
         ...elements,
@@ -100,16 +105,17 @@ async function init() {
         placementModel,
         sidebarView,
         canvas,
-        canvasRenderer
+        canvasRenderer,
+        historyController
     });
 
     // Collaboration en temps réel : indisponible si Firebase n'est pas configuré,
-    // ce qui ne doit pas empêcher le reste de l'application de démarrer.
-    try {
-        await initCollab();
-    } catch (error) {
+    // ce qui ne doit pas empêcher le reste de l'application de démarrer. Lancée sans attendre
+    // pour ne pas bloquer le chargement des données (troops/maps) derrière l'auth Firebase :
+    // rien n'utilise db/auth avant un clic explicite sur "Create session"/"Join".
+    const collabInitPromise = initCollab().catch((error) => {
         console.warn("Real-time collaboration unavailable (missing or invalid Firebase configuration):", error);
-    }
+    });
 
     const collabController = new CollabController({
         state,
@@ -162,7 +168,8 @@ async function init() {
                 }
             },
             onSaveRequested: () => uiController.handleSave(),
-            onLoadRequested: () => uiController.handleLoad()
+            onLoadRequested: () => uiController.handleLoad(),
+            onUndoRequested: () => uiController.handleUndo()
         }
     });
 
@@ -205,6 +212,10 @@ async function init() {
     if (!restored) {
         await uiController.handleMapSelect(defaultMap);
     }
+
+    // Simple garde avant de considérer l'appli prête : ne bloque plus le rendu de la carte,
+    // déjà affichée à ce stade quel que soit l'état de la collaboration.
+    await collabInitPromise;
 
     canvasRenderer.resize();
     canvasRenderer.start();

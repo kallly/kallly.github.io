@@ -4,7 +4,7 @@ import LZString from "../util/lz-string.js";
 // Contrôleur central de l'application.
 // Il gère la synchronisation entre l'état, la vue et les modèles.
 export class UIController {
-    constructor({ state, mapModel, troopModel, placementModel, sidebarView, canvas, canvasRenderer, collabController = null }) {
+    constructor({ state, mapModel, troopModel, placementModel, sidebarView, canvas, canvasRenderer, collabController = null, historyController = null }) {
         this.state = state;
         this.mapModel = mapModel;
         this.troopModel = troopModel;
@@ -13,6 +13,7 @@ export class UIController {
         this.canvas = canvas;
         this.canvasRenderer = canvasRenderer;
         this.collabController = collabController;
+        this.historyController = historyController;
         this.attachViewCallbacks();
         this.canvasRenderer.setRenderCallback(() => this.saveCurrentState());
     }
@@ -26,6 +27,7 @@ export class UIController {
         this.sidebarView.on("onToggleRange", () => this.handleToggleRange());
         this.sidebarView.on("onToggleName", () => this.handleToggleName());
         this.sidebarView.on("onToggleLevel", () => this.handleToggleLevel());
+        this.sidebarView.on("onUndo", () => this.handleUndo());
         this.sidebarView.on("onDeleteSelected", () => this.handleDeleteSelected());
         this.sidebarView.on("onClearMap", () => this.handleClearMap());
         this.sidebarView.on("onUrlShare", () => this.handleShareUrl());
@@ -102,6 +104,14 @@ export class UIController {
     // Bascule l'affichage des levels.
     handleToggleLevel() {
         this.state.showLevels = !this.state.showLevels;
+    }
+
+    // Annule la dernière action locale (placement, suppression, modification ou vidage).
+    handleUndo() {
+        if (!this.historyController?.undo()) {
+            return;
+        }
+        this.updateSelectedTroopPanel();
     }
 
     // Supprime la troupe sélectionnée.
