@@ -1,14 +1,4 @@
 {
-    "Scout": {
-        "collision": 1.5,
-        "rangeMultiplier": [
-            12.0,
-            12.0,
-            14.0,
-            16.0,
-            16.0
-        ]
-    },
     "Sniper": {
         "collision": 1.25,
         "rangeMultiplier": [
@@ -17,6 +7,16 @@
             30.0,
             35.0,
             45.0
+        ]
+    },
+    "Scout": {
+        "collision": 1.5,
+        "rangeMultiplier": [
+            12.0,
+            12.0,
+            14.0,
+            16.0,
+            16.0
         ]
     },
     "Paintballer": {
@@ -37,6 +37,16 @@
             12.0,
             12.0,
             14.0,
+            16.0
+        ]
+    },
+    "Boomerang": {
+        "collision": 1.5,
+        "rangeMultiplier": [
+            14.0,
+            15.0,
+            15.0,
+            16.0,
             16.0
         ]
     },
@@ -435,6 +445,31 @@
             17.0
         ]
     },
+    "Kingpin (Top)": {
+        "collision": 1.5,
+        "rangeMultiplier": [
+            17.5,
+            20.0,
+            20.0,
+            20.0,
+            17.5,
+            20.0,
+            20.0,
+            20.0
+        ]
+    },
+    "Kingpin (Bottom)": {
+        "collision": 1.5,
+        "rangeMultiplier": [
+            17.5,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            21.5
+        ]
+    },
     "Juggernaut (Top)": {
         "collision": 2.5,
         "rangeMultiplier": [
@@ -521,6 +556,16 @@
             20.0,
             20.0,
             22.0
+        ]
+    },
+    "Golden Demoman": {
+        "collision": 1.5,
+        "rangeMultiplier": [
+            12.0,
+            13.5,
+            13.5,
+            15.0,
+            17.0
         ]
     },
     "Golden Snowballer": {
