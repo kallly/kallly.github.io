@@ -736,7 +736,7 @@ a{
 /* Hamburger buttons */
 .menu-btn {
     position: fixed;
-    top: 16px;
+    top: 5px;
     width: 160px;
     height: 44px;
     display: flex;
@@ -753,7 +753,7 @@ a{
 }
 .menu-btn2 {
     position: fixed;
-    top: 16px;
+    top: 5px;
     width: 180px;
     height: 44px;
     display: flex;
