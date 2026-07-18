@@ -265,10 +265,13 @@ content="Tower Defense Simulator, mapper, TDS, strategy, Hardcore, SOLO, DUO, TR
             <button id="exportPng" title="Download as PNG" aria-label="Download the map as a PNG image" class="canvas-button">
                 🖼️
             </button>
-            <button id="drawZone" title="Draw a colored zone (click to add points, click the first point again or press Enter to close, Esc to cancel)" aria-label="Toggle zone drawing mode" class="canvas-button">
-                🔺
-            </button>
-            <input type="color" id="zoneColor" value="#5b8cff" title="Zone color" aria-label="Color for the next drawn zone" class="canvas-button canvas-color-swatch">
+            <span class="canvas-divider" aria-hidden="true"></span>
+            <div class="canvas-tool-group" title="Zone color applies to the next zone you draw">
+                <button id="drawZone" title="Draw a colored zone in the color above (click to add points, click the first point again or press Enter to close, Esc to cancel)" aria-label="Toggle zone drawing mode, using the zone color" class="canvas-button">
+                    🖌️
+                </button>
+                <input type="color" id="zoneColor" value="#5b8cff" title="Zone color" aria-label="Color for the next drawn zone" class="canvas-button canvas-color-swatch">
+            </div>
         </div>
         <div id="canvasPlayerFilter">
             <label for="playerFilterSelect" title="Filter by player" aria-hidden="true">👥</label>

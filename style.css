@@ -762,6 +762,24 @@ a{
     color:#0c1220;
 }
 
+/* Sépare visuellement le duo "couleur de zone" + "dessiner une zone" du reste des outils,
+   pour qu'on comprenne au premier coup d'œil qu'ils vont ensemble. */
+.canvas-divider{
+    width:1px;
+    height:22px;
+    background:var(--border);
+    margin:0 2px;
+}
+
+.canvas-tool-group{
+    display:flex;
+    align-items:center;
+    gap:2px;
+    padding:2px;
+    border-radius:999px;
+    background:var(--bg-input);
+}
+
 .canvas-button.active:hover{
     background:var(--accent-hover);
     color:#0c1220;
