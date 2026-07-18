@@ -110,12 +110,12 @@ async function init() {
     });
 
     // Collaboration en temps réel : indisponible si Firebase n'est pas configuré,
-    // ce qui ne doit pas empêcher le reste de l'application de démarrer.
-    try {
-        await initCollab();
-    } catch (error) {
+    // ce qui ne doit pas empêcher le reste de l'application de démarrer. Lancée sans attendre
+    // pour ne pas bloquer le chargement des données (troops/maps) derrière l'auth Firebase :
+    // rien n'utilise db/auth avant un clic explicite sur "Create session"/"Join".
+    const collabInitPromise = initCollab().catch((error) => {
         console.warn("Real-time collaboration unavailable (missing or invalid Firebase configuration):", error);
-    }
+    });
 
     const collabController = new CollabController({
         state,
@@ -212,6 +212,10 @@ async function init() {
     if (!restored) {
         await uiController.handleMapSelect(defaultMap);
     }
+
+    // Simple garde avant de considérer l'appli prête : ne bloque plus le rendu de la carte,
+    // déjà affichée à ce stade quel que soit l'état de la collaboration.
+    await collabInitPromise;
 
     canvasRenderer.resize();
     canvasRenderer.start();
