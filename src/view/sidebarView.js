@@ -27,6 +27,9 @@ export class SidebarView {
         this.elements.loadMap.addEventListener("click", () => this.dispatch("onLoad"));
         this.elements.mapSelect.addEventListener("change", () => this.dispatch("onMapSelect", this.elements.mapSelect.value));
         this.elements.playerFilterSelect.addEventListener("change", () => this.dispatch("onPlayerFilterChange", this.elements.playerFilterSelect.value));
+        this.elements.drawZone.addEventListener("click", () => this.dispatch("onToggleDrawZone"));
+        this.elements.zoneColor.addEventListener("input", () => this.dispatch("onZoneColorChange", this.elements.zoneColor.value));
+        this.elements.addText.addEventListener("click", () => this.dispatch("onToggleAddText"));
         this.elements.resetMapPosition.addEventListener("click", () => this.dispatch("onResetMapPosition"));
         this.elements.collabCreateSession.addEventListener("click", () => this.dispatch("onCreateSession"));
         this.elements.collabJoinSession.addEventListener("click", () => this.dispatch("onJoinSession", this.elements.collabRoomCodeInput.value.trim().toUpperCase()));
@@ -130,5 +133,20 @@ export class SidebarView {
 
     getJsonArea() {
         return this.elements.jsonArea.value;
+    }
+
+    // Bascule l'état visuel "actif" du bouton de dessin de zone.
+    setDrawZoneActive(active) {
+        this.elements.drawZone.classList.toggle("active", active);
+    }
+
+    // Définit la couleur affichée dans le sélecteur de couleur de zone.
+    setZoneColor(color) {
+        this.elements.zoneColor.value = color;
+    }
+
+    // Bascule l'état visuel "actif" du bouton de placement de texte.
+    setAddTextActive(active) {
+        this.elements.addText.classList.toggle("active", active);
     }
 }

@@ -4,6 +4,8 @@ import { loadData } from "./service/dataService.js";
 import { TroopModel } from "./model/troopModel.js";
 import { MapModel } from "./model/mapModel.js";
 import { PlacementModel } from "./model/placementModel.js";
+import { PolygonModel } from "./model/polygonModel.js";
+import { TextLabelModel } from "./model/textLabelModel.js";
 import { SidebarView } from "./view/sidebarView.js";
 import { CanvasRenderer } from "./view/canvasRenderer.js";
 import { InputController } from "./controller/inputController.js";
@@ -27,10 +29,85 @@ function initPlacementPanelToggle(canvas) {
     canvas.addEventListener("touchstart", () => panel.classList.remove("panel-hidden"), { passive: true });
 }
 
+// Panneau d'aide (contrôles/astuces) : purement manuel, contrairement au panneau de
+// placement il ne doit pas réapparaître au clic sur le canvas.
+function initHelpPanelToggle() {
+    const panel = document.getElementById("helpPanel");
+    const openButton = document.getElementById("helpButton");
+    const closeButton = document.getElementById("helpPanelClose");
+    if (!panel || !openButton || !closeButton) {
+        return;
+    }
+
+    openButton.addEventListener("click", () => panel.classList.toggle("panel-hidden"));
+    closeButton.addEventListener("click", () => panel.classList.add("panel-hidden"));
+}
+
+// Saisie de texte pour les étiquettes de carte (20 caractères max, imposés par l'attribut
+// maxlength). Un champ overlay positionné au clic plutôt qu'un window.prompt() natif :
+// ce dernier est indisponible dans certains environnements embarqués/sandboxés (webview, iframe).
+function initTextLabelInput({ mapModel, textLabelModel, canvas }) {
+    const input = document.getElementById("textLabelInput");
+    if (!input) {
+        return { requestTextAt: () => {} };
+    }
+
+    let pending = null;
+    let cancelled = false;
+
+    function hide() {
+        input.style.display = "none";
+        input.value = "";
+        pending = null;
+    }
+
+    function commit() {
+        const target = pending;
+        if (!cancelled && target) {
+            const text = input.value.trim().slice(0, 20);
+            if (text) {
+                textLabelModel.add({ text, x: target.x, y: target.y });
+            }
+        }
+        hide();
+    }
+
+    input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            input.blur();
+        } else if (event.key === "Escape") {
+            event.preventDefault();
+            cancelled = true;
+            input.blur();
+        }
+    });
+
+    // Valider en cliquant/tabulant ailleurs, comme un champ d'édition classique.
+    input.addEventListener("blur", () => {
+        commit();
+        cancelled = false;
+    });
+
+    return {
+        requestTextAt(worldX, worldY) {
+            pending = { x: worldX, y: worldY };
+            cancelled = false;
+            const screen = mapModel.worldToScreen(worldX, worldY);
+            input.style.left = `${canvas.offsetLeft + screen.x}px`;
+            input.style.top = `${canvas.offsetTop + screen.y}px`;
+            input.style.display = "block";
+            input.value = "";
+            input.focus();
+        }
+    };
+}
+
 async function init() {
     // Sélection des éléments du DOM nécessaires à l'application.
     const canvas = document.getElementById("gameCanvas");
     initPlacementPanelToggle(canvas);
+    initHelpPanelToggle();
     const elements = {
         troopList: document.getElementById("troopList"),
         levelSelect: document.getElementById("level"),
@@ -42,6 +119,9 @@ async function init() {
         playerSelect: document.getElementById("playerSelect"),
         mapSelect: document.getElementById("mapSelect"),
         playerFilterSelect: document.getElementById("playerFilterSelect"),
+        zoneColor: document.getElementById("zoneColor"),
+        drawZone: document.getElementById("drawZone"),
+        addText: document.getElementById("addText"),
         toggleRangeButton: document.getElementById("toggleRange"),
         toggleNameButton: document.getElementById("toggleName"),
         toggleLevelButton: document.getElementById("toggleLevel"),
@@ -84,23 +164,31 @@ async function init() {
         pointerY: 0,
         isPlacementValid: false,
         previewRange: 0,
-        previewCollision: 0
+        previewCollision: 0,
+        // Dessin de zones polygonales / pose de texte : purement local pour l'instant (non synchronisé en collab).
+        isDrawingPolygon: false,
+        polygonDraftPoints: [],
+        zoneColor: "#5b8cff",
+        isPlacingText: false
     };
 
     // Modèles métiers.
     const troopModel = new TroopModel();
     const mapModel = new MapModel();
     const placementModel = new PlacementModel();
+    const polygonModel = new PolygonModel();
+    const textLabelModel = new TextLabelModel();
 
     // Historique local (annulation des dernières actions), indépendant de la collaboration.
-    const historyController = new HistoryController({ state, placementModel });
+    const historyController = new HistoryController({ state, placementModel, polygonModel, textLabelModel });
 
     // Vue latérale et rendu de canvas.
     const sidebarView = new SidebarView({
         ...elements,
         canvas
     }, troopModel, state);
-    const canvasRenderer = new CanvasRenderer(canvas, mapModel, placementModel, state);
+    const canvasRenderer = new CanvasRenderer(canvas, mapModel, placementModel, polygonModel, textLabelModel, state);
+    const textLabelInputController = initTextLabelInput({ mapModel, textLabelModel, canvas });
 
     // Contrôleurs pour la logique UI et les interactions.
     const uiController = new UIController({
@@ -108,6 +196,8 @@ async function init() {
         mapModel,
         troopModel,
         placementModel,
+        polygonModel,
+        textLabelModel,
         sidebarView,
         canvas,
         canvasRenderer,
@@ -157,6 +247,8 @@ async function init() {
         canvas,
         mapModel,
         placementModel,
+        polygonModel,
+        textLabelModel,
         troopModel,
         state,
         callbacks: {
@@ -172,6 +264,15 @@ async function init() {
                     uiController.updateSelectedTroopPanel();
                 }
             },
+            onZoneSelectionChanged: (selected) => {
+                if (selected) {
+                    sidebarView.setZoneColor(selected.color);
+                }
+            },
+            onZoneFinished: () => sidebarView.setDrawZoneActive(false),
+            onZoneCancelled: () => sidebarView.setDrawZoneActive(false),
+            onTextPlacementEnded: () => sidebarView.setAddTextActive(false),
+            onTextPlacementRequested: (x, y) => textLabelInputController.requestTextAt(x, y),
             onSaveRequested: () => uiController.handleSave(),
             onLoadRequested: () => uiController.handleLoad(),
             onUndoRequested: () => uiController.handleUndo()

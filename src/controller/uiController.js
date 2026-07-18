@@ -18,11 +18,13 @@ export function playerFilterFromParam(param) {
 // Contrôleur central de l'application.
 // Il gère la synchronisation entre l'état, la vue et les modèles.
 export class UIController {
-    constructor({ state, mapModel, troopModel, placementModel, sidebarView, canvas, canvasRenderer, collabController = null, historyController = null }) {
+    constructor({ state, mapModel, troopModel, placementModel, polygonModel, textLabelModel, sidebarView, canvas, canvasRenderer, collabController = null, historyController = null }) {
         this.state = state;
         this.mapModel = mapModel;
         this.troopModel = troopModel;
         this.placementModel = placementModel;
+        this.polygonModel = polygonModel;
+        this.textLabelModel = textLabelModel;
         this.sidebarView = sidebarView;
         this.canvas = canvas;
         this.canvasRenderer = canvasRenderer;
@@ -51,6 +53,9 @@ export class UIController {
         this.sidebarView.on("onMapSelect", (mapName) => this.handleMapSelect(mapName));
         this.sidebarView.on("onPlayerFilterChange", (player) => this.handlePlayerFilterChange(player));
         this.sidebarView.on("onResetMapPosition", () => this.handleResetMapPosition());
+        this.sidebarView.on("onToggleDrawZone", () => this.handleToggleDrawZone());
+        this.sidebarView.on("onZoneColorChange", (color) => this.handleZoneColorChange(color));
+        this.sidebarView.on("onToggleAddText", () => this.handleToggleAddText());
     }
 
     // Sélection d'une troupe depuis la liste.
@@ -130,22 +135,77 @@ export class UIController {
         this.updateSelectedTroopPanel();
     }
 
-    // Supprime la troupe sélectionnée.
+    // Supprime la troupe sélectionnée, sinon le texte sélectionné, sinon la zone sélectionnée.
     handleDeleteSelected() {
         const selected = this.placementModel.getSelected();
-        if (!selected) {
+        if (selected) {
+            this.placementModel.remove(selected);
+            this.placementModel.select(null);
+            this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
             return;
         }
 
-        this.placementModel.remove(selected);
-        this.placementModel.select(null);
+        const selectedLabel = this.textLabelModel.getSelected();
+        if (selectedLabel) {
+            this.textLabelModel.remove(selectedLabel);
+            this.textLabelModel.select(null);
+            return;
+        }
+
+        const selectedPolygon = this.polygonModel.getSelected();
+        if (selectedPolygon) {
+            this.polygonModel.remove(selectedPolygon);
+            this.polygonModel.select(null);
+        }
+    }
+
+    // Vide la carte de toutes les troupes, zones et textes.
+    handleClearMap() {
+        this.placementModel.clear();
+        this.polygonModel.clear();
+        this.textLabelModel.clear();
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
     }
 
-    // Vide la carte de toutes les troupes.
-    handleClearMap() {
-        this.placementModel.clear();
+    // Désélectionne tout et quitte les modes dessin de zone / placement de texte en cours,
+    // pour garder ces trois modes mutuellement exclusifs.
+    resetDrawingModes() {
+        this.state.isDrawingPolygon = false;
+        this.state.polygonDraftPoints = [];
+        this.state.isPlacingText = false;
+        this.state.selectedTroop = null;
+        this.placementModel.select(null);
+        this.polygonModel.select(null);
+        this.textLabelModel.select(null);
+        this.sidebarView.updateTroopButtons();
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
+        this.sidebarView.setDrawZoneActive(false);
+        this.sidebarView.setAddTextActive(false);
+    }
+
+    // Bascule le mode dessin de zone ; désélectionne tout et quitte les autres modes en l'activant.
+    handleToggleDrawZone() {
+        const activate = !this.state.isDrawingPolygon;
+        this.resetDrawingModes();
+        this.state.isDrawingPolygon = activate;
+        this.sidebarView.setDrawZoneActive(activate);
+    }
+
+    // Bascule le mode "placer un texte" ; désélectionne tout et quitte les autres modes en l'activant.
+    handleToggleAddText() {
+        const activate = !this.state.isPlacingText;
+        this.resetDrawingModes();
+        this.state.isPlacingText = activate;
+        this.sidebarView.setAddTextActive(activate);
+    }
+
+    // Couleur de la prochaine zone dessinée, ou de la zone actuellement sélectionnée.
+    handleZoneColorChange(color) {
+        this.state.zoneColor = color;
+        const selected = this.polygonModel.getSelected();
+        if (selected) {
+            this.polygonModel.updatePolygon(selected, { color });
+        }
     }
 
     // Télécharge le plan actuel en PNG.
@@ -155,12 +215,12 @@ export class UIController {
     }
 
     saveCurrentState() {
-        saveToStorage(createSaveData(this.placementModel.placedTroops, this.state.currentMap));
+        saveToStorage(createSaveData(this.placementModel.placedTroops, this.state.currentMap, this.polygonModel.polygons, this.textLabelModel.labels));
     }
 
     handleShareUrl() {
-        const payload = createSaveData(this.placementModel.placedTroops, this.state.currentMap);
-        const compactPayload = createCompactSaveData(this.placementModel.placedTroops, this.state.currentMap);
+        const payload = createSaveData(this.placementModel.placedTroops, this.state.currentMap, this.polygonModel.polygons, this.textLabelModel.labels);
+        const compactPayload = createCompactSaveData(this.placementModel.placedTroops, this.state.currentMap, this.polygonModel.polygons, this.textLabelModel.labels);
         const data = LZString.compressToEncodedURIComponent(JSON.stringify(compactPayload));
         const playerFilterParam = playerFilterToParam(this.state.playerFilter);
         const url = `${window.location.origin}${window.location.pathname}?data=${encodeURIComponent(data)}&p=${playerFilterParam}`;
@@ -172,7 +232,7 @@ export class UIController {
     }
     // Sauve l'état actuel uniquement dans le textarea JSON.
     handleSave() {
-        const payload = createSaveData(this.placementModel.placedTroops, this.state.currentMap);
+        const payload = createSaveData(this.placementModel.placedTroops, this.state.currentMap, this.polygonModel.polygons, this.textLabelModel.labels);
         this.sidebarView.setJsonArea(JSON.stringify(payload, null, 4));
     }
 
@@ -181,6 +241,8 @@ export class UIController {
         try {
             const parsed = parseSaveData(this.sidebarView.getJsonArea());
             this.placementModel.clear();
+            this.polygonModel.clear();
+            this.textLabelModel.clear();
 
             if (!Array.isArray(parsed.troops)) {
                 return;
@@ -204,6 +266,14 @@ export class UIController {
                     player,
                     color: troopData.color || this.getColorFor(player, troopData.troop)
                 });
+            }
+
+            for (const zoneData of parsed.zones || []) {
+                this.polygonModel.add({ color: zoneData.color, points: zoneData.points });
+            }
+
+            for (const labelData of parsed.labels || []) {
+                this.textLabelModel.add({ text: labelData.text, x: labelData.x, y: labelData.y });
             }
 
             this.state.currentMap = parsed.mapName || this.state.currentMap;
@@ -249,6 +319,8 @@ export class UIController {
         }
 
         this.placementModel.clear();
+        this.polygonModel.clear();
+        this.textLabelModel.clear();
         this.sidebarView.setJsonArea(JSON.stringify(data, null, 4));
 
         for (const troopData of data.troops) {
@@ -269,6 +341,14 @@ export class UIController {
                 player,
                 color: troopData.color || this.getColorFor(player, troopData.troop)
             });
+        }
+
+        for (const zoneData of data.zones || []) {
+            this.polygonModel.add({ color: zoneData.color, points: zoneData.points });
+        }
+
+        for (const labelData of data.labels || []) {
+            this.textLabelModel.add({ text: labelData.text, x: labelData.x, y: labelData.y });
         }
 
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });

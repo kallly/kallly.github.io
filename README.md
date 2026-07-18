@@ -64,5 +64,8 @@ Ce projet peut être ouvert directement dans un navigateur supportant les module
 - Ajouter un rail de grille pour le placement.
 - Ajouter une interface mobile.
 
+## Licence
+
+Ce projet est distribué sous licence [PolyForm Shield 1.0.0](LICENSE.md) : le code source est disponible en lecture/modification, mais il est interdit de l'utiliser pour proposer un produit concurrent à ce projet. Voir [LICENSE.md](LICENSE.md) pour le texte complet.
 
 npx esbuild src/app.js --bundle --minify --outfile=dist/app.min.js

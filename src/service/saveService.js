@@ -3,8 +3,8 @@ import LZString from "../util/lz-string.js";
 
 const AUTO_SAVE_KEY = "tds-mapper-autosave";
 
-// Crée un objet de sauvegarde à partir des troupes placées.
-export function createSaveData(placedTroops, mapName = null) {
+// Crée un objet de sauvegarde à partir des troupes placées, des zones dessinées et des textes posés.
+export function createSaveData(placedTroops, mapName = null, placedPolygons = [], placedLabels = []) {
     return {
         version: 1,
         mapName,
@@ -15,6 +15,15 @@ export function createSaveData(placedTroops, mapName = null) {
             y: Math.round(troop.y),
             color: troop.color,
             player: troop.player
+        })),
+        zones: placedPolygons.map(polygon => ({
+            color: polygon.color,
+            points: polygon.points.map(point => ({ x: Math.round(point.x), y: Math.round(point.y) }))
+        })),
+        labels: placedLabels.map(label => ({
+            text: label.text,
+            x: Math.round(label.x),
+            y: Math.round(label.y)
         }))
     };
 }
@@ -27,7 +36,7 @@ export function parseSaveData(jsonText) {
 
 // Format compact ("maison") : dictionnaires de troupes/couleurs + tableaux de valeurs brutes
 // (pas de clés répétées), utilisé quand le JSON classique produit une URL trop longue.
-export function createCompactSaveData(placedTroops, mapName = null) {
+export function createCompactSaveData(placedTroops, mapName = null, placedPolygons = [], placedLabels = []) {
     const troopDict = [];
     const troopIndex = new Map();
     const colorDict = [];
@@ -57,16 +66,25 @@ export function createCompactSaveData(placedTroops, mapName = null) {
         Number(String(troop.player).replace(/\D/g, "")) || 1
     ]);
 
-    return { version: 2, mapName, td: troopDict, cd: colorDict, t };
+    // Zone = [couleurIdx, x1, y1, x2, y2, ...] : réutilise le dictionnaire de couleurs des troupes.
+    const pg = placedPolygons.map(polygon => [
+        getColorIdx(polygon.color),
+        ...polygon.points.flatMap(point => [Math.round(point.x), Math.round(point.y)])
+    ]);
+
+    // Texte = [texte, x, y] (pas de couleur : style fixe).
+    const lb = placedLabels.map(label => [label.text, Math.round(label.x), Math.round(label.y)]);
+
+    return { version: 2, mapName, td: troopDict, cd: colorDict, t, pg, lb };
 }
 
 export function isCompactSaveData(payload) {
     return Boolean(payload) && payload.version === 2 && Array.isArray(payload.t);
 }
 
-// Reconstruit la forme classique { version: 1, mapName, troops: [...] } depuis le format compact.
+// Reconstruit la forme classique { version: 1, mapName, troops: [...], zones: [...], labels: [...] } depuis le format compact.
 export function expandCompactSaveData(compact) {
-    const { td = [], cd = [], t = [], mapName = null } = compact;
+    const { td = [], cd = [], t = [], pg = [], lb = [], mapName = null } = compact;
     return {
         version: 1,
         mapName,
@@ -77,7 +95,15 @@ export function expandCompactSaveData(compact) {
             y,
             color: cd[colorIdx],
             player: `player${playerNum}`
-        }))
+        })),
+        zones: pg.map(([colorIdx, ...coords]) => {
+            const points = [];
+            for (let i = 0; i < coords.length; i += 2) {
+                points.push({ x: coords[i], y: coords[i + 1] });
+            }
+            return { color: cd[colorIdx], points };
+        }),
+        labels: lb.map(([text, x, y]) => ({ text, x, y }))
     };
 }
 
