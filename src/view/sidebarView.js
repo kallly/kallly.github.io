@@ -24,6 +24,9 @@ export class SidebarView {
         this.elements.loadMap.addEventListener("click", () => this.dispatch("onLoad"));
         this.elements.mapSelect.addEventListener("change", () => this.dispatch("onMapSelect", this.elements.mapSelect.value));
         this.elements.resetMapPosition.addEventListener("click", () => this.dispatch("onResetMapPosition"));
+        this.elements.collabCreateSession.addEventListener("click", () => this.dispatch("onCreateSession"));
+        this.elements.collabJoinSession.addEventListener("click", () => this.dispatch("onJoinSession", this.elements.collabRoomCodeInput.value.trim().toUpperCase()));
+        this.elements.collabLeaveSession.addEventListener("click", () => this.dispatch("onLeaveSession"));
     }
 
     // Enregistre un callback pour une action.
@@ -101,6 +104,19 @@ export class SidebarView {
 
     setJsonArea(text) {
         this.elements.jsonArea.value = text;
+    }
+
+    // Met à jour le texte de statut de la session collaborative.
+    setCollabStatus(text) {
+        this.elements.collabStatus.textContent = text;
+    }
+
+    // Bascule l'affichage des contrôles selon qu'une session est active ou non.
+    setCollabActive(active) {
+        this.elements.collabLeaveSession.style.display = active ? "" : "none";
+        this.elements.collabCreateSession.style.display = active ? "none" : "";
+        this.elements.collabJoinSession.style.display = active ? "none" : "";
+        this.elements.collabRoomCodeInput.style.display = active ? "none" : "";
     }
 
     getJsonArea() {
