@@ -27,10 +27,25 @@ function initPlacementPanelToggle(canvas) {
     canvas.addEventListener("touchstart", () => panel.classList.remove("panel-hidden"), { passive: true });
 }
 
+// Panneau d'aide (contrôles/astuces) : purement manuel, contrairement au panneau de
+// placement il ne doit pas réapparaître au clic sur le canvas.
+function initHelpPanelToggle() {
+    const panel = document.getElementById("helpPanel");
+    const openButton = document.getElementById("helpButton");
+    const closeButton = document.getElementById("helpPanelClose");
+    if (!panel || !openButton || !closeButton) {
+        return;
+    }
+
+    openButton.addEventListener("click", () => panel.classList.toggle("panel-hidden"));
+    closeButton.addEventListener("click", () => panel.classList.add("panel-hidden"));
+}
+
 async function init() {
     // Sélection des éléments du DOM nécessaires à l'application.
     const canvas = document.getElementById("gameCanvas");
     initPlacementPanelToggle(canvas);
+    initHelpPanelToggle();
     const elements = {
         troopList: document.getElementById("troopList"),
         levelSelect: document.getElementById("level"),

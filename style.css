@@ -638,6 +638,80 @@ a{
     padding:6px 8px;
 }
 
+/* ========================= */
+/* Floating help button + panel (below #canvasPlayerFilter) */
+/* ========================= */
+
+#canvasHelp{
+    position:absolute;
+    top:112px;
+    right:15px;
+    z-index:10;
+    display:flex;
+    padding:6px;
+    background:var(--bg-elevated);
+    border:1px solid var(--border);
+    border-radius:999px;
+    box-shadow:var(--shadow-sm);
+}
+
+#helpPanel{
+    position:absolute;
+    top:166px;
+    right:15px;
+    z-index:15;
+    width:300px;
+    max-width:calc(100% - 30px);
+    max-height:60vh;
+    overflow-y:auto;
+    padding:14px;
+    background:var(--bg-elevated);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow);
+}
+
+#helpPanel.panel-hidden{
+    display:none;
+}
+
+#helpPanel h3{
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--text-muted);
+    margin-top:16px;
+    margin-bottom:8px;
+}
+
+#helpPanel h3:first-of-type{
+    margin-top:0;
+}
+
+#helpPanel ul{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+#helpPanel li{
+    font-size:13px;
+    line-height:1.5;
+    color:var(--text);
+}
+
+#helpPanel kbd{
+    display:inline-block;
+    padding:1px 6px;
+    border:1px solid var(--border);
+    border-radius:4px;
+    background:var(--bg-input);
+    font-family:Consolas, monospace;
+    font-size:11px;
+}
+
 .canvas-button{
 
     width:38px;
@@ -925,6 +999,12 @@ a{
     #placementPanel {
         display: none;
     }
+    #canvasHelp {
+        display: none;
+    }
+    #helpPanel {
+        display: none;
+    }
 }
 
 /* Desktop: the primary sidebar is docked and always visible, only the */
@@ -960,6 +1040,14 @@ a{
     }
 
     #canvasPlayerFilter {
+        right: 15px;
+    }
+
+    #canvasHelp {
+        right: 15px;
+    }
+
+    #helpPanel {
         right: 15px;
     }
 }

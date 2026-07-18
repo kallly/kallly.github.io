@@ -275,6 +275,53 @@ content="Tower Defense Simulator, mapper, TDS, strategy, Hardcore, SOLO, DUO, TR
                 <option value="player3">Player 3</option>
             </select>
         </div>
+        <div id="canvasHelp">
+            <button id="helpButton" title="Help & controls" aria-label="Show help and controls" class="canvas-button">
+                ❓
+            </button>
+        </div>
+        <div id="helpPanel" class="panel-hidden">
+            <div class="floating-panel-header">
+                <h2 class="sidebar-section__title">Help &amp; Controls</h2>
+                <button id="helpPanelClose" class="panel-close" aria-label="Close help">✕</button>
+            </div>
+
+            <h3>Placing &amp; editing</h3>
+            <ul>
+                <li>Pick a tower in the left sidebar, then click on the map to place it.</li>
+                <li>Click a placed tower to select it — its range is shown automatically.</li>
+                <li>Press <kbd>Delete</kbd> or use the 🗑️ button to remove the selected tower.</li>
+                <li>Right-click (or tap elsewhere) to cancel a placement in progress.</li>
+            </ul>
+
+            <h3>View controls</h3>
+            <ul>
+                <li>Scroll the mouse wheel, or pinch with two fingers on touch, to zoom.</li>
+                <li>Pan with arrow keys or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>/<kbd>Z</kbd><kbd>Q</kbd><kbd>S</kbd><kbd>D</kbd>, or drag with one finger on touch.</li>
+                <li>◎ resets the map position. 🏹 💬 L toggle ranges, names and levels.</li>
+                <li>👥 filters which players' towers are shown in full color.</li>
+            </ul>
+            
+            <h3>Collaboration</h3>
+            <ul>
+                <li>Create a session to get a room code, then share it so others can join and edit the same map live.</li>
+            </ul>
+
+            <h3>Keyboard shortcuts</h3>
+            <ul>
+                <li><kbd>Ctrl</kbd>+<kbd>Z</kbd> — undo last action</li>
+                <li><kbd>Ctrl</kbd>+<kbd>S</kbd> — save to the JSON textarea</li>
+                <li><kbd>Ctrl</kbd>+<kbd>L</kbd> — load from the JSON textarea</li>
+            </ul>
+
+            <h3>Save, share &amp; export</h3>
+            <ul>
+                <li>"Share the map" copies a link that reloads your exact plan (and current player filter) for anyone who opens it.</li>
+                <li>Save/Load JSON lets you copy your plan as text to store it yourself.</li>
+                <li>🖼️ downloads the full map as a PNG image.</li>
+            </ul>
+
+        </div>
         <canvas
             id="gameCanvas" width="1200" height="800">
         </canvas>
