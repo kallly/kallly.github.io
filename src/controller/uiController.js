@@ -34,6 +34,7 @@ export class UIController {
         this.sidebarView.on("onSave", () => this.handleSave());
         this.sidebarView.on("onLoad", () => this.handleLoad());
         this.sidebarView.on("onMapSelect", (mapName) => this.handleMapSelect(mapName));
+        this.sidebarView.on("onPlayerFilterChange", (player) => this.handlePlayerFilterChange(player));
         this.sidebarView.on("onResetMapPosition", () => this.handleResetMapPosition());
     }
 
@@ -199,6 +200,11 @@ export class UIController {
         this.canvasRenderer.resize();
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
         this.collabController?.notifyMapChanged(mapName);
+    }
+
+    // Filtre d'affichage par joueur : purement visuel, ne modifie aucune donnée de placement.
+    handlePlayerFilterChange(player) {
+        this.state.playerFilter = player;
     }
 
     // Réinitialise la position de la carte.

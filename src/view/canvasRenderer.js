@@ -82,8 +82,11 @@ export class CanvasRenderer {
     }
 
     // Dessine une troupe avec sa collision, sa portée et son étiquette.
+    // Le filtre joueur (state.playerFilter) est purement visuel : il grise les troupes
+    // des autres joueurs sans jamais toucher aux données de placement.
     drawTroop(troop) {
         const screen = this.mapModel.worldToScreen(troop.x, troop.y);
+        const isDimmed = this.state.playerFilter && this.state.playerFilter !== "all" && troop.player !== this.state.playerFilter;
 
         if (this.state.showRanges) {
             this.ctx.beginPath();
@@ -97,8 +100,8 @@ export class CanvasRenderer {
 
         this.ctx.beginPath();
         this.ctx.arc(screen.x, screen.y, troop.collision * this.mapModel.scale, 0, Math.PI * 2);
-        this.ctx.fillStyle = troop.color || "#FFD54A";
-        this.ctx.globalAlpha = 0.7;
+        this.ctx.fillStyle = isDimmed ? "#888888" : (troop.color || "#FFD54A");
+        this.ctx.globalAlpha = isDimmed ? 0.35 : 0.7;
         this.ctx.fill();
         this.ctx.lineWidth = 2;
         this.ctx.strokeStyle = "#222";
@@ -106,6 +109,10 @@ export class CanvasRenderer {
 
         let image = this.getTroopImage(troop.troop);
         if (image) {
+            if (isDimmed) {
+                this.ctx.filter = "grayscale(1)";
+                this.ctx.globalAlpha = 0.45;
+            }
             this.ctx.drawImage(
                 image,
                 screen.x - (troop.collision * this.mapModel.scale) * 1.7 / 2,
@@ -113,16 +120,20 @@ export class CanvasRenderer {
                 troop.collision * this.mapModel.scale * 1.7,
                 troop.collision * this.mapModel.scale * 1.7
             );
+            if (isDimmed) {
+                this.ctx.filter = "none";
+            }
         }
-       
+
 
         this.ctx.fillStyle = "white";
         this.ctx.font = `bold ${16 * this.mapModel.scale}px Arial`;
         this.ctx.textAlign = "center";
         if (this.state.showNames) {
+            this.ctx.globalAlpha = isDimmed ? 0.5 : 1;
             this.ctx.fillText(troop.troop, screen.x, screen.y - troop.collision * this.mapModel.scale - 8);
         }
- 
+
         this.ctx.globalAlpha = 1;
         if (this.state.showLevels) {
             this.ctx.fillStyle = "black";

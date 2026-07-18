@@ -41,6 +41,7 @@ async function init() {
         troopColor: document.getElementById("troopColor"),
         playerSelect: document.getElementById("playerSelect"),
         mapSelect: document.getElementById("mapSelect"),
+        playerFilterSelect: document.getElementById("playerFilterSelect"),
         toggleRangeButton: document.getElementById("toggleRange"),
         toggleNameButton: document.getElementById("toggleName"),
         toggleLevelButton: document.getElementById("toggleLevel"),
@@ -67,6 +68,9 @@ async function init() {
         showNames: false,
         showLevels: false,
         selectedPlayer: "player1",
+        // Filtre d'affichage uniquement (n'affecte jamais les données) : "all" ou "player1/2/3".
+        // Les troupes des autres joueurs restent en mémoire mais sont dessinées grisées.
+        playerFilter: "all",
         playerColors: {
             player1: "#FFD54A",
             player2: "#4A90E2",
