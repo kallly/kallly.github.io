@@ -1,10 +1,11 @@
 // Composant de rendu pour le canvas.
 // Il dessine la carte, les troupes, la sélection active et l'aperçu de placement.
 export class CanvasRenderer {
-    constructor(canvas, mapModel, placementModel, state) {
+    constructor(canvas, mapModel, placementModel, polygonModel, state) {
         this.canvas = canvas;
         this.mapModel = mapModel;
         this.placementModel = placementModel;
+        this.polygonModel = polygonModel;
         this.state = state;
         this.ctx = this.canvas.getContext("2d");
         this.onRenderCallback = null;
@@ -38,6 +39,7 @@ export class CanvasRenderer {
         this.mapModel.offsetY = 0;
 
         this.drawMap();
+        this.drawPolygons();
         this.drawTroops();
 
         this.ctx = originalCtx;
@@ -83,9 +85,11 @@ export class CanvasRenderer {
     render() {
         this.clear();
         this.drawMap();
+        this.drawPolygons();
         this.drawTroops();
         this.drawSelection();
         this.drawPlacementPreview();
+        this.drawPolygonDraft();
         if (typeof this.onRenderCallback === "function") {
             this.onRenderCallback();
         }
@@ -101,6 +105,72 @@ export class CanvasRenderer {
         const width = this.mapModel.image.width * this.mapModel.scale;
         const height = this.mapModel.image.height * this.mapModel.scale;
         this.ctx.drawImage(this.mapModel.image, this.mapModel.offsetX, this.mapModel.offsetY, width, height);
+    }
+
+    // Dessine toutes les zones (polygones) posées.
+    drawPolygons() {
+        for (const polygon of this.polygonModel.polygons) {
+            this.drawPolygon(polygon);
+        }
+    }
+
+    // Trace un polygone (remplissage semi-transparent + contour), sommets en coordonnées monde.
+    drawPolygon(polygon) {
+        if (polygon.points.length < 3) {
+            return;
+        }
+
+        const color = polygon.color || "#5b8cff";
+        const isSelected = this.polygonModel.getSelected() === polygon;
+
+        this.ctx.beginPath();
+        const first = this.mapModel.worldToScreen(polygon.points[0].x, polygon.points[0].y);
+        this.ctx.moveTo(first.x, first.y);
+        for (let i = 1; i < polygon.points.length; i++) {
+            const point = this.mapModel.worldToScreen(polygon.points[i].x, polygon.points[i].y);
+            this.ctx.lineTo(point.x, point.y);
+        }
+        this.ctx.closePath();
+
+        this.ctx.fillStyle = color;
+        this.ctx.globalAlpha = 0.70
+        this.ctx.fill();
+        this.ctx.globalAlpha = 1;
+
+        this.ctx.lineWidth = isSelected ? 3 : 2;
+        this.ctx.strokeStyle = isSelected ? "#00FF00" : color;
+        this.ctx.stroke();
+    }
+
+    // Affiche le tracé en cours (mode "Draw zone") : segments déjà posés + segment fantôme
+    // jusqu'au pointeur, et un marqueur sur le premier sommet indiquant où fermer la forme.
+    drawPolygonDraft() {
+        const draft = this.state.polygonDraftPoints;
+        if (!this.state.isDrawingPolygon || !draft || draft.length === 0) {
+            return;
+        }
+
+        const color = this.state.zoneColor || "#5b8cff";
+        const first = this.mapModel.worldToScreen(draft[0].x, draft[0].y);
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(first.x, first.y);
+        for (let i = 1; i < draft.length; i++) {
+            const point = this.mapModel.worldToScreen(draft[i].x, draft[i].y);
+            this.ctx.lineTo(point.x, point.y);
+        }
+        const pointer = this.mapModel.worldToScreen(this.state.pointerX, this.state.pointerY);
+        this.ctx.lineTo(pointer.x, pointer.y);
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeStyle = color;
+        this.ctx.setLineDash([6, 4]);
+        this.ctx.stroke();
+        this.ctx.setLineDash([]);
+
+        this.ctx.beginPath();
+        this.ctx.arc(first.x, first.y, 5, 0, Math.PI * 2);
+        this.ctx.fillStyle = color;
+        this.ctx.fill();
     }
 
     // Dessine toutes les troupes posées.

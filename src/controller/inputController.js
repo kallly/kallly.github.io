@@ -1,10 +1,11 @@
 // Contrôleur des interactions utilisateur.
 // Il gère la souris, le clavier et les événements de zoom/pan sur le canvas.
 export class InputController {
-    constructor({ canvas, mapModel, placementModel, troopModel, state, callbacks }) {
+    constructor({ canvas, mapModel, placementModel, polygonModel, troopModel, state, callbacks }) {
         this.canvas = canvas;
         this.mapModel = mapModel;
         this.placementModel = placementModel;
+        this.polygonModel = polygonModel;
         this.troopModel = troopModel;
         this.state = state;
         this.callbacks = callbacks;
@@ -74,54 +75,119 @@ export class InputController {
         this.updatePointer(event);
     }
 
-    // Clic principal sur le canvas : sélection ou placement.
+    // Clic principal sur le canvas : sélection, placement, ou pose/fermeture d'une zone.
     handleClick() {
         const { pointerX, pointerY } = this.state;
+
+        if (this.state.isDrawingPolygon) {
+            this.handlePolygonDraftClick();
+            return;
+        }
+
         const clickedTroop = this.placementModel.findAt(pointerX, pointerY);
 
         if (clickedTroop) {
             this.placementModel.select(clickedTroop);
+            this.polygonModel.select(null);
             if (typeof this.callbacks?.onSelectionChanged === "function") {
                 this.callbacks.onSelectionChanged(clickedTroop);
             }
             return;
         }
 
-        if (!this.state.selectedTroop) {
-            this.placementModel.select(null);
-            if (typeof this.callbacks?.onSelectionChanged === "function") {
-                this.callbacks.onSelectionChanged(null);
+        if (this.state.selectedTroop) {
+            if (!this.state.isPlacementValid) {
+                return;
+            }
+
+            const placement = {
+                troop: this.state.selectedTroop,
+                level: this.state.selectedLevel,
+                x: pointerX,
+                y: pointerY,
+                collision: this.state.previewCollision,
+                range: this.state.previewRange,
+                player: this.state.selectedPlayer,
+                color: this.state.playerTroopColors[this.state.selectedPlayer]?.[this.state.selectedTroop]
+                    || this.state.playerColors[this.state.selectedPlayer]
+                    || this.state.selectedColor
+                    || "#FFD54A"
+            };
+
+            const placed = this.placementModel.add(placement);
+            if (typeof this.callbacks?.onPlacementAdded === "function") {
+                this.callbacks.onPlacementAdded(placed);
             }
             return;
         }
 
-        if (!this.state.isPlacementValid) {
+        const clickedPolygon = this.polygonModel.findAt(pointerX, pointerY);
+        if (clickedPolygon) {
+            this.polygonModel.select(clickedPolygon);
+            if (typeof this.callbacks?.onZoneSelectionChanged === "function") {
+                this.callbacks.onZoneSelectionChanged(clickedPolygon);
+            }
             return;
         }
 
-        const placement = {
-            troop: this.state.selectedTroop,
-            level: this.state.selectedLevel,
-            x: pointerX,
-            y: pointerY,
-            collision: this.state.previewCollision,
-            range: this.state.previewRange,
-            player: this.state.selectedPlayer,
-            color: this.state.playerTroopColors[this.state.selectedPlayer]?.[this.state.selectedTroop]
-                || this.state.playerColors[this.state.selectedPlayer]
-                || this.state.selectedColor
-                || "#FFD54A"
-        };
-
-        const placed = this.placementModel.add(placement);
-        if (typeof this.callbacks?.onPlacementAdded === "function") {
-            this.callbacks.onPlacementAdded(placed);
+        this.placementModel.select(null);
+        this.polygonModel.select(null);
+        if (typeof this.callbacks?.onSelectionChanged === "function") {
+            this.callbacks.onSelectionChanged(null);
+        }
+        if (typeof this.callbacks?.onZoneSelectionChanged === "function") {
+            this.callbacks.onZoneSelectionChanged(null);
         }
     }
 
-    // Clic droit : annule la sélection de placement.
+    // Ajoute un sommet au tracé en cours, ou referme la zone si on clique près du premier sommet.
+    handlePolygonDraftClick() {
+        const { pointerX, pointerY } = this.state;
+        const draft = this.state.polygonDraftPoints;
+
+        if (draft.length >= 3) {
+            const first = this.mapModel.worldToScreen(draft[0].x, draft[0].y);
+            const pointer = this.mapModel.worldToScreen(pointerX, pointerY);
+            const pixelDistance = Math.hypot(pointer.x - first.x, pointer.y - first.y);
+            if (pixelDistance <= 12) {
+                this.finishPolygonDraft();
+                return;
+            }
+        }
+
+        draft.push({ x: pointerX, y: pointerY });
+    }
+
+    // Valide le tracé en cours en une nouvelle zone et quitte le mode dessin.
+    finishPolygonDraft() {
+        const points = this.state.polygonDraftPoints;
+        this.state.polygonDraftPoints = [];
+        this.state.isDrawingPolygon = false;
+
+        const polygon = this.polygonModel.add({ color: this.state.zoneColor, points });
+        if (typeof this.callbacks?.onZoneFinished === "function") {
+            this.callbacks.onZoneFinished(polygon);
+        }
+    }
+
+    // Abandonne le tracé en cours sans créer de zone, et quitte le mode dessin.
+    cancelPolygonDraft() {
+        this.state.polygonDraftPoints = [];
+        this.state.isDrawingPolygon = false;
+        if (typeof this.callbacks?.onZoneCancelled === "function") {
+            this.callbacks.onZoneCancelled();
+        }
+    }
+
+    // Clic droit : annule un tracé de zone en cours, sinon la sélection de placement.
     handleContextMenu(event) {
         event.preventDefault();
+
+        if (this.state.isDrawingPolygon) {
+            this.cancelPolygonDraft();
+            return;
+        }
+
         this.state.selectedTroop = null;
         this.placementModel.select(null);
         this.updatePreviewValues();
@@ -293,6 +359,17 @@ export class InputController {
             }
         }
 
+        if (this.isMouseOnCanvas(event) && event.key === "Escape" && this.state.isDrawingPolygon) {
+            event.preventDefault();
+            this.cancelPolygonDraft();
+        }
+
+        if (this.isMouseOnCanvas(event) && event.key === "Enter" && this.state.isDrawingPolygon
+            && this.state.polygonDraftPoints.length >= 3) {
+            event.preventDefault();
+            this.finishPolygonDraft();
+        }
+
         if (this.isMouseOnCanvas(event) && event.key === "Delete") {
             const selected = this.placementModel.getSelected();
             if (selected) {
@@ -300,6 +377,15 @@ export class InputController {
                 this.placementModel.select(null);
                 if (typeof this.callbacks?.onSelectionChanged === "function") {
                     this.callbacks.onSelectionChanged(null);
+                }
+            } else {
+                const selectedPolygon = this.polygonModel.getSelected();
+                if (selectedPolygon) {
+                    this.polygonModel.remove(selectedPolygon);
+                    this.polygonModel.select(null);
+                    if (typeof this.callbacks?.onZoneSelectionChanged === "function") {
+                        this.callbacks.onZoneSelectionChanged(null);
+                    }
                 }
             }
         }

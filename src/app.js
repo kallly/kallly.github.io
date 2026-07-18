@@ -4,6 +4,7 @@ import { loadData } from "./service/dataService.js";
 import { TroopModel } from "./model/troopModel.js";
 import { MapModel } from "./model/mapModel.js";
 import { PlacementModel } from "./model/placementModel.js";
+import { PolygonModel } from "./model/polygonModel.js";
 import { SidebarView } from "./view/sidebarView.js";
 import { CanvasRenderer } from "./view/canvasRenderer.js";
 import { InputController } from "./controller/inputController.js";
@@ -57,6 +58,8 @@ async function init() {
         playerSelect: document.getElementById("playerSelect"),
         mapSelect: document.getElementById("mapSelect"),
         playerFilterSelect: document.getElementById("playerFilterSelect"),
+        zoneColor: document.getElementById("zoneColor"),
+        drawZone: document.getElementById("drawZone"),
         toggleRangeButton: document.getElementById("toggleRange"),
         toggleNameButton: document.getElementById("toggleName"),
         toggleLevelButton: document.getElementById("toggleLevel"),
@@ -99,23 +102,28 @@ async function init() {
         pointerY: 0,
         isPlacementValid: false,
         previewRange: 0,
-        previewCollision: 0
+        previewCollision: 0,
+        // Dessin de zones polygonales : purement local pour l'instant (non synchronisé en collab).
+        isDrawingPolygon: false,
+        polygonDraftPoints: [],
+        zoneColor: "#5b8cff"
     };
 
     // Modèles métiers.
     const troopModel = new TroopModel();
     const mapModel = new MapModel();
     const placementModel = new PlacementModel();
+    const polygonModel = new PolygonModel();
 
     // Historique local (annulation des dernières actions), indépendant de la collaboration.
-    const historyController = new HistoryController({ state, placementModel });
+    const historyController = new HistoryController({ state, placementModel, polygonModel });
 
     // Vue latérale et rendu de canvas.
     const sidebarView = new SidebarView({
         ...elements,
         canvas
     }, troopModel, state);
-    const canvasRenderer = new CanvasRenderer(canvas, mapModel, placementModel, state);
+    const canvasRenderer = new CanvasRenderer(canvas, mapModel, placementModel, polygonModel, state);
 
     // Contrôleurs pour la logique UI et les interactions.
     const uiController = new UIController({
@@ -123,6 +131,7 @@ async function init() {
         mapModel,
         troopModel,
         placementModel,
+        polygonModel,
         sidebarView,
         canvas,
         canvasRenderer,
@@ -172,6 +181,7 @@ async function init() {
         canvas,
         mapModel,
         placementModel,
+        polygonModel,
         troopModel,
         state,
         callbacks: {
@@ -187,6 +197,13 @@ async function init() {
                     uiController.updateSelectedTroopPanel();
                 }
             },
+            onZoneSelectionChanged: (selected) => {
+                if (selected) {
+                    sidebarView.setZoneColor(selected.color);
+                }
+            },
+            onZoneFinished: () => sidebarView.setDrawZoneActive(false),
+            onZoneCancelled: () => sidebarView.setDrawZoneActive(false),
             onSaveRequested: () => uiController.handleSave(),
             onLoadRequested: () => uiController.handleLoad(),
             onUndoRequested: () => uiController.handleUndo()

@@ -5,34 +5,37 @@
 const MAX_HISTORY = 50;
 
 export class HistoryController {
-    constructor({ state, placementModel }) {
+    constructor({ state, placementModel, polygonModel = null }) {
         this.state = state;
         this.placementModel = placementModel;
+        this.polygonModel = polygonModel;
         this.stack = [];
         this.isApplyingUndo = false;
 
-        this.placementModel.onChange((event) => this.recordChange(event));
+        this.placementModel.onChange((event) => this.recordChange("placement", event.type, event.placement, event.previous));
+        this.polygonModel?.onChange((event) => this.recordChange("polygon", event.type, event.polygon, event.previous));
     }
 
     // Empile l'action inverse de la mutation reçue, sauf si elle vient d'un undo ou du réseau.
-    recordChange({ type, placement, previous }) {
+    // `source` indique quel modèle (troupes ou zones) rejouer lors d'un undo.
+    recordChange(source, type, item, previous) {
         if (this.isApplyingUndo || this.state.isApplyingRemoteChange) {
             return;
         }
 
         switch (type) {
             case "add":
-                this.push({ type: "add", placement });
+                this.push({ source, type: "add", item });
                 break;
             case "remove":
-                this.push({ type: "remove", placement });
+                this.push({ source, type: "remove", item });
                 break;
             case "update":
-                this.push({ type: "update", placement, previous });
+                this.push({ source, type: "update", item, previous });
                 break;
             case "clear":
                 if (previous.length > 0) {
-                    this.push({ type: "clear", previous });
+                    this.push({ source, type: "clear", previous });
                 }
                 break;
         }
@@ -56,20 +59,23 @@ export class HistoryController {
             return false;
         }
 
+        const model = action.source === "polygon" ? this.polygonModel : this.placementModel;
+        const updateMethod = action.source === "polygon" ? "updatePolygon" : "updatePlacement";
+
         this.isApplyingUndo = true;
         switch (action.type) {
             case "add":
-                this.placementModel.remove(action.placement);
+                model.remove(action.item);
                 break;
             case "remove":
-                this.placementModel.add(action.placement);
+                model.add(action.item);
                 break;
             case "update":
-                this.placementModel.updatePlacement(action.placement, action.previous);
+                model[updateMethod](action.item, action.previous);
                 break;
             case "clear":
-                for (const placement of action.previous) {
-                    this.placementModel.add(placement);
+                for (const item of action.previous) {
+                    model.add(item);
                 }
                 break;
         }
