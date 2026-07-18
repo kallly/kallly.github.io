@@ -21,7 +21,64 @@ export function createSaveData(placedTroops, mapName = null) {
 
 // Analyse le JSON de sauvegarde et renvoie un objet utilisable par l'application.
 export function parseSaveData(jsonText) {
-    return JSON.parse(jsonText);
+    const payload = JSON.parse(jsonText);
+    return isCompactSaveData(payload) ? expandCompactSaveData(payload) : payload;
+}
+
+// Format compact ("maison") : dictionnaires de troupes/couleurs + tableaux de valeurs brutes
+// (pas de clés répétées), utilisé quand le JSON classique produit une URL trop longue.
+export function createCompactSaveData(placedTroops, mapName = null) {
+    const troopDict = [];
+    const troopIndex = new Map();
+    const colorDict = [];
+    const colorIndex = new Map();
+
+    const getTroopIdx = (name) => {
+        if (!troopIndex.has(name)) {
+            troopIndex.set(name, troopDict.length);
+            troopDict.push(name);
+        }
+        return troopIndex.get(name);
+    };
+    const getColorIdx = (color) => {
+        if (!colorIndex.has(color)) {
+            colorIndex.set(color, colorDict.length);
+            colorDict.push(color);
+        }
+        return colorIndex.get(color);
+    };
+
+    const t = placedTroops.map(troop => [
+        getTroopIdx(troop.troop),
+        troop.level,
+        Math.round(troop.x),
+        Math.round(troop.y),
+        getColorIdx(troop.color),
+        Number(String(troop.player).replace(/\D/g, "")) || 1
+    ]);
+
+    return { version: 2, mapName, td: troopDict, cd: colorDict, t };
+}
+
+export function isCompactSaveData(payload) {
+    return Boolean(payload) && payload.version === 2 && Array.isArray(payload.t);
+}
+
+// Reconstruit la forme classique { version: 1, mapName, troops: [...] } depuis le format compact.
+export function expandCompactSaveData(compact) {
+    const { td = [], cd = [], t = [], mapName = null } = compact;
+    return {
+        version: 1,
+        mapName,
+        troops: t.map(([troopIdx, level, x, y, colorIdx, playerNum]) => ({
+            troop: td[troopIdx],
+            level,
+            x,
+            y,
+            color: cd[colorIdx],
+            player: `player${playerNum}`
+        }))
+    };
 }
 
 export function encodeBase64(text) {
