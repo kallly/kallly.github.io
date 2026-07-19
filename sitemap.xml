@@ -37,6 +37,13 @@
     </url>
 
     <url>
+        <loc>https://kallly.github.io/pages/TDS-Hardcore.html</loc>
+        <lastmod>2026-07-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
         <loc>https://kallly.github.io/pages/about.html</loc>
         <lastmod>2026-07-18</lastmod>
         <changefreq>yearly</changefreq>

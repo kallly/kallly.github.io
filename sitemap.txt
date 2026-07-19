@@ -3,6 +3,7 @@ https://kallly.github.io/pages/OutskirtsCommune.html
 https://kallly.github.io/pages/UnknownGarden.html
 https://kallly.github.io/pages/WreckedBattlefield.html
 https://kallly.github.io/pages/WretchedFront.html
+https://kallly.github.io/pages/TDS-Hardcore.html
 https://kallly.github.io/pages/about.html
 https://kallly.github.io/pages/faq.html
 https://kallly.github.io/pages/contact.html
