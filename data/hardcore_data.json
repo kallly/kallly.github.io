@@ -1,0 +1,2033 @@
+{
+  "waves": [
+    {
+      "wave": 1,
+      "enemies": [
+        {
+          "count": 3,
+          "enemy": "Odd",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Swift",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 2,
+      "enemies": [
+        {
+          "count": 7,
+          "enemy": "Odd",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 3,
+      "enemies": [
+        {
+          "count": 5,
+          "enemy": "Swift",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 4,
+      "enemies": [
+        {
+          "count": 4,
+          "enemy": "Hefty",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Odd",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 5,
+      "enemies": [
+        {
+          "count": 2,
+          "enemy": "Hefty",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 4,
+          "enemy": "Swift",
+          "modifiers": [
+            "Bloated"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": 6,
+      "enemies": [
+        {
+          "count": 3,
+          "enemy": "Odd",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 6,
+          "enemy": "Hefty",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 7,
+      "enemies": [
+        {
+          "count": 3,
+          "enemy": "Hefty",
+          "modifiers": [
+            "Health Regen"
+          ]
+        },
+        {
+          "count": 6,
+          "enemy": "Odd",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Swift",
+          "modifiers": [
+            "Bloated"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": 8,
+      "enemies": [
+        {
+          "count": 1,
+          "enemy": "Mandrake",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Hefty",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Odd",
+          "modifiers": [
+            "Bloated"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": 9,
+      "enemies": [
+        {
+          "count": 12,
+          "enemy": "Hefty",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 10,
+      "enemies": [
+        {
+          "count": 7,
+          "enemy": "Phantom",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 11,
+      "enemies": [
+        {
+          "count": 6,
+          "enemy": "Hefty",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Mandrake",
+          "modifiers": []
+        },
+        {
+          "count": 6,
+          "enemy": "Swift",
+          "modifiers": [
+            "Nimble"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": 12,
+      "enemies": [
+        {
+          "count": 6,
+          "enemy": "Balloon",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 13,
+      "enemies": [
+        {
+          "count": 4,
+          "enemy": "Phantom",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Mandrake",
+          "modifiers": [
+            "Aggro"
+          ]
+        },
+        {
+          "count": 4,
+          "enemy": "Phantom",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Mandrake",
+          "modifiers": [
+            "Aggro"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Phantom",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 14,
+      "enemies": [
+        {
+          "count": 8,
+          "enemy": "Lead",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 15,
+      "enemies": [
+        {
+          "count": 6,
+          "enemy": "Phantom",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Mandrake",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 7,
+          "enemy": "Balloon",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Mandrake",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 6,
+          "enemy": "Lead",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 16,
+      "enemies": [
+        {
+          "count": 3,
+          "enemy": "Mandrake",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 6,
+          "enemy": "Lead",
+          "modifiers": []
+        },
+        {
+          "count": 2,
+          "enemy": "Lead",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Lead",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 17,
+      "enemies": [
+        {
+          "count": 2,
+          "enemy": "Mandrake",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Mystery",
+          "modifiers": []
+        },
+        {
+          "count": 2,
+          "enemy": "Mandrake",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Mystery",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 18,
+      "enemies": [
+        {
+          "count": 5,
+          "enemy": "Mystery",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Mandrake",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Lead",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Lead",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Balloon",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Lead",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Balloon",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 19,
+      "enemies": [
+        {
+          "count": 1,
+          "enemy": "Mandrake",
+          "modifiers": [
+            "Bloated",
+            "Nimble"
+          ]
+        },
+        {
+          "count": 3,
+          "enemy": "Lead",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 8,
+          "enemy": "Phantom",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Lead",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Elite Lead",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Blighted",
+          "modifiers": [
+            "Boss"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": 20,
+      "enemies": [
+        {
+          "count": 2,
+          "enemy": "Elite Lead",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Lead",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 5,
+          "enemy": "Cursed Skeleton",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 21,
+      "enemies": [
+        {
+          "count": 6,
+          "enemy": "Mystery",
+          "modifiers": []
+        },
+        {
+          "count": 6,
+          "enemy": "Balloon",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Voidling",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Cursed Skeleton",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 22,
+      "enemies": [
+        {
+          "count": 4,
+          "enemy": "Lead",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 7,
+          "enemy": "Phantom",
+          "modifiers": [
+            "Blessed",
+            "Bloated"
+          ]
+        },
+        {
+          "count": 4,
+          "enemy": "Lead",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Void Reaper",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Cursed Skeleton",
+          "modifiers": []
+        },
+        {
+          "count": 8,
+          "enemy": "Mystery",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 23,
+      "enemies": [
+        {
+          "count": 5,
+          "enemy": "Cursed Skeleton",
+          "modifiers": [
+            "Hidden"
+          ]
+        },
+        {
+          "count": 3,
+          "enemy": "Elite Lead",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Phantom",
+          "modifiers": []
+        },
+        {
+          "count": 6,
+          "enemy": "Phantom",
+          "modifiers": [
+            "Bloated",
+            "Nimble"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": 24,
+      "enemies": [
+        {
+          "count": 1,
+          "enemy": "Voidling",
+          "modifiers": []
+        },
+        {
+          "count": 9,
+          "enemy": "Cursed Skeleton",
+          "modifiers": []
+        },
+        {
+          "count": 2,
+          "enemy": "Blighted",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Reaper",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 25,
+      "enemies": [
+        {
+          "count": 2,
+          "enemy": "Elite Lead",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Phantom",
+          "modifiers": [
+            "Stun Immune"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Elite Lead",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Phantom",
+          "modifiers": [
+            "Stun Immune"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Elite Lead",
+          "modifiers": [
+            "Blessed"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Phantom",
+          "modifiers": [
+            "Stun Immune"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": 26,
+      "enemies": [
+        {
+          "count": 2,
+          "enemy": "Blighted",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Mandragora",
+          "modifiers": [
+            "Boss"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Cursed Skeleton",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Cursed Skeleton",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Cursed Skeleton",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Cursed Skeleton",
+          "modifiers": [
+            "Bloated"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": 27,
+      "enemies": [
+        {
+          "count": 7,
+          "enemy": "Void Rusher",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 28,
+      "enemies": [
+        {
+          "count": 6,
+          "enemy": "Elite Lead",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 7,
+          "enemy": "Cursed Skeleton",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Void Pike",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 29,
+      "enemies": [
+        {
+          "count": 1,
+          "enemy": "Mandragora",
+          "modifiers": []
+        },
+        {
+          "count": 2,
+          "enemy": "Void Reaper",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Elite Phantom",
+          "modifiers": []
+        },
+        {
+          "count": 9,
+          "enemy": "Void Rusher",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 30,
+      "enemies": [
+        {
+          "count": 3,
+          "enemy": "Blighted",
+          "modifiers": [
+            "Freeze Immune"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Mandragora",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Titan",
+          "modifiers": [
+            "Boss"
+          ]
+        },
+        {
+          "count": 6,
+          "enemy": "Void Rusher",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Cursed Skeleton",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 3,
+          "enemy": "Balloon",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Void Reaper",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Balloon",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Voidling",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 31,
+      "enemies": [
+        {
+          "count": 3,
+          "enemy": "Blighted",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Voidling",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Elite Phantom",
+          "modifiers": []
+        },
+        {
+          "count": 6,
+          "enemy": "Void Floater",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 32,
+      "enemies": [
+        {
+          "count": 4,
+          "enemy": "Void Pike",
+          "modifiers": []
+        },
+        {
+          "count": 2,
+          "enemy": "Elite Phantom",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 7,
+          "enemy": "Elite Mystery",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Phantom",
+          "modifiers": [
+            "Nimble",
+            "Bloated"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": 33,
+      "enemies": [
+        {
+          "count": 4,
+          "enemy": "Void Pike",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Voidling",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Voidling",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Voidling",
+          "modifiers": []
+        },
+        {
+          "count": 8,
+          "enemy": "Elite Mystery",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Blighted",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Mandragora",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Brute",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Titan",
+          "modifiers": []
+        },
+        {
+          "count": 9,
+          "enemy": "Void Rusher",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Void Floater",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 34,
+      "enemies": [
+        {
+          "count": 1,
+          "enemy": "Void Floater",
+          "modifiers": [
+            "Bloated",
+            "Nimble"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Void Floater",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Void Floater",
+          "modifiers": [
+            "Bloated",
+            "Nimble"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Void Floater",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Void Floater",
+          "modifiers": [
+            "Bloated",
+            "Nimble"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Void Floater",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Mandragora",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 4,
+          "enemy": "Unknown Small",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Mandragora",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 5,
+          "enemy": "Elite Void Rusher",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 35,
+      "enemies": [
+        {
+          "count": 1,
+          "enemy": "Mandragora",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Nightshade",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Void Rusher",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Void Pike",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 5,
+          "enemy": "Elite Mystery",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Void Rusher",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Void Pike",
+          "modifiers": [
+            "Nimble"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": 36,
+      "enemies": [
+        {
+          "count": 1,
+          "enemy": "Nightshade",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Void Rusher",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 4,
+          "enemy": "Elite Mystery",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Void Rusher",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 3,
+          "enemy": "Blighted",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Mandragora",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Void Keeper",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Void Reaper",
+          "modifiers": [
+            "Health Regen"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Void Rusher",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Void Rusher",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Void Rusher",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Void Rusher",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Elite Void Rusher",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Unknown Small",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Void Floater",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 37,
+      "enemies": [
+        {
+          "count": 5,
+          "enemy": "Soul",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 3,
+          "enemy": "Slow King",
+          "modifiers": []
+        },
+        {
+          "count": 6,
+          "enemy": "Void Pike",
+          "modifiers": [
+            "Bloated",
+            "Nimble"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Void Titan",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 5,
+          "enemy": "Soul",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 4,
+          "enemy": "Unknown Small",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 38,
+      "enemies": [
+        {
+          "count": 2,
+          "enemy": "Slow King",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Void Titan",
+          "modifiers": [
+            "Freeze Immune",
+            "Bloated"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Void Cultist",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Elite Mystery",
+          "modifiers": [
+            "Aggro"
+          ]
+        },
+        {
+          "count": 5,
+          "enemy": "Void Floater",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 3,
+          "enemy": "Elite Mystery",
+          "modifiers": [
+            "Aggro"
+          ]
+        },
+        {
+          "count": 5,
+          "enemy": "Void Floater",
+          "modifiers": [
+            "Nimble"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": 39,
+      "enemies": [
+        {
+          "count": 8,
+          "enemy": "Soul",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 4,
+          "enemy": "Slow King",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Speedy King",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Nightshade",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Unknown Small",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 40,
+      "enemies": [
+        {
+          "count": 7,
+          "enemy": "Soul",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 5,
+          "enemy": "Nightshade",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Slow King",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Vindicator",
+          "modifiers": [
+            "Boss"
+          ]
+        },
+        {
+          "count": 5,
+          "enemy": "Elite Mystery",
+          "modifiers": [
+            "Aggro"
+          ]
+        },
+        {
+          "count": 6,
+          "enemy": "Unknown Small",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Elite Void Rusher",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Void Pike",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Elite Void Rusher",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Void Pike",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Speedy King",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 41,
+      "enemies": [
+        {
+          "count": 6,
+          "enemy": "Soul",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 4,
+          "enemy": "Elite Soul",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Unknown Boss",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Speedy King",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Cultist",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Heavy Voidling",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 42,
+      "enemies": [
+        {
+          "count": 6,
+          "enemy": "Slow King",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Void Titan",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Knight",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Trickster",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Speedy King",
+          "modifiers": []
+        },
+        {
+          "count": 8,
+          "enemy": "Soul",
+          "modifiers": [
+            "Bloated",
+            "Blessed"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": 43,
+      "enemies": [
+        {
+          "count": 1,
+          "enemy": "Heavy Voidling",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Elite Soul",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Slow King",
+          "modifiers": []
+        },
+        {
+          "count": 2,
+          "enemy": "Void Knight",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Vindicator",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Swordmaster",
+          "modifiers": []
+        },
+        {
+          "count": 6,
+          "enemy": "Elite Void Rusher",
+          "modifiers": []
+        },
+        {
+          "count": 2,
+          "enemy": "Void Cultist",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 44,
+      "enemies": [
+        {
+          "count": 3,
+          "enemy": "Slow King",
+          "modifiers": [
+            "Bloated",
+            "Blessed"
+          ]
+        },
+        {
+          "count": 1,
+          "enemy": "Void Knight",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Guardian",
+          "modifiers": []
+        },
+        {
+          "count": 6,
+          "enemy": "Elite Void Rusher",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Elite Soul",
+          "modifiers": []
+        },
+        {
+          "count": 6,
+          "enemy": "Elite Void Rusher",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Trickster",
+          "modifiers": []
+        },
+        {
+          "count": 2,
+          "enemy": "Unknown Boss",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Trickster",
+          "modifiers": []
+        },
+        {
+          "count": 2,
+          "enemy": "Unknown Boss",
+          "modifiers": []
+        }
+      ]
+    },
+    {
+      "wave": 45,
+      "enemies": [
+        {
+          "count": 1,
+          "enemy": "Heavy Voidling",
+          "modifiers": [
+            "Bloated"
+          ]
+        },
+        {
+          "count": 5,
+          "enemy": "Elite Soul",
+          "modifiers": []
+        },
+        {
+          "count": 10,
+          "enemy": "Slow King",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Vindicator",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Speedy King",
+          "modifiers": []
+        },
+        {
+          "count": 6,
+          "enemy": "Nightshade",
+          "modifiers": [
+            "Nimble"
+          ]
+        },
+        {
+          "count": 2,
+          "enemy": "Heavy Voidling",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Unknown Boss",
+          "modifiers": []
+        },
+        {
+          "count": 5,
+          "enemy": "Speedy King",
+          "modifiers": []
+        },
+        {
+          "count": 4,
+          "enemy": "Void Titan",
+          "modifiers": []
+        },
+        {
+          "count": 3,
+          "enemy": "Void Knight",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Guardian",
+          "modifiers": []
+        },
+        {
+          "count": 1,
+          "enemy": "Void Reaver",
+          "modifiers": []
+        }
+      ]
+    }
+  ],
+  "enemies": [
+    {
+      "Enemy": "Odd",
+      "Base Health (Hardcore)": 13.0,
+      "Base Health (Voidcore)": 17.0,
+      "Speed": "4",
+      "Cash on Death (Hardcore)": 14.0,
+      "Cash on Death (Voidcore)": 10.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Swift",
+      "Base Health (Hardcore)": 12.0,
+      "Base Health (Voidcore)": 24.0,
+      "Speed": "7",
+      "Cash on Death (Hardcore)": 14.0,
+      "Cash on Death (Voidcore)": 12.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Hefty",
+      "Base Health (Hardcore)": 50.0,
+      "Base Health (Voidcore)": 75.0,
+      "Speed": "2.5",
+      "Cash on Death (Hardcore)": 30.0,
+      "Cash on Death (Voidcore)": 25.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Mandrake",
+      "Base Health (Hardcore)": 100.0,
+      "Base Health (Voidcore)": 750.0,
+      "Speed": "4.5",
+      "Cash on Death (Hardcore)": 50.0,
+      "Cash on Death (Voidcore)": 150.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Phantom",
+      "Base Health (Hardcore)": 70.0,
+      "Base Health (Voidcore)": 100.0,
+      "Speed": "4.5",
+      "Cash on Death (Hardcore)": 35.0,
+      "Cash on Death (Voidcore)": 35.0,
+      "Hidden": "Yes",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Balloon",
+      "Base Health (Hardcore)": 40.0,
+      "Base Health (Voidcore)": 50.0,
+      "Speed": "Fast (6, With Balloon); Above Average (4, Without Balloon)",
+      "Cash on Death (Hardcore)": 30.0,
+      "Cash on Death (Voidcore)": 25.0,
+      "Hidden": "No",
+      "Flying": "Yes (With Balloon); No (Without Balloon)",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Lead",
+      "Base Health (Hardcore)": 30.0,
+      "Base Health (Voidcore)": 80.0,
+      "Speed": "3.2",
+      "Cash on Death (Hardcore)": 15.0,
+      "Cash on Death (Voidcore)": 20.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "Yes (With covering)"
+    },
+    {
+      "Enemy": "Elite Lead",
+      "Base Health (Hardcore)": 400.0,
+      "Base Health (Voidcore)": 650.0,
+      "Speed": "Average (3, with coverings); Slightly Fast (5, without coverings)",
+      "Cash on Death (Hardcore)": 200.0,
+      "Cash on Death (Voidcore)": 200.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "Yes (With covering)"
+    },
+    {
+      "Enemy": "Mystery",
+      "Base Health (Hardcore)": 80.0,
+      "Base Health (Voidcore)": 260.0,
+      "Speed": "5",
+      "Cash on Death (Hardcore)": 40.0,
+      "Cash on Death (Voidcore)": 100.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Blighted",
+      "Base Health (Hardcore)": 4500.0,
+      "Base Health (Voidcore)": 5000.0,
+      "Speed": "3",
+      "Cash on Death (Hardcore)": 2000.0,
+      "Cash on Death (Voidcore)": 1200.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Cursed Skeleton",
+      "Base Health (Hardcore)": 400.0,
+      "Base Health (Voidcore)": 150.0,
+      "Speed": "5.5",
+      "Cash on Death (Hardcore)": 150.0,
+      "Cash on Death (Voidcore)": 50.0,
+      "Hidden": "Variable",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Voidling",
+      "Base Health (Hardcore)": 2500.0,
+      "Base Health (Voidcore)": 2800.0,
+      "Speed": "6",
+      "Cash on Death (Hardcore)": 1000.0,
+      "Cash on Death (Voidcore)": 750.0,
+      "Hidden": "No",
+      "Flying": "No; Yes (Lane Switch only)",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Reaper",
+      "Base Health (Hardcore)": 2250.0,
+      "Base Health (Voidcore)": 2750.0,
+      "Speed": "3",
+      "Cash on Death (Hardcore)": 1200.0,
+      "Cash on Death (Voidcore)": 900.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Elite Phantom",
+      "Base Health (Hardcore)": 3250.0,
+      "Base Health (Voidcore)": 3500.0,
+      "Speed": "5",
+      "Cash on Death (Hardcore)": 1600.0,
+      "Cash on Death (Voidcore)": 500.0,
+      "Hidden": "Yes",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Mandragora",
+      "Base Health (Hardcore)": 6500.0,
+      "Base Health (Voidcore)": 12000.0,
+      "Speed": "2.85",
+      "Cash on Death (Hardcore)": 3250.0,
+      "Cash on Death (Voidcore)": 3250.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Rusher",
+      "Base Health (Hardcore)": 800.0,
+      "Base Health (Voidcore)": 1250.0,
+      "Speed": "Extremely Swift (12, Shield); Slightly Fast (5, No Shield)",
+      "Cash on Death (Hardcore)": 300.0,
+      "Cash on Death (Voidcore)": 400.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Pike",
+      "Base Health (Hardcore)": 1500.0,
+      "Base Health (Voidcore)": 2000.0,
+      "Speed": "5",
+      "Cash on Death (Hardcore)": 800.0,
+      "Cash on Death (Voidcore)": 500.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "Yes"
+    },
+    {
+      "Enemy": "Void Titan",
+      "Base Health (Hardcore)": 27500.0,
+      "Base Health (Voidcore)": 40000.0,
+      "Speed": "2.7",
+      "Cash on Death (Hardcore)": 15000.0,
+      "Cash on Death (Voidcore)": 10000.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Floater",
+      "Base Health (Hardcore)": 750.0,
+      "Base Health (Voidcore)": 1250.0,
+      "Speed": "Above Average (4, with pod); Below Average (2.7, without pod)",
+      "Cash on Death (Hardcore)": 600.0,
+      "Cash on Death (Voidcore)": 500.0,
+      "Hidden": "No",
+      "Flying": "Yes",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Elite Mystery",
+      "Base Health (Hardcore)": 2000.0,
+      "Base Health (Voidcore)": 4500.0,
+      "Speed": "4.5",
+      "Cash on Death (Hardcore)": 900.0,
+      "Cash on Death (Voidcore)": 1500.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Brute",
+      "Base Health (Hardcore)": 60000.0,
+      "Base Health (Voidcore)": 75000.0,
+      "Speed": "1.9",
+      "Cash on Death (Hardcore)": 30000.0,
+      "Cash on Death (Voidcore)": null,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Unknown Small",
+      "Base Health (Hardcore)": 6000.0,
+      "Base Health (Voidcore)": 9000.0,
+      "Speed": "4",
+      "Cash on Death (Hardcore)": 2500.0,
+      "Cash on Death (Voidcore)": 2250.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Elite Void Rusher",
+      "Base Health (Hardcore)": 4000.0,
+      "Base Health (Voidcore)": 5000.0,
+      "Speed": "Extremely Swift (12, Shield); Slightly Fast (5, No Shield)",
+      "Cash on Death (Hardcore)": 2000.0,
+      "Cash on Death (Voidcore)": 700.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Nightshade",
+      "Base Health (Hardcore)": 4000.0,
+      "Base Health (Voidcore)": 5000.0,
+      "Speed": "4.5",
+      "Cash on Death (Hardcore)": 2000.0,
+      "Cash on Death (Voidcore)": 2000.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Keeper",
+      "Base Health (Hardcore)": 100000.0,
+      "Base Health (Voidcore)": 40000.0,
+      "Speed": "Slightly Slow (2.25); Above Average (4, Wayfarer)",
+      "Cash on Death (Hardcore)": 45000.0,
+      "Cash on Death (Voidcore)": 10000.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Soul",
+      "Base Health (Hardcore)": 2500.0,
+      "Base Health (Voidcore)": 3000.0,
+      "Speed": "7",
+      "Cash on Death (Hardcore)": 2250.0,
+      "Cash on Death (Voidcore)": 1750.0,
+      "Hidden": "Yes",
+      "Flying": "No",
+      "Ghost": "Yes",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Slow King",
+      "Base Health (Hardcore)": 12000.0,
+      "Base Health (Voidcore)": 14000.0,
+      "Speed": "2.85",
+      "Cash on Death (Hardcore)": 6000.0,
+      "Cash on Death (Voidcore)": 5000.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Cultist",
+      "Base Health (Hardcore)": 15000.0,
+      "Base Health (Voidcore)": 25000.0,
+      "Speed": "2",
+      "Cash on Death (Hardcore)": 7500.0,
+      "Cash on Death (Voidcore)": 10000.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Healing Beacon",
+      "Base Health (Hardcore)": 1.0,
+      "Base Health (Voidcore)": 1.0,
+      "Speed": "20",
+      "Cash on Death (Hardcore)": null,
+      "Cash on Death (Voidcore)": null,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Speedy King",
+      "Base Health (Hardcore)": 3000.0,
+      "Base Health (Voidcore)": 3500.0,
+      "Speed": "6.5",
+      "Cash on Death (Hardcore)": 1500.0,
+      "Cash on Death (Voidcore)": 1750.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Vindicator",
+      "Base Health (Hardcore)": 50000.0,
+      "Base Health (Voidcore)": 65000.0,
+      "Speed": "2.1",
+      "Cash on Death (Hardcore)": 25000.0,
+      "Cash on Death (Voidcore)": 60000.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Elite Soul",
+      "Base Health (Hardcore)": 20000.0,
+      "Base Health (Voidcore)": 22222.0,
+      "Speed": "4",
+      "Cash on Death (Hardcore)": 12500.0,
+      "Cash on Death (Voidcore)": 8000.0,
+      "Hidden": "Yes",
+      "Flying": "No",
+      "Ghost": "Yes",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Unknown Boss",
+      "Base Health (Hardcore)": 27500.0,
+      "Base Health (Voidcore)": 32500.0,
+      "Speed": "3",
+      "Cash on Death (Hardcore)": 13500.0,
+      "Cash on Death (Voidcore)": 15000.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Heavy Voidling",
+      "Base Health (Hardcore)": 40000.0,
+      "Base Health (Voidcore)": 40000.0,
+      "Speed": "6.5",
+      "Cash on Death (Hardcore)": 20000.0,
+      "Cash on Death (Voidcore)": 20000.0,
+      "Hidden": "No",
+      "Flying": "Yes (Lane Switch)",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Knight",
+      "Base Health (Hardcore)": 75000.0,
+      "Base Health (Voidcore)": 90000.0,
+      "Speed": "2.5",
+      "Cash on Death (Hardcore)": 37500.0,
+      "Cash on Death (Voidcore)": 42000.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Trickster",
+      "Base Health (Hardcore)": 20000.0,
+      "Base Health (Voidcore)": 20000.0,
+      "Speed": "1.9",
+      "Cash on Death (Hardcore)": 10000.0,
+      "Cash on Death (Voidcore)": 10000.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Portal",
+      "Base Health (Hardcore)": 6000.0,
+      "Base Health (Voidcore)": 8000.0,
+      "Speed": "0",
+      "Cash on Death (Hardcore)": null,
+      "Cash on Death (Voidcore)": null,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Swordmaster",
+      "Base Health (Hardcore)": 350000.0,
+      "Base Health (Voidcore)": 650000.0,
+      "Speed": "Slow (1.75); Average (3, Undying Will)",
+      "Cash on Death (Hardcore)": 100000.0,
+      "Cash on Death (Voidcore)": 150000.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Guardian",
+      "Base Health (Hardcore)": 150000.0,
+      "Base Health (Voidcore)": 200000.0,
+      "Speed": "1.9",
+      "Cash on Death (Hardcore)": 100000.0,
+      "Cash on Death (Voidcore)": 75000.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Reaver",
+      "Base Health (Hardcore)": 1200000.0,
+      "Base Health (Voidcore)": 1200000.0,
+      "Speed": "Extremely Slow (0.95); Extremely Slow (0.65, Voidcore); Extremely Slow (0.8125, Void Wrath, Voidcore); Slightly Fast (4.5, Void Deathwish)",
+      "Cash on Death (Hardcore)": 480000.0,
+      "Cash on Death (Voidcore)": 400000.0,
+      "Hidden": "No",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    },
+    {
+      "Enemy": "Void Eye",
+      "Base Health (Hardcore)": 15000.0,
+      "Base Health (Voidcore)": 20000.0,
+      "Speed": "0.0001",
+      "Cash on Death (Hardcore)": null,
+      "Cash on Death (Voidcore)": null,
+      "Hidden": "Yes (Soul Stealer Summon)",
+      "Flying": "No",
+      "Ghost": "No",
+      "Lead": "No"
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+import { polylineLength, segmentLengthInCircle } from "../util/geometry.js";
+
 // Modèle métier de la carte.
 // Ce module gère le chargement et les conversions écran / monde.
 export class MapModel {
@@ -60,6 +62,29 @@ export class MapModel {
 
     get collisionMapMult() {
         return this.currentMap?.collisionMapMult ?? 1;
+    }
+
+    // Sous-chemins (routes ennemies) de la carte actuelle, ou [] si aucun "path" n'est défini
+    // (toutes les cartes sauf celles déjà tracées par un admin et collées dans maps.json).
+    getPaths() {
+        return this.currentMap?.path?.paths || [];
+    }
+
+    // Longueur totale (tous sous-chemins confondus) du chemin ennemi de la carte actuelle.
+    getTotalPathLength() {
+        return this.getPaths().reduce((total, path) => total + polylineLength(path.points), 0);
+    }
+
+    // Longueur du chemin contenue dans le cercle (cx, cy, radius) — la portée d'une tour.
+    getPathLengthInCircle(cx, cy, radius) {
+        let total = 0;
+        for (const path of this.getPaths()) {
+            const points = path.points;
+            for (let i = 0; i < points.length - 1; i++) {
+                total += segmentLengthInCircle(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y, cx, cy, radius);
+            }
+        }
+        return total;
     }
 
     // Convertit des coordonnées écran en coordonnées monde.

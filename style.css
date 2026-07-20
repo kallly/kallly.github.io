@@ -785,6 +785,17 @@ a{
     color:#0c1220;
 }
 
+@keyframes canvas-button-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.canvas-button.spinning{
+    animation: canvas-button-spin 1s linear infinite;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 /* Sélecteur de couleur de zone, habillé pour ressembler aux autres boutons de la toolbar. */
 .canvas-color-swatch{
     padding:3px;
@@ -806,6 +817,32 @@ a{
 .canvas-color-swatch::-moz-color-swatch{
     border:none;
     border-radius:50%;
+}
+
+/* ========================= */
+/* Admin-only UI (path tracing tool + sidebar section) */
+/* Hidden unless <body> carries .admin-mode — toggled at runtime by app.js's       */
+/* resolveAdminMode() on index.html, or hardcoded directly in admin.html's markup. */
+/* ========================= */
+
+.admin-only{
+    display:none;
+}
+
+body.admin-mode .sidebar-section.admin-only{
+    display:block;
+}
+
+body.admin-mode .canvas-tool-group.admin-only{
+    display:flex;
+}
+
+body.admin-mode .canvas-divider.admin-only{
+    display:block;
+}
+
+body.admin-mode .canvas-button.admin-only{
+    display:flex;
 }
 
 /* ========================= */
@@ -870,12 +907,56 @@ a{
     display:none;
 }
 
+/* ========================= */
+/* Placement panel settings popup (opened via the ⚙️ button) */
+/* ========================= */
+
+#placementSettingsPanel{
+    position:absolute;
+    left:290px;
+    bottom:15px;
+    z-index:15;
+    width:260px;
+    max-width:calc(100% - 30px);
+    max-height:45vh;
+    overflow-y:auto;
+    padding:14px;
+    background:var(--bg-elevated);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow);
+}
+
+#placementSettingsPanel.panel-hidden{
+    display:none;
+}
+
+.settings-checkbox-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.settings-checkbox{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    cursor:pointer;
+}
+
 .floating-panel-header{
     display:flex;
     align-items:center;
     justify-content:space-between;
     gap:10px;
     margin-bottom:10px;
+}
+
+.floating-panel-header__actions{
+    display:flex;
+    align-items:center;
+    gap:4px;
 }
 
 .floating-panel-header .sidebar-section__title{
@@ -1071,6 +1152,9 @@ a{
         display: none;
     }
     #placementPanel {
+        display: none;
+    }
+    #placementSettingsPanel {
         display: none;
     }
     #canvasHelp {
