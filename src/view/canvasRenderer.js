@@ -1,12 +1,16 @@
+// Couleur fixe du tracé de chemin (route ennemie) — pas de personnalisation, contrairement aux zones.
+const PATH_COLOR = "#ff3b3b";
+
 // Composant de rendu pour le canvas.
 // Il dessine la carte, les troupes, la sélection active et l'aperçu de placement.
 export class CanvasRenderer {
-    constructor(canvas, mapModel, placementModel, polygonModel, textLabelModel, state) {
+    constructor(canvas, mapModel, placementModel, polygonModel, textLabelModel, pathModel, state) {
         this.canvas = canvas;
         this.mapModel = mapModel;
         this.placementModel = placementModel;
         this.polygonModel = polygonModel;
         this.textLabelModel = textLabelModel;
+        this.pathModel = pathModel;
         this.state = state;
         this.ctx = this.canvas.getContext("2d");
         this.onRenderCallback = null;
@@ -41,6 +45,7 @@ export class CanvasRenderer {
 
         this.drawMap();
         this.drawPolygons();
+        this.drawPaths();
         this.drawTroops();
         this.drawTextLabels();
 
@@ -88,11 +93,13 @@ export class CanvasRenderer {
         this.clear();
         this.drawMap();
         this.drawPolygons();
+        this.drawPaths();
         this.drawTroops();
         this.drawTextLabels();
         this.drawSelection();
         this.drawPlacementPreview();
         this.drawPolygonDraft();
+        this.drawPathDraft();
         if (typeof this.onRenderCallback === "function") {
             this.onRenderCallback();
         }
@@ -145,6 +152,34 @@ export class CanvasRenderer {
         this.ctx.stroke();
     }
 
+    // Dessine tous les chemins tracés (routes ennemies).
+    drawPaths() {
+        for (const path of this.pathModel.paths) {
+            this.drawPath(path);
+        }
+    }
+
+    // Trace une polyligne ouverte (segments droits), sommets en coordonnées monde.
+    drawPath(path) {
+        if (path.points.length < 2) {
+            return;
+        }
+
+        const isSelected = this.pathModel.getSelected() === path;
+
+        this.ctx.beginPath();
+        const first = this.mapModel.worldToScreen(path.points[0].x, path.points[0].y);
+        this.ctx.moveTo(first.x, first.y);
+        for (let i = 1; i < path.points.length; i++) {
+            const point = this.mapModel.worldToScreen(path.points[i].x, path.points[i].y);
+            this.ctx.lineTo(point.x, point.y);
+        }
+
+        this.ctx.lineWidth = isSelected ? 4 : 3;
+        this.ctx.strokeStyle = isSelected ? "#00FF00" : PATH_COLOR;
+        this.ctx.stroke();
+    }
+
     // Affiche le tracé en cours (mode "Draw zone") : segments déjà posés + segment fantôme
     // jusqu'au pointeur, et un marqueur sur le premier sommet indiquant où fermer la forme.
     drawPolygonDraft() {
@@ -174,6 +209,32 @@ export class CanvasRenderer {
         this.ctx.arc(first.x, first.y, 5, 0, Math.PI * 2);
         this.ctx.fillStyle = color;
         this.ctx.fill();
+    }
+
+    // Affiche le tracé de chemin en cours (mode "Trace path") : segments déjà posés + segment
+    // fantôme jusqu'au pointeur. Contrairement à drawPolygonDraft, jamais de marqueur de fermeture :
+    // un chemin est une polyligne ouverte, pas une forme fermée qui se referme sur son premier point.
+    drawPathDraft() {
+        const draft = this.state.pathDraftPoints;
+        if (!this.state.isTracingPath || !draft || draft.length === 0) {
+            return;
+        }
+
+        const first = this.mapModel.worldToScreen(draft[0].x, draft[0].y);
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(first.x, first.y);
+        for (let i = 1; i < draft.length; i++) {
+            const point = this.mapModel.worldToScreen(draft[i].x, draft[i].y);
+            this.ctx.lineTo(point.x, point.y);
+        }
+        const pointer = this.mapModel.worldToScreen(this.state.pointerX, this.state.pointerY);
+        this.ctx.lineTo(pointer.x, pointer.y);
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeStyle = PATH_COLOR;
+        this.ctx.setLineDash([6, 4]);
+        this.ctx.stroke();
+        this.ctx.setLineDash([]);
     }
 
     // Dessine toutes les troupes posées.

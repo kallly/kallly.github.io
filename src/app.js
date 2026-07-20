@@ -6,13 +6,14 @@ import { MapModel } from "./model/mapModel.js";
 import { PlacementModel } from "./model/placementModel.js";
 import { PolygonModel } from "./model/polygonModel.js";
 import { TextLabelModel } from "./model/textLabelModel.js";
+import { PathModel } from "./model/pathModel.js";
 import { SidebarView } from "./view/sidebarView.js";
 import { CanvasRenderer } from "./view/canvasRenderer.js";
 import { InputController } from "./controller/inputController.js";
 import { UIController, playerFilterFromParam } from "./controller/uiController.js";
 import { CollabController } from "./controller/collabController.js";
 import { HistoryController } from "./controller/historyController.js";
-import { clearStorage } from "./service/saveService.js";
+import { clearStorage, saveDisplaySettings, loadDisplaySettings } from "./service/saveService.js";
 import { initCollab } from "./service/collabService.js";
 
 // Le panneau de placement flottant peut être masqué via sa croix ; un clic sur le
@@ -35,6 +36,20 @@ function initHelpPanelToggle() {
     const panel = document.getElementById("helpPanel");
     const openButton = document.getElementById("helpButton");
     const closeButton = document.getElementById("helpPanelClose");
+    if (!panel || !openButton || !closeButton) {
+        return;
+    }
+
+    openButton.addEventListener("click", () => panel.classList.toggle("panel-hidden"));
+    closeButton.addEventListener("click", () => panel.classList.add("panel-hidden"));
+}
+
+// Popup de réglages d'affichage de placementPanel (ouvert via ⚙️) : même comportement purement
+// manuel que helpPanel, indépendant du clic sur le canvas.
+function initPlacementSettingsToggle() {
+    const panel = document.getElementById("placementSettingsPanel");
+    const openButton = document.getElementById("placementSettingsButton");
+    const closeButton = document.getElementById("placementSettingsPanelClose");
     if (!panel || !openButton || !closeButton) {
         return;
     }
@@ -103,16 +118,54 @@ function initTextLabelInput({ mapModel, textLabelModel, canvas }) {
     };
 }
 
+const ADMIN_STORAGE_KEY = "tds-mapper-admin";
+
+// Résout et applique le mode admin : toujours actif sur admin.html (classe "admin-mode"
+// codée en dur dans le <body>), activable/désactivable sur index.html via ?admin=1 / ?admin=0,
+// persisté dans localStorage pour ne pas avoir à rajouter le paramètre à chaque rechargement.
+// Purement une bascule d'affichage (voir .admin-only dans style.css) : ne restreint aucune
+// donnée ni logique côté modèle, uniquement la visibilité des contrôles admin.
+function resolveAdminMode() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("admin")) {
+        const enabled = params.get("admin") !== "0";
+        try {
+            localStorage.setItem(ADMIN_STORAGE_KEY, enabled ? "1" : "0");
+        } catch (error) {
+            console.warn("Unable to persist admin mode:", error);
+        }
+    }
+
+    const hardcoded = document.body.classList.contains("admin-mode");
+    let stored = false;
+    try {
+        stored = localStorage.getItem(ADMIN_STORAGE_KEY) === "1";
+    } catch (error) {
+        stored = false;
+    }
+
+    const isAdmin = hardcoded || stored;
+    document.body.classList.toggle("admin-mode", isAdmin);
+    return isAdmin;
+}
+
 async function init() {
+    const isAdmin = resolveAdminMode();
+
     // Sélection des éléments du DOM nécessaires à l'application.
     const canvas = document.getElementById("gameCanvas");
     initPlacementPanelToggle(canvas);
     initHelpPanelToggle();
+    initPlacementSettingsToggle();
+
+    const displaySettings = loadDisplaySettings() || {};
+
     const elements = {
         troopList: document.getElementById("troopList"),
         levelSelect: document.getElementById("level"),
         selectedTroopText: document.getElementById("selectedTroop"),
         selectedRangeText: document.getElementById("selectedRange"),
+        selectedPathCoverage: document.getElementById("selectedPathCoverage"),
         jsonArea: document.getElementById("jsonArea"),
         troopSearch: document.getElementById("troopSearch"),
         troopColor: document.getElementById("troopColor"),
@@ -138,16 +191,32 @@ async function init() {
         collabRoomCodeInput: document.getElementById("collabRoomCodeInput"),
         collabJoinSession: document.getElementById("collabJoinSession"),
         collabLeaveSession: document.getElementById("collabLeaveSession"),
+        tracePath: document.getElementById("tracePath"),
+        optimizePlacement: document.getElementById("optimizePlacement"),
+        showPathJson: document.getElementById("showPathJson"),
+        applyPathJson: document.getElementById("applyPathJson"),
+        clearPath: document.getElementById("clearPath"),
+        pathJsonArea: document.getElementById("pathJsonArea"),
+        pathCoverageRow: document.getElementById("pathCoverageRow"),
+        allPathCoverageList: document.getElementById("allPathCoverageList"),
+        showRangesCheckbox: document.getElementById("showRangesCheckbox"),
+        showNamesCheckbox: document.getElementById("showNamesCheckbox"),
+        showLevelsCheckbox: document.getElementById("showLevelsCheckbox"),
+        showPathCoverageCheckbox: document.getElementById("showPathCoverageCheckbox"),
+        showAllPathCoverageCheckbox: document.getElementById("showAllPathCoverageCheckbox"),
     };
 
     // État partagé entre les composants.
     const state = {
+        isAdmin,
         selectedTroop: null,
         selectedLevel: 0,
         selectedColor: "#FFD54A",
-        showRanges: false,
-        showNames: false,
-        showLevels: false,
+        showRanges: displaySettings.showRanges ?? false,
+        showNames: displaySettings.showNames ?? false,
+        showLevels: displaySettings.showLevels ?? false,
+        showPathCoverage: displaySettings.showPathCoverage ?? true,
+        showAllPathCoverage: displaySettings.showAllPathCoverage ?? false,
         selectedPlayer: "player1",
         // Filtre d'affichage uniquement (n'affecte jamais les données) : "all" ou "player1/2/3".
         // Les troupes des autres joueurs restent en mémoire mais sont dessinées grisées.
@@ -165,11 +234,14 @@ async function init() {
         isPlacementValid: false,
         previewRange: 0,
         previewCollision: 0,
-        // Dessin de zones polygonales / pose de texte : purement local pour l'instant (non synchronisé en collab).
+        // Dessin de zones polygonales / pose de texte / tracé de chemin (admin) : purement local
+        // pour l'instant (non synchronisé en collab, non inclus dans le save/share — voir PathModel).
         isDrawingPolygon: false,
         polygonDraftPoints: [],
         zoneColor: "#5b8cff",
-        isPlacingText: false
+        isPlacingText: false,
+        isTracingPath: false,
+        pathDraftPoints: []
     };
 
     // Modèles métiers.
@@ -178,16 +250,18 @@ async function init() {
     const placementModel = new PlacementModel();
     const polygonModel = new PolygonModel();
     const textLabelModel = new TextLabelModel();
+    const pathModel = new PathModel();
 
     // Historique local (annulation des dernières actions), indépendant de la collaboration.
-    const historyController = new HistoryController({ state, placementModel, polygonModel, textLabelModel });
+    const historyController = new HistoryController({ state, placementModel, polygonModel, textLabelModel, pathModel });
 
     // Vue latérale et rendu de canvas.
     const sidebarView = new SidebarView({
         ...elements,
         canvas
     }, troopModel, state);
-    const canvasRenderer = new CanvasRenderer(canvas, mapModel, placementModel, polygonModel, textLabelModel, state);
+    sidebarView.syncDisplaySettings(state);
+    const canvasRenderer = new CanvasRenderer(canvas, mapModel, placementModel, polygonModel, textLabelModel, pathModel, state);
     const textLabelInputController = initTextLabelInput({ mapModel, textLabelModel, canvas });
 
     // Contrôleurs pour la logique UI et les interactions.
@@ -198,6 +272,7 @@ async function init() {
         placementModel,
         polygonModel,
         textLabelModel,
+        pathModel,
         sidebarView,
         canvas,
         canvasRenderer,
@@ -249,6 +324,7 @@ async function init() {
         placementModel,
         polygonModel,
         textLabelModel,
+        pathModel,
         troopModel,
         state,
         callbacks: {
@@ -258,7 +334,12 @@ async function init() {
                     state.selectedTroop = null;
                     sidebarView.setSelectedLevel(selected.level);
                     sidebarView.setSelectedPlayer(selected.player || state.selectedPlayer);
-                    sidebarView.updateSelectedTroopPanel({ troopName: selected.troop, range: selected.range });
+                    sidebarView.updateSelectedTroopPanel({
+                        troopName: selected.troop,
+                        range: selected.range,
+                        ...uiController.getPathCoverage(selected.x, selected.y, selected.range),
+                        allPathCoverage: uiController.getAllPathCoverage(selected.troop, selected.x, selected.y)
+                    });
                     sidebarView.setSelectedColor(selected.color || state.playerColors[selected.player] || state.selectedColor);
                 } else {
                     uiController.updateSelectedTroopPanel();
@@ -273,6 +354,8 @@ async function init() {
             onZoneCancelled: () => sidebarView.setDrawZoneActive(false),
             onTextPlacementEnded: () => sidebarView.setAddTextActive(false),
             onTextPlacementRequested: (x, y) => textLabelInputController.requestTextAt(x, y),
+            onPathFinished: () => sidebarView.setPathTraceActive(false),
+            onPathCancelled: () => sidebarView.setPathTraceActive(false),
             onSaveRequested: () => uiController.handleSave(),
             onLoadRequested: () => uiController.handleLoad(),
             onUndoRequested: () => uiController.handleUndo()

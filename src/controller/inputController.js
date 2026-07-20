@@ -1,12 +1,13 @@
 // Contrôleur des interactions utilisateur.
 // Il gère la souris, le clavier et les événements de zoom/pan sur le canvas.
 export class InputController {
-    constructor({ canvas, mapModel, placementModel, polygonModel, textLabelModel, troopModel, state, callbacks }) {
+    constructor({ canvas, mapModel, placementModel, polygonModel, textLabelModel, pathModel, troopModel, state, callbacks }) {
         this.canvas = canvas;
         this.mapModel = mapModel;
         this.placementModel = placementModel;
         this.polygonModel = polygonModel;
         this.textLabelModel = textLabelModel;
+        this.pathModel = pathModel;
         this.troopModel = troopModel;
         this.state = state;
         this.callbacks = callbacks;
@@ -90,6 +91,11 @@ export class InputController {
             return;
         }
 
+        if (this.state.isTracingPath) {
+            this.handlePathDraftClick();
+            return;
+        }
+
         const clickedTroop = this.placementModel.findAt(pointerX, pointerY);
 
         if (clickedTroop) {
@@ -148,9 +154,18 @@ export class InputController {
             return;
         }
 
+        const clickedPath = this.pathModel.findAt(pointerX, pointerY);
+        if (clickedPath) {
+            this.pathModel.select(clickedPath);
+            this.polygonModel.select(null);
+            this.textLabelModel.select(null);
+            return;
+        }
+
         this.placementModel.select(null);
         this.polygonModel.select(null);
         this.textLabelModel.select(null);
+        this.pathModel.select(null);
         if (typeof this.callbacks?.onSelectionChanged === "function") {
             this.callbacks.onSelectionChanged(null);
         }
@@ -224,12 +239,50 @@ export class InputController {
         }
     }
 
-    // Clic droit : annule un tracé de zone ou un placement de texte en cours, sinon la sélection de placement.
+    // Ajoute un sommet au tracé de chemin en cours — jamais de fermeture automatique
+    // (contrairement à un polygone, un chemin est une polyligne ouverte).
+    handlePathDraftClick() {
+        const { pointerX, pointerY } = this.state;
+        this.state.pathDraftPoints.push({ x: pointerX, y: pointerY });
+    }
+
+    // Valide le tracé en cours en un nouveau chemin et quitte le mode tracé.
+    finishPathDraft() {
+        const points = this.state.pathDraftPoints;
+        this.state.pathDraftPoints = [];
+        this.state.isTracingPath = false;
+
+        const path = this.pathModel.add({ points });
+        if (typeof this.callbacks?.onPathFinished === "function") {
+            this.callbacks.onPathFinished(path);
+        }
+    }
+
+    // Abandonne le tracé en cours sans créer de chemin, et quitte le mode tracé.
+    cancelPathDraft() {
+        this.state.pathDraftPoints = [];
+        this.state.isTracingPath = false;
+        if (typeof this.callbacks?.onPathCancelled === "function") {
+            this.callbacks.onPathCancelled();
+        }
+    }
+
+    // Clic droit : annule un tracé de zone ou un placement de texte en cours (termine un tracé de
+    // chemin s'il a assez de points, sinon l'annule), sinon la sélection de placement.
     handleContextMenu(event) {
         event.preventDefault();
 
         if (this.state.isDrawingPolygon) {
             this.cancelPolygonDraft();
+            return;
+        }
+
+        if (this.state.isTracingPath) {
+            if (this.state.pathDraftPoints.length >= 2) {
+                this.finishPathDraft();
+            } else {
+                this.cancelPathDraft();
+            }
             return;
         }
 
@@ -419,10 +472,21 @@ export class InputController {
             this.cancelTextPlacement();
         }
 
+        if (this.isMouseOnCanvas(event) && event.key === "Escape" && this.state.isTracingPath) {
+            event.preventDefault();
+            this.cancelPathDraft();
+        }
+
         if (this.isMouseOnCanvas(event) && event.key === "Enter" && this.state.isDrawingPolygon
             && this.state.polygonDraftPoints.length >= 3) {
             event.preventDefault();
             this.finishPolygonDraft();
+        }
+
+        if (this.isMouseOnCanvas(event) && event.key === "Enter" && this.state.isTracingPath
+            && this.state.pathDraftPoints.length >= 2) {
+            event.preventDefault();
+            this.finishPathDraft();
         }
 
         if (this.isMouseOnCanvas(event) && event.key === "Delete") {
@@ -448,6 +512,12 @@ export class InputController {
                         this.polygonModel.select(null);
                         if (typeof this.callbacks?.onZoneSelectionChanged === "function") {
                             this.callbacks.onZoneSelectionChanged(null);
+                        }
+                    } else {
+                        const selectedPath = this.pathModel.getSelected();
+                        if (selectedPath) {
+                            this.pathModel.remove(selectedPath);
+                            this.pathModel.select(null);
                         }
                     }
                 }

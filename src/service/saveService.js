@@ -2,6 +2,7 @@ import LZString from "../util/lz-string.js";
 // Service de sauvegarde et de chargement des données de placement.
 
 const AUTO_SAVE_KEY = "tds-mapper-autosave";
+const DISPLAY_SETTINGS_KEY = "tds-mapper-display-settings";
 
 // Crée un objet de sauvegarde à partir des troupes placées, des zones dessinées et des textes posés.
 export function createSaveData(placedTroops, mapName = null, placedPolygons = [], placedLabels = []) {
@@ -176,4 +177,24 @@ export function loadFromLZString(encoded) {
 
 export function clearStorage() {
     localStorage.removeItem(AUTO_SAVE_KEY);
+}
+
+// Réglages d'affichage du panneau ⚙️ (Show Ranges/Names/Levels/Path Coverage) — clé localStorage
+// distincte de AUTO_SAVE_KEY, ce sont des préférences d'interface, pas des données de carte.
+export function saveDisplaySettings(settings) {
+    try {
+        localStorage.setItem(DISPLAY_SETTINGS_KEY, JSON.stringify(settings));
+    } catch (error) {
+        console.error("Impossible de sauvegarder les réglages d'affichage :", error);
+    }
+}
+
+export function loadDisplaySettings() {
+    try {
+        const stored = localStorage.getItem(DISPLAY_SETTINGS_KEY);
+        return stored ? JSON.parse(stored) : null;
+    } catch (error) {
+        console.error("Impossible de charger les réglages d'affichage :", error);
+        return null;
+    }
 }

@@ -30,6 +30,16 @@ export class SidebarView {
         this.elements.drawZone.addEventListener("click", () => this.dispatch("onToggleDrawZone"));
         this.elements.zoneColor.addEventListener("input", () => this.dispatch("onZoneColorChange", this.elements.zoneColor.value));
         this.elements.addText.addEventListener("click", () => this.dispatch("onToggleAddText"));
+        this.elements.tracePath.addEventListener("click", () => this.dispatch("onTogglePathTrace"));
+        this.elements.showPathJson.addEventListener("click", () => this.dispatch("onShowPathJson"));
+        this.elements.applyPathJson.addEventListener("click", () => this.dispatch("onApplyPathJson"));
+        this.elements.clearPath.addEventListener("click", () => this.dispatch("onClearPath"));
+        this.elements.showRangesCheckbox.addEventListener("change", () => this.dispatch("onToggleRange"));
+        this.elements.showNamesCheckbox.addEventListener("change", () => this.dispatch("onToggleName"));
+        this.elements.showLevelsCheckbox.addEventListener("change", () => this.dispatch("onToggleLevel"));
+        this.elements.showPathCoverageCheckbox.addEventListener("change", () => this.dispatch("onTogglePathCoverageSetting"));
+        this.elements.showAllPathCoverageCheckbox.addEventListener("change", () => this.dispatch("onToggleAllPathCoverageSetting"));
+        this.elements.optimizePlacement.addEventListener("click", () => this.dispatch("onOptimizePlacement"));
         this.elements.resetMapPosition.addEventListener("click", () => this.dispatch("onResetMapPosition"));
         this.elements.collabCreateSession.addEventListener("click", () => this.dispatch("onCreateSession"));
         this.elements.collabJoinSession.addEventListener("click", () => this.dispatch("onJoinSession", this.elements.collabRoomCodeInput.value.trim().toUpperCase()));
@@ -88,15 +98,58 @@ export class SidebarView {
     }
 
     // Met à jour le panneau d'information sur la troupe sélectionnée.
-    updateSelectedTroopPanel({ troopName, range }) {
+    updateSelectedTroopPanel({ troopName, range, pathLength = null, pathPercent = null, allPathCoverage = null }) {
+        this.elements.pathCoverageRow.style.display = this.state.showPathCoverage ? "" : "none";
+
         if (!troopName) {
             this.elements.selectedTroopText.textContent = "None";
             this.elements.selectedRangeText.textContent = "-";
+            this.elements.selectedPathCoverage.textContent = "-";
+            this.renderAllPathCoverage(null);
             return;
         }
 
         this.elements.selectedTroopText.textContent = troopName;
         this.elements.selectedRangeText.textContent = range.toFixed(1);
+        this.elements.selectedPathCoverage.textContent = pathLength === null
+            ? "-"
+            : `${pathLength.toFixed(1)} (${pathPercent.toFixed(1)}%)`;
+        this.renderAllPathCoverage(allPathCoverage);
+    }
+
+    // Construit la liste "L0/L1/.../Ln" dans #allPathCoverageList, ou la masque/vide si `rows`
+    // est null (réglage désactivé, aucune troupe sélectionnée/armée, ou troupe inconnue).
+    renderAllPathCoverage(rows) {
+        const container = this.elements.allPathCoverageList;
+        container.innerHTML = "";
+        if (!rows) {
+            container.style.display = "none";
+            return;
+        }
+
+        container.style.display = "";
+        for (const row of rows) {
+            const value = row.pathLength === null ? "-" : `${row.pathLength.toFixed(1)} (${row.pathPercent.toFixed(1)}%)`;
+            const rowEl = document.createElement("div");
+            rowEl.className = "selected-info__row";
+            rowEl.innerHTML = `<span class="selected-info__label">L${row.level}</span><span class="selected-info__value">${value}</span>`;
+            container.appendChild(rowEl);
+        }
+    }
+
+    // Synchronise les 5 checkboxes du panneau ⚙️ (et l'état visuel "actif" des boutons de la
+    // toolbar existants) avec l'état courant — appelé au démarrage et après chaque bascule,
+    // que celle-ci vienne d'une checkbox ou du bouton toolbar correspondant.
+    syncDisplaySettings(state) {
+        this.elements.showRangesCheckbox.checked = state.showRanges;
+        this.elements.showNamesCheckbox.checked = state.showNames;
+        this.elements.showLevelsCheckbox.checked = state.showLevels;
+        this.elements.showPathCoverageCheckbox.checked = state.showPathCoverage;
+        this.elements.showAllPathCoverageCheckbox.checked = state.showAllPathCoverage;
+
+        this.elements.toggleRangeButton.classList.toggle("active", state.showRanges);
+        this.elements.toggleNameButton.classList.toggle("active", state.showNames);
+        this.elements.toggleLevelButton.classList.toggle("active", state.showLevels);
     }
 
     // Définition du niveau sélectionné.
@@ -148,5 +201,24 @@ export class SidebarView {
     // Bascule l'état visuel "actif" du bouton de placement de texte.
     setAddTextActive(active) {
         this.elements.addText.classList.toggle("active", active);
+    }
+
+    // Bascule l'état visuel "actif" du bouton de tracé de chemin.
+    setPathTraceActive(active) {
+        this.elements.tracePath.classList.toggle("active", active);
+    }
+
+    setPathJsonArea(text) {
+        this.elements.pathJsonArea.value = text;
+    }
+
+    getPathJsonArea() {
+        return this.elements.pathJsonArea.value;
+    }
+
+    // Bascule l'état "en cours" (bouton désactivé + icône qui tourne) de l'auto-placement optimal.
+    setOptimizePlacementActive(active) {
+        this.elements.optimizePlacement.disabled = active;
+        this.elements.optimizePlacement.classList.toggle("spinning", active);
     }
 }
