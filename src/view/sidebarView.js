@@ -1,4 +1,4 @@
-// Formatte un temps en secondes en "mm:ss", "∞" pour un Wave Timer infini (vagues 43/45).
+// "∞" pour un Wave Timer infini (vagues 43/45).
 function formatSeconds(seconds) {
     if (seconds === Infinity) {
         return "∞";
@@ -9,8 +9,6 @@ function formatSeconds(seconds) {
     return `${minutes}:${String(secs).padStart(2, "0")}`;
 }
 
-// Vue de la barre latérale.
-// Ce composant gère l'interface HTML et transmet les actions à l'application.
 export class SidebarView {
     constructor(elements, troopModel, state) {
         this.elements = elements;
@@ -20,7 +18,6 @@ export class SidebarView {
         this.attachEvents();
     }
 
-    // Attache les événements DOM aux actions du contrôleur.
     attachEvents() {
         this.elements.troopSearch.addEventListener("input", () => this.buildTroopMenu(this.elements.troopSearch.value));
         this.elements.levelSelect.addEventListener("change", () => this.dispatch("onLevelChange", Number(this.elements.levelSelect.value)));
@@ -60,19 +57,16 @@ export class SidebarView {
         this.elements.collabLeaveSession.addEventListener("click", () => this.dispatch("onLeaveSession"));
     }
 
-    // Enregistre un callback pour une action.
     on(name, callback) {
         this.callbacks[name] = callback;
     }
 
-    // Exécute le callback enregistré pour l'action.
     dispatch(name, value) {
         if (typeof this.callbacks[name] === "function") {
             this.callbacks[name](value);
         }
     }
 
-    // Construit le menu des cartes disponibles.
     buildMapMenu(mapNames = []) {
         this.elements.mapSelect.innerHTML = "";
         for (const mapName of mapNames) {
@@ -83,7 +77,6 @@ export class SidebarView {
         }
     }
 
-    // Construit la liste des troupes filtrée par recherche.
     buildTroopMenu(filter = "") {
         this.elements.troopList.innerHTML = "";
         const troopNames = this.troopModel.getNames(filter);
@@ -99,7 +92,6 @@ export class SidebarView {
         this.updateTroopButtons();
     }
 
-    // Met à jour la classe des boutons de troupe pour la sélection.
     updateTroopButtons() {
         const buttons = this.elements.troopList.querySelectorAll("button");
         buttons.forEach(button => {
@@ -111,7 +103,6 @@ export class SidebarView {
         });
     }
 
-    // Met à jour le panneau d'information sur la troupe sélectionnée.
     updateSelectedTroopPanel({ troopName, range, dps = null, pathLength = null, pathPercent = null, allPathCoverage = null }) {
         this.elements.pathCoverageRow.style.display = this.state.showPathCoverage ? "" : "none";
 
@@ -133,8 +124,7 @@ export class SidebarView {
         this.renderAllPathCoverage(allPathCoverage);
     }
 
-    // Construit la liste "L0/L1/.../Ln" dans #allPathCoverageList, ou la masque/vide si `rows`
-    // est null (réglage désactivé, aucune troupe sélectionnée/armée, ou troupe inconnue).
+    // rows null = réglage désactivé, aucune troupe sélectionnée/armée, ou troupe inconnue.
     renderAllPathCoverage(rows) {
         const container = this.elements.allPathCoverageList;
         container.innerHTML = "";
@@ -153,9 +143,7 @@ export class SidebarView {
         }
     }
 
-    // Synchronise les 5 checkboxes du panneau ⚙️ (et l'état visuel "actif" des boutons de la
-    // toolbar existants) avec l'état courant — appelé au démarrage et après chaque bascule,
-    // que celle-ci vienne d'une checkbox ou du bouton toolbar correspondant.
+    // Appelé au démarrage et après chaque bascule, que celle-ci vienne d'une checkbox ou du bouton toolbar correspondant.
     syncDisplaySettings(state) {
         this.elements.showRangesCheckbox.checked = state.showRanges;
         this.elements.showNamesCheckbox.checked = state.showNames;
@@ -168,7 +156,6 @@ export class SidebarView {
         this.elements.toggleLevelButton.classList.toggle("active", state.showLevels);
     }
 
-    // Reconstruit les options 0..maxLevel du select de niveau, en clampant la valeur courante.
     setLevelOptions(maxLevel) {
         const select = this.elements.levelSelect;
         const clamped = Math.min(Number(select.value) || 0, maxLevel);
@@ -182,17 +169,14 @@ export class SidebarView {
         select.value = String(clamped);
     }
 
-    // Définition du niveau sélectionné.
     setSelectedLevel(level) {
         this.elements.levelSelect.value = String(level);
     }
 
-    // Définition du joueur sélectionné.
     setSelectedPlayer(player) {
         this.elements.playerSelect.value = player;
     }
 
-    // Définition de la couleur sélectionnée.
     setSelectedColor(color) {
         this.elements.troopColor.value = color;
     }
@@ -201,12 +185,10 @@ export class SidebarView {
         this.elements.jsonArea.value = text;
     }
 
-    // Met à jour le texte de statut de la session collaborative.
     setCollabStatus(text) {
         this.elements.collabStatus.textContent = text;
     }
 
-    // Bascule l'affichage des contrôles selon qu'une session est active ou non.
     setCollabActive(active) {
         this.elements.collabLeaveSession.style.display = active ? "" : "none";
         this.elements.collabCreateSession.style.display = active ? "none" : "";
@@ -218,22 +200,18 @@ export class SidebarView {
         return this.elements.jsonArea.value;
     }
 
-    // Bascule l'état visuel "actif" du bouton de dessin de zone.
     setDrawZoneActive(active) {
         this.elements.drawZone.classList.toggle("active", active);
     }
 
-    // Définit la couleur affichée dans le sélecteur de couleur de zone.
     setZoneColor(color) {
         this.elements.zoneColor.value = color;
     }
 
-    // Bascule l'état visuel "actif" du bouton de placement de texte.
     setAddTextActive(active) {
         this.elements.addText.classList.toggle("active", active);
     }
 
-    // Bascule l'état visuel "actif" du bouton de tracé de chemin.
     setPathTraceActive(active) {
         this.elements.tracePath.classList.toggle("active", active);
     }
@@ -246,7 +224,6 @@ export class SidebarView {
         return this.elements.pathJsonArea.value;
     }
 
-    // Bascule l'état "en cours" (bouton désactivé + icône qui tourne) de l'auto-placement optimal.
     setOptimizePlacementActive(active) {
         this.elements.optimizePlacement.disabled = active;
         this.elements.optimizePlacement.classList.toggle("spinning", active);
@@ -256,7 +233,6 @@ export class SidebarView {
         return Number(this.elements.waveSelect.value);
     }
 
-    // Construit la liste des vagues disponibles dans le sélecteur.
     populateWaveSelect(waveNumbers = []) {
         this.elements.waveSelect.innerHTML = "";
         for (const waveNumber of waveNumbers) {
@@ -267,25 +243,19 @@ export class SidebarView {
         }
     }
 
-    // Bascule l'état "en cours" (bouton désactivé + icône qui tourne) du chargement des données
-    // d'analyse (premier ouverture uniquement, ensuite mises en cache par analysisService).
+    // Premier ouverture uniquement, ensuite mises en cache par analysisService.
     setAnalysisLoading(loading) {
         this.elements.openAnalysis.disabled = loading;
         this.elements.openAnalysis.classList.toggle("spinning", loading);
         this.elements.waveSelect.disabled = loading;
     }
 
-    // Affiche un message d'erreur/statut à la place des résultats (données indisponibles,
-    // carte sans path.duration, vague introuvable...).
     setAnalysisError(message) {
         this.elements.analysisStatus.textContent = message;
         this.elements.analysisResults.innerHTML = "";
     }
 
-    // Affiche le résultat de l'analyse d'une vague : une ligne par entrée de vague, agrégée depuis
-    // evaluateWaveDamage (analysisService.js) — nombre tué/survivant sur le total du groupe, plus
-    // une raison de défaite par groupe (pas de troupe adaptée / dégâts insuffisants) et un badge de
-    // risque global LOW/MEDIUM/HIGH comparant le temps de clear estimé au Wave Timer officiel.
+    // Risque LOW/MEDIUM/HIGH = comparaison du temps de clear estimé au Wave Timer officiel.
     renderAnalysis({ wave, rows, clearTime, allKilled, risk, waveTimerSeconds }) {
         const clearText = formatSeconds(clearTime);
         this.elements.analysisStatus.innerHTML = `
@@ -296,8 +266,7 @@ export class SidebarView {
         this.elements.analysisResults.appendChild(this.buildGroupRows(rows));
     }
 
-    // Construit une ligne par groupe d'ennemis (tué/survécu, raison de défaite) — factorisé car
-    // utilisé à la fois par renderAnalysis (une vague) et renderWaveScan (plusieurs vagues).
+    // Factorisé car utilisé à la fois par renderAnalysis (une vague) et renderWaveScan (plusieurs vagues).
     buildGroupRows(rows) {
         const fragment = document.createDocumentFragment();
 
@@ -334,9 +303,7 @@ export class SidebarView {
         return fragment;
     }
 
-    // Affiche le résultat du bouton "❯❯❯❯" (uiController.handleScanWaves) : une carte par vague
-    // retenue (toutes les HIGH et MEDIUM rencontrées) — les vagues
-    // LOW traversées ne sont pas affichées.
+    // Une carte par vague retenue (HIGH/MEDIUM) ; les vagues LOW traversées ne sont pas affichées.
     renderWaveScan(results) {
         this.elements.analysisResults.innerHTML = "";
 

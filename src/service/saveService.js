@@ -1,10 +1,8 @@
 import LZString from "../util/lz-string.js";
-// Service de sauvegarde et de chargement des données de placement.
 
 const AUTO_SAVE_KEY = "tds-mapper-autosave";
 const DISPLAY_SETTINGS_KEY = "tds-mapper-display-settings";
 
-// Crée un objet de sauvegarde à partir des troupes placées, des zones dessinées et des textes posés.
 export function createSaveData(placedTroops, mapName = null, placedPolygons = [], placedLabels = []) {
     return {
         version: 1,
@@ -29,14 +27,13 @@ export function createSaveData(placedTroops, mapName = null, placedPolygons = []
     };
 }
 
-// Analyse le JSON de sauvegarde et renvoie un objet utilisable par l'application.
 export function parseSaveData(jsonText) {
     const payload = JSON.parse(jsonText);
     return isCompactSaveData(payload) ? expandCompactSaveData(payload) : payload;
 }
 
-// Format compact ("maison") : dictionnaires de troupes/couleurs + tableaux de valeurs brutes
-// (pas de clés répétées), utilisé quand le JSON classique produit une URL trop longue.
+// Format compact : dictionnaires de troupes/couleurs + tableaux de valeurs brutes (pas de clés
+// répétées), utilisé quand le JSON classique produit une URL trop longue.
 export function createCompactSaveData(placedTroops, mapName = null, placedPolygons = [], placedLabels = []) {
     const troopDict = [];
     const troopIndex = new Map();
@@ -67,13 +64,11 @@ export function createCompactSaveData(placedTroops, mapName = null, placedPolygo
         Number(String(troop.player).replace(/\D/g, "")) || 1
     ]);
 
-    // Zone = [couleurIdx, x1, y1, x2, y2, ...] : réutilise le dictionnaire de couleurs des troupes.
     const pg = placedPolygons.map(polygon => [
         getColorIdx(polygon.color),
         ...polygon.points.flatMap(point => [Math.round(point.x), Math.round(point.y)])
     ]);
 
-    // Texte = [texte, x, y] (pas de couleur : style fixe).
     const lb = placedLabels.map(label => [label.text, Math.round(label.x), Math.round(label.y)]);
 
     return { version: 2, mapName, td: troopDict, cd: colorDict, t, pg, lb };
@@ -83,7 +78,6 @@ export function isCompactSaveData(payload) {
     return Boolean(payload) && payload.version === 2 && Array.isArray(payload.t);
 }
 
-// Reconstruit la forme classique { version: 1, mapName, troops: [...], zones: [...], labels: [...] } depuis le format compact.
 export function expandCompactSaveData(compact) {
     const { td = [], cd = [], t = [], pg = [], lb = [], mapName = null } = compact;
     return {
@@ -179,8 +173,7 @@ export function clearStorage() {
     localStorage.removeItem(AUTO_SAVE_KEY);
 }
 
-// Réglages d'affichage du panneau ⚙️ (Show Ranges/Names/Levels/Path Coverage) — clé localStorage
-// distincte de AUTO_SAVE_KEY, ce sont des préférences d'interface, pas des données de carte.
+// Clé localStorage distincte de AUTO_SAVE_KEY : préférences d'interface, pas des données de carte.
 export function saveDisplaySettings(settings) {
     try {
         localStorage.setItem(DISPLAY_SETTINGS_KEY, JSON.stringify(settings));

@@ -19,9 +19,7 @@ export function pointInPolygon(x, y, points) {
     return inside;
 }
 
-// Distance perpendiculaire (bornée aux extrémités) entre (px,py) et le segment [(x1,y1)-(x2,y2)].
-// Utilisé par PathModel.findAt pour la détection au clic sur une polyligne ouverte
-// (un chemin n'a pas d'intérieur comme un polygone, donc pointInPolygon ne s'applique pas).
+// Distance bornée aux extrémités : utilisée pour la détection au clic sur un chemin (pas d'intérieur, donc pointInPolygon ne s'applique pas).
 export function distanceToSegment(px, py, x1, y1, x2, y2) {
     const dx = x2 - x1;
     const dy = y2 - y1;
@@ -37,7 +35,6 @@ export function distanceToSegment(px, py, x1, y1, x2, y2) {
     return distance(px, py, x1 + t * dx, y1 + t * dy);
 }
 
-// Longueur totale d'une polyligne (somme des segments). `points` : [{x,y}, ...].
 export function polylineLength(points) {
     let total = 0;
     for (let i = 0; i < points.length - 1; i++) {
@@ -46,8 +43,7 @@ export function polylineLength(points) {
     return total;
 }
 
-// Longueur de la portion du segment [(x1,y1)-(x2,y2)] contenue dans le disque de centre (cx,cy)
-// et de rayon r — clippe le segment au cercle en résolvant |P(t) - centre|² = r² (t ∈ [0,1]).
+// Clippe le segment au cercle en résolvant |P(t) - centre|² = r² (t ∈ [0,1]).
 export function segmentLengthInCircle(x1, y1, x2, y2, cx, cy, r) {
     const dx = x2 - x1;
     const dy = y2 - y1;
@@ -76,10 +72,7 @@ export function segmentLengthInCircle(x1, y1, x2, y2, cx, cy, r) {
     return t2 > t1 ? (t2 - t1) * segmentLength : 0;
 }
 
-// Vrai si le disque de centre (x,y) et de rayon `radius` est entièrement contenu dans le polygone
-// `points` : le centre doit être dedans, ET aucune arête ne doit passer à moins de `radius`
-// (sinon le cercle en dépasserait). Suppose un polygone simple (non auto-intersectant),
-// hypothèse raisonnable pour une zone dessinée à la main (PolygonModel).
+// Le centre doit être dans le polygone ET aucune arête à moins de `radius` (sinon le cercle en dépasserait). Suppose un polygone simple (zone dessinée à la main).
 export function isCircleInPolygon(x, y, radius, points) {
     if (!pointInPolygon(x, y, points)) {
         return false;

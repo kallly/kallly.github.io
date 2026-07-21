@@ -1,5 +1,3 @@
-// Service de chargement des données JSON.
-// Ce module lit les fichiers de configuration et normalise les valeurs pour l'application.
 export async function loadData() {
     const [mapsResponse, troopsResponse, statsResponse] = await Promise.all([
         fetch("data/maps.json"),
@@ -28,8 +26,6 @@ export async function loadData() {
     return { maps, troops, stats };
 }
 
-// Normalise les données des troupes pour garantir que collision est un nombre
-// et que rangeMultiplier est un tableau de nombres.
 function normalizeTroops(troops) {
     for (const troopName in troops) {
         const troop = troops[troopName];

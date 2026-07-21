@@ -1,7 +1,4 @@
-// Charge (une seule fois, mis en cache) les données nécessaires à l'analyse de vague : le
-// roster ennemi/vagues Hardcore et les statistiques de combat des tours (absentes de troops.json,
-// qui ne contient que collision/rangeMultiplier). Chargement paresseux : uniquement déclenché par
-// l'ouverture du panneau d'analyse (admin), pour ne pas alourdir le chargement normal de la page.
+// Chargement paresseux (déclenché par l'ouverture du panneau d'analyse admin), mis en cache.
 let cachedAnalysisData = null;
 
 export async function loadAnalysisData() {
@@ -28,12 +25,9 @@ export async function loadAnalysisData() {
     return cachedAnalysisData;
 }
 
-// Minuteur officiel Hardcore (temps en secondes avant le lancement de la vague suivante), dupliqué
-// depuis pages/hardcore_damage_forecast.js (ces pages restent volontairement hors du bundle src/,
-// voir docs/features/hardcore-pages.md, donc pas d'import possible entre les deux). Divergence
-// assumée par rapport à cette copie : les vagues 43 et 45 y utilisent un cap de 300s (pour obtenir
-// un chiffre de DPS affichable sur un graphique) alors qu'ici elles sont volontairement `Infinity`
-// (aucune vague suivante à rater ⇒ toujours sans risque temporel, cf. computeWaveRisk).
+// Dupliqué depuis pages/hardcore_damage_forecast.js (hors bundle src/, pas d'import possible,
+// voir docs/features/hardcore-pages.md). Divergence assumée : vagues 43/45 = `Infinity` ici
+// (pas de vague suivante à rater) alors que cette copie utilise 300s pour son graphique de DPS.
 const WAVE_TIMER_RANGES = [
     [1, 3, 15], [4, 6, 20], [7, 9, 25], [10, 13, 20], [14, 15, 25], [16, 17, 50],
     [18, 18, 35], [19, 19, 90], [20, 21, 35], [22, 25, 45], [26, 26, 20],
@@ -53,12 +47,9 @@ export function getWaveTimerSeconds(waveNumber) {
     return WAVE_TIMER_SECONDS[waveNumber] ?? 30;
 }
 
-// Extrait un nombre du champ Speed (souvent "4", parfois un texte composé de valeurs
-// conditionnelles, ex: "Fast (6, With Balloon); Above Average (4, Without Balloon)").
-// `approximate` est vrai quand la chaîne brute n'était pas déjà un nombre propre — l'appelant
-// doit le signaler visuellement plutôt que présenter la valeur comme fiable.
-// Note : parseFloat() seul échoue sur ces chaînes composées (il ne lit que depuis le tout début
-// de la chaîne, "Fast (6, ..." ne commence pas par un chiffre) — d'où la recherche par regex.
+// Speed peut être un texte composé (ex: "Fast (6, With Balloon); Above Average (4...)") ; on
+// extrait le premier nombre par regex (parseFloat seul échoue si la chaîne ne commence pas par
+// un chiffre). `approximate` signale à l'appelant que la valeur n'était pas un nombre propre.
 export function parseEnemySpeed(rawSpeed) {
     const clean = Number(String(rawSpeed).trim());
     if (Number.isFinite(clean)) {
@@ -69,13 +60,9 @@ export function parseEnemySpeed(rawSpeed) {
     return { value: Number.isFinite(loose) ? loose : null, approximate: Number.isFinite(loose) };
 }
 
-// Extrait le niveau minimum requis du champ `detections.{hidden,lead,flying}` d'une tour
-// (tds_stats.json), ex. "Level 2+", "Level 0", "Level 4B+", ou une chaîne composée de plusieurs
-// groupes "Level N (qualificatif)" concaténés (tours multi-branches type Commander/Kingpin).
-// Règle validée : quand un groupe a un qualificatif entre parenthèses, il n'est retenu que si ce
-// qualificatif mentionne "Tower" (sinon la détection ne s'applique qu'à une unité invoquée/un
-// effet secondaire, pas à la tour elle-même) — si aucun groupe ne mentionne "Tower", retourne null
-// même si des chiffres sont présents dans la chaîne.
+// Règle validée : pour les chaînes multi-groupes "Level N (qualificatif)" (tours multi-branches
+// type Commander/Kingpin), un groupe n'est retenu que si son qualificatif mentionne "Tower"
+// (sinon la détection ne s'applique qu'à une unité invoquée, pas à la tour) — sinon retourne null.
 export function parseDetectionLevel(raw) {
     if (raw == null) {
         return null;
@@ -97,9 +84,7 @@ export function parseDetectionLevel(raw) {
     return numMatch ? parseInt(numMatch[0], 10) : null;
 }
 
-// Interprète les champs Hidden/Flying/Lead d'un ennemi (hardcore_data.json), en texte libre
-// ("Yes", "No", "Yes (With covering)", "Yes (With Balloon); No (Without Balloon)", "Variable").
-// Ne garde que le segment avant le premier ";" (le cas par défaut/le plus courant).
+// Ne garde que le segment avant le premier ";" (cas par défaut/le plus courant).
 export function parseEnemyFlag(raw) {
     if (raw == null) {
         return false;
@@ -108,8 +93,7 @@ export function parseEnemyFlag(raw) {
     return /^yes/i.test(segment);
 }
 
-// Combine les flags de base de l'ennemi avec les modificateurs de la vague (ex. "Hidden" sur
-// Cursed Skeleton, dont le champ de base est "Variable") — un modificateur force le flag à vrai.
+// Un modificateur de vague force le flag à vrai (ex. "Hidden" sur Cursed Skeleton = "Variable" de base).
 function getEnemyFlags(enemyData, modifiers) {
     return {
         hidden: parseEnemyFlag(enemyData.Hidden) || modifiers.includes("Hidden"),
@@ -118,8 +102,6 @@ function getEnemyFlags(enemyData, modifiers) {
     };
 }
 
-// Une tour ne peut infliger de dégâts à un ennemi Hidden/Flying/Lead que si elle a débloqué la
-// détection correspondante à son niveau placé (`tower.detections`/`tower.level`, cf. uiController).
 function towerHasDetection(raw, level) {
     const required = parseDetectionLevel(raw);
     return required !== null && level >= required;
@@ -138,8 +120,7 @@ function canTowerHitEnemy(tower, flags) {
     return true;
 }
 
-// Développe les groupes {count, enemy, modifiers} d'une vague en instances individuelles, dans
-// l'ordre du tableau (c'est cet ordre que suit la cascade de report de dégâts ci-dessous).
+// Ordre du tableau = ordre suivi par la cascade de report de dégâts ci-dessous.
 function expandWaveEnemies(wave, enemies) {
     const instances = [];
 
@@ -163,23 +144,50 @@ function expandWaveEnemies(wave, enemies) {
 }
 
 
+// timeToCross_tour = (duration / instance.speed) * tower.pathCoverage, réduit du timeDeficit
+// accumulé (retard pris sur les kills précédents, cf. evaluateWaveDamage) : les tours à faible
+// pathCoverage décrochent plus tôt. killTime simule cette perte progressive de DPS cumulé pour
+// trouver l'instant où instance.health atteint 0 (Infinity si jamais atteint).
 function computeEnemyDamage(instance, duration, towers, timeDeficit) {
     const eligibleTowers = towers.filter(tower => canTowerHitEnemy(tower, instance.flags));
-    const rate = eligibleTowers.reduce((total, tower) => total + tower.dps * tower.pathCoverage, 0);
+
     if (instance.stationary) {
-        return { damage: eligibleTowers.some(tower => tower.pathCoverage > 0) ? Infinity : 0, rate };
+        const rate = eligibleTowers.reduce((total, tower) => total + tower.dps * tower.pathCoverage, 0);
+        const damage = eligibleTowers.some(tower => tower.pathCoverage > 0) ? Infinity : 0;
+        const killTime = rate > 0 ? instance.health / rate : Infinity;
+        return { damage, killTime };
     }
-    const timeToCross = Math.max(0, duration / instance.speed - timeDeficit);
-    return { damage: timeToCross * rate, rate };
+
+    const engagements = eligibleTowers
+        .map(tower => ({
+            dps: tower.dps,
+            timeToCross: Math.max(0, (duration / instance.speed) * tower.pathCoverage - timeDeficit)
+        }))
+        .filter(engagement => engagement.timeToCross > 0)
+        .sort((a, b) => a.timeToCross - b.timeToCross);
+
+    const damage = engagements.reduce((total, engagement) => total + engagement.dps * 1.4 * engagement.timeToCross, 0);
+
+    let remainingHealth = instance.health;
+    let elapsed = 0;
+    let killTime = Infinity;
+    for (let i = 0; i < engagements.length; i++) {
+        const activeRate = engagements.slice(i).reduce((total, engagement) => total + engagement.dps * 1.4, 0);
+        const segmentDamage = activeRate * (engagements[i].timeToCross - elapsed);
+        if (remainingHealth <= segmentDamage) {
+            killTime = elapsed + remainingHealth / activeRate;
+            break;
+        }
+        remainingHealth -= segmentDamage;
+        elapsed = engagements[i].timeToCross;
+    }
+
+    return { damage, killTime };
 }
 
-// Libellés lisibles des types de ciblage actifs sur un ennemi, dans l'ordre d'affichage voulu.
 const FLAG_LABELS = [["hidden", "Hidden"], ["flying", "Flying"], ["lead", "Lead"]];
 
-// Explique pourquoi un groupe a des survivants : soit aucune tour placée n'a débloqué la détection
-// requise ("pas de troupe adaptée"), soit des tours adaptées existent mais leur DPS cumulé est
-// insuffisant — dans les deux cas, on précise le(s) type(s) de ciblage en cause (Hidden/Flying/Lead),
-// ou un message générique si l'ennemi n'a aucune restriction de ciblage (juste trop de PV/trop rapide).
+// Distingue "aucune tour adaptée" (détection manquante) de "DPS insuffisant" (tours adaptées présentes).
 function describeDefeatReason(flags, towers) {
     const activeLabels = FLAG_LABELS.filter(([key]) => flags[key]).map(([, label]) => label);
     if (activeLabels.length === 0) {
@@ -214,54 +222,22 @@ function aggregateByGroup(wave, instances, towers) {
 
 const RISK_MARGIN = 0.2; // validé avec l'utilisateur : 20% de marge sous le timer = LOW
 
-// Espacement supposé (secondes) entre l'apparition de deux ennemis consécutifs de la vague —
-// constante fixe validée avec l'utilisateur, pas dérivée d'une donnée par ennemi/vague. Sert de
-// seuil dans la file cumulative de `timeDeficit` (cf. evaluateWaveDamage) : chaque kill plus long
-// que ce délai grignote d'autant la fenêtre d'exposition de l'ennemi suivant (et permet à `carry`
-// de s'y propager) ; des kills plus courts font redescendre le déficit accumulé.
+// Constante fixe validée avec l'utilisateur (pas dérivée par ennemi/vague). Seuil de la file
+// cumulative `timeDeficit` (cf. evaluateWaveDamage) : un kill plus long grignote la fenêtre
+// d'exposition du suivant (et permet à `carry` de s'y propager) ; un kill plus court la réduit.
 const ENEMY_SPAWN_GAP_SECONDS = 1;
 
-// Badge de risque temporel : HIGH forcé si la vague n'est pas entièrement nettoyée (peu importe
-// clearTime, qui n'a alors pas de sens) ; sinon LOW si le clear tient dans 80% du Wave Timer,
-// MEDIUM s'il dépasse cette marge sans dépasser le timer, HIGH s'il dépasse le timer.
-function computeWaveRisk(allKilled, clearTime, waveTimerSeconds) {
+// HIGH forcé si la vague n'est pas entièrement nettoyée ; sinon LOW/MEDIUM/HIGH selon marge RISK_MARGIN.
+function computeWaveRisk(wave, allKilled, clearTime, waveTimerSeconds) {
     if (!allKilled) {
         return "HIGH";
     }
     if (waveTimerSeconds === Infinity || clearTime <= waveTimerSeconds * (1 - RISK_MARGIN)) {
         return "LOW";
     }
-    return clearTime <= waveTimerSeconds ? "MEDIUM" : "HIGH";
+    return clearTime * (1+(wave/45)) <= waveTimerSeconds ? "MEDIUM" : "HIGH";
 }
 
-// Évalue une vague contre un ensemble de tours placées (`{ dps, pathCoverage, level, detections }`) :
-// les ennemis sont traités individuellement, dans l'ordre de la vague. Chacun encaisse son propre
-// dégât (cf. computeEnemyDamage) plus le report du précédent (`carry`) ; si le total atteint ses PV,
-// il est tué (le premier ennemi absorbe le plus de dégâts, comme une tour qui viserait toujours
-// l'ennemi le plus avancé), sinon il survit et `carry` retombe à 0.
-// `carry` n'est retenu pour l'ennemi suivant que si `timeDeficit` (voir plus bas) est encore positif
-// juste après ce kill — càd seulement si un ennemi suivant est déjà "empilé" dans la file parce que
-// ce kill a pris plus que le délai de spawn : dans ce cas seulement, les dégâts en trop trouvent une
-// cible réelle immédiatement. Si `timeDeficit` est retombé à 0 (kill largement dans les temps, rien
-// n'attend encore derrière), l'excédent est perdu — sinon un ennemi faible tué quasi instantanément
-// "économiserait" tout son budget de dégâts théorique (calculé sur SA traversée complète du chemin,
-// largement surdimensionné pour un ennemi faible face à un gros DPS) et l'offrirait gratuitement au
-// suivant ; cumulé sur toute une vague, ça pouvait faire "mourir" gratuitement un boss loin derrière
-// sans lui infliger de dégâts réels (cf. docs/decisions.md). Un ennemi stationnaire tué ne génère
-// jamais de `carry`, quel que soit `timeDeficit` (un report infini casserait la cascade).
-// `clearTime` accumule, dans ce même ordre, le temps nécessaire pour combler `health - carry` au
-// débit `rate` de chaque ennemi tué (pas une simulation position par position, cf. docs/decisions.md)
-// — n'a de sens que si `allKilled` est vrai (vague entièrement nettoyée). `timeDeficit` modélise un
-// espacement supposé d'`ENEMY_SPAWN_GAP_SECONDS` entre deux ennemis, en file cumulative : chaque kill
-// ajoute `killTime - ENEMY_SPAWN_GAP_SECONDS` au déficit courant (plancher 0, jamais négatif — un
-// ennemi ne peut pas être exposé plus longtemps que sa propre traversée complète du chemin) ; des
-// kills rapides répétés le font redescendre progressivement vers 0 (rattrapage du retard), un kill
-// lent le fait grimper. Il réduit d'autant `timeToCross` de l'ennemi suivant (cf. computeEnemyDamage)
-// et, comme détaillé ci-dessus, conditionne la propagation de `carry`. Validé avec l'utilisateur :
-// `timeDeficit` n'est mis à jour que lors d'un kill effectif ; s'il survit ou que ses données sont
-// `unavailable`, le déficit en cours reste inchangé pour l'ennemi suivant, y compris à travers les
-// frontières de groupe. Retourne le résultat agrégé par entrée d'origine de wave.enemies (tué/survécu/
-// raison de défaite par groupe) plus le badge de risque.
 export function evaluateWaveDamage(wave, enemies, duration, towers) {
     const instances = expandWaveEnemies(wave, enemies);
     let carry = 0;
@@ -275,17 +251,15 @@ export function evaluateWaveDamage(wave, enemies, duration, towers) {
             continue;
         }
 
-        const { damage: rawDamage, rate } = computeEnemyDamage(instance, duration, towers, timeDeficit);
-        const damage = rawDamage + carry;
-        if (damage >= instance.health) {
+        const neededHealth = Math.max(0, instance.health - carry);
+        const { damage: rawDamage, killTime } = computeEnemyDamage({ ...instance, health: neededHealth }, duration, towers, timeDeficit);
+        if (rawDamage >= neededHealth) {
             instance.killed = true;
-            const neededDamage = Math.max(0, instance.health - carry);
-            const killTime = rate > 0 ? neededDamage / rate : 0;
             clearTime += killTime;
             timeDeficit = Math.max(0, timeDeficit + killTime - ENEMY_SPAWN_GAP_SECONDS);
-            carry = (!instance.stationary && timeDeficit > 1) ? damage - instance.health : 0;
+            carry = (!instance.stationary && timeDeficit > 1) ? rawDamage - neededHealth : 0;
             console.log(carry, timeDeficit)
-            
+
         } else {
             instance.killed = false;
             carry = 0;
@@ -295,7 +269,7 @@ export function evaluateWaveDamage(wave, enemies, duration, towers) {
     clearTime += timeDeficit
 
     const waveTimerSeconds = getWaveTimerSeconds(wave.wave);
-    const risk = computeWaveRisk(allKilled, clearTime, waveTimerSeconds);
+    const risk = computeWaveRisk(wave.wave, allKilled, clearTime, waveTimerSeconds);
 
     return { groups: aggregateByGroup(wave, instances, towers), clearTime, allKilled, risk, waveTimerSeconds };
 }

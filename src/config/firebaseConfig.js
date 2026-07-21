@@ -1,8 +1,5 @@
-// Configuration du projet Firebase utilisé pour la collaboration en temps réel.
-// Ces valeurs ne sont pas des secrets : la sécurité est assurée par les règles
-// de la Realtime Database (voir README), pas par la confidentialité de cet objet.
-// Remplace les valeurs ci-dessous par celles de ton propre projet Firebase
-// (console.firebase.google.com > Paramètres du projet > Vos applications > Config).
+// Config Firebase pour la collaboration temps réel. Pas des secrets : la sécurité
+// vient des règles de la Realtime Database (voir README), pas de leur confidentialité.
 export const firebaseConfig = {
     databaseURL: "https://tower-defense-simulator-mapper-default-rtdb.firebaseio.com/",
     apiKey: "AIzaSyArL-v8B_hswxD-Rp2mNaVeIRzvqw-WAcY",

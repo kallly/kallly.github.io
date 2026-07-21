@@ -1,7 +1,5 @@
 import { polylineLength, segmentLengthInCircle } from "../util/geometry.js";
 
-// Modèle métier de la carte.
-// Ce module gère le chargement et les conversions écran / monde.
 export class MapModel {
     constructor(maps = {}) {
         this.maps = maps;
@@ -13,12 +11,10 @@ export class MapModel {
         this.baseScale = 1;
     }
 
-    // Définit la liste des cartes disponibles.
     setMaps(maps) {
         this.maps = maps;
     }
 
-    // Charge l'image de la carte sélectionnée.
     async loadMap(mapName, canvas) {
         const mapData = this.maps[mapName];
         if (!mapData) {
@@ -37,7 +33,6 @@ export class MapModel {
         });
     }
 
-    // Met à jour l'échelle de base et le centrage de l'image sur le canvas.
     updateBaseScale(canvas) {
         if (!canvas || !this.image.complete) {
             return;
@@ -51,7 +46,6 @@ export class MapModel {
         this.offsetY = (canvas.height - this.image.height * this.scale) / 2;
     }
 
-    // Échelle actuelle de dessin, appliquant zoom et ajustement.
     get scale() {
         return this.baseScale * this.zoom;
     }
@@ -64,23 +58,20 @@ export class MapModel {
         return this.currentMap?.collisionMapMult ?? 1;
     }
 
-    // Sous-chemins (routes ennemies) de la carte actuelle, ou [] si aucun "path" n'est défini
-    // (toutes les cartes sauf celles déjà tracées par un admin et collées dans maps.json).
+    // [] si aucun "path" n'est défini (toutes les cartes sauf celles déjà tracées par un admin dans maps.json).
     getPaths() {
         return this.currentMap?.path?.paths || [];
     }
 
-    // Longueur totale (tous sous-chemins confondus) du chemin ennemi de la carte actuelle.
     getTotalPathLength() {
         return this.getPaths().reduce((total, path) => total + polylineLength(path.points), 0);
     }
 
-    // Secondes nécessaires pour traverser tout le chemin à vitesse 1, ou null si absent (maps.json).
+    // null si absent (maps.json).
     getPathDuration() {
         return this.currentMap?.path?.duration ?? null;
     }
 
-    // Longueur du chemin contenue dans le cercle (cx, cy, radius) — la portée d'une tour.
     getPathLengthInCircle(cx, cy, radius) {
         let total = 0;
         for (const path of this.getPaths()) {
@@ -92,7 +83,6 @@ export class MapModel {
         return total;
     }
 
-    // Convertit des coordonnées écran en coordonnées monde.
     screenToWorld(x, y) {
         return {
             x: (x - this.offsetX) / this.scale,
@@ -100,7 +90,6 @@ export class MapModel {
         };
     }
 
-    // Convertit des coordonnées monde en coordonnées écran.
     worldToScreen(x, y) {
         return {
             x: this.offsetX + x * this.scale,
@@ -108,7 +97,6 @@ export class MapModel {
         };
     }
 
-    // Zoom autour d'un point écran tout en conservant le positionnement.
     zoomAt(screenX, screenY, factor, canvas) {
         const world = this.screenToWorld(screenX, screenY);
         this.zoom = Math.max(0.2, Math.min(this.zoom * factor, 8));
@@ -117,13 +105,11 @@ export class MapModel {
         this.offsetY = screenY - world.y * this.scale;
     }
 
-    // Déplace la vue de la carte.
     pan(deltaX, deltaY) {
         this.offsetX += deltaX;
         this.offsetY += deltaY;
     }
 
-    // Recalcule l'échelle après redimensionnement du canvas.
     resizeCanvas(canvas) {
         if (!canvas || !this.image.complete) {
             return;

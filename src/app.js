@@ -1,5 +1,4 @@
-// Point d'entrée de l'application.
-// Ce fichier relie la logique métier, l'interface et le rendu.
+// Point d'entrée : relie logique métier, interface et rendu.
 import { loadData } from "./service/dataService.js";
 import { TroopModel } from "./model/troopModel.js";
 import { MapModel } from "./model/mapModel.js";
@@ -16,8 +15,7 @@ import { HistoryController } from "./controller/historyController.js";
 import { clearStorage, saveDisplaySettings, loadDisplaySettings } from "./service/saveService.js";
 import { initCollab } from "./service/collabService.js";
 
-// Le panneau de placement flottant peut être masqué via sa croix ; un clic sur le
-// canvas le fait réapparaître. Comportement purement visuel, indépendant du reste de l'UI.
+// Masquable via sa croix ; un clic sur le canvas le fait réapparaître.
 function initPlacementPanelToggle(canvas) {
     const panel = document.getElementById("placementPanel");
     const closeButton = document.getElementById("placementPanelClose");
@@ -30,8 +28,7 @@ function initPlacementPanelToggle(canvas) {
     canvas.addEventListener("touchstart", () => panel.classList.remove("panel-hidden"), { passive: true });
 }
 
-// Panneau d'aide (contrôles/astuces) : purement manuel, contrairement au panneau de
-// placement il ne doit pas réapparaître au clic sur le canvas.
+// Contrairement au panneau de placement, ne réapparaît pas au clic sur le canvas.
 function initHelpPanelToggle() {
     const panel = document.getElementById("helpPanel");
     const openButton = document.getElementById("helpButton");
@@ -44,8 +41,7 @@ function initHelpPanelToggle() {
     closeButton.addEventListener("click", () => panel.classList.add("panel-hidden"));
 }
 
-// Popup de réglages d'affichage de placementPanel (ouvert via ⚙️) : même comportement purement
-// manuel que helpPanel, indépendant du clic sur le canvas.
+// Réglages d'affichage de placementPanel (⚙️), même comportement que helpPanel.
 function initPlacementSettingsToggle() {
     const panel = document.getElementById("placementSettingsPanel");
     const openButton = document.getElementById("placementSettingsButton");
@@ -58,8 +54,7 @@ function initPlacementSettingsToggle() {
     closeButton.addEventListener("click", () => panel.classList.add("panel-hidden"));
 }
 
-// Popup d'analyse de vague (admin, ouvert via 📊) : même comportement purement manuel que
-// les autres panneaux flottants — le chargement des données se fait séparément (UIController).
+// Panneau d'analyse de vague (admin, 📊) ; chargement des données géré séparément par UIController.
 function initAnalysisPanelToggle() {
     const panel = document.getElementById("analysisPanel");
     const openButton = document.getElementById("openAnalysis");
@@ -72,9 +67,7 @@ function initAnalysisPanelToggle() {
     closeButton.addEventListener("click", () => panel.classList.add("panel-hidden"));
 }
 
-// Saisie de texte pour les étiquettes de carte (20 caractères max, imposés par l'attribut
-// maxlength). Un champ overlay positionné au clic plutôt qu'un window.prompt() natif :
-// ce dernier est indisponible dans certains environnements embarqués/sandboxés (webview, iframe).
+// Overlay positionné au clic plutôt que window.prompt(), indisponible en webview/iframe.
 function initTextLabelInput({ mapModel, textLabelModel, canvas }) {
     const input = document.getElementById("textLabelInput");
     if (!input) {
@@ -112,7 +105,6 @@ function initTextLabelInput({ mapModel, textLabelModel, canvas }) {
         }
     });
 
-    // Valider en cliquant/tabulant ailleurs, comme un champ d'édition classique.
     input.addEventListener("blur", () => {
         commit();
         cancelled = false;
@@ -134,11 +126,8 @@ function initTextLabelInput({ mapModel, textLabelModel, canvas }) {
 
 const ADMIN_STORAGE_KEY = "tds-mapper-admin";
 
-// Résout et applique le mode admin : toujours actif sur admin.html (classe "admin-mode"
-// codée en dur dans le <body>), activable/désactivable sur index.html via ?admin=1 / ?admin=0,
-// persisté dans localStorage pour ne pas avoir à rajouter le paramètre à chaque rechargement.
-// Purement une bascule d'affichage (voir .admin-only dans style.css) : ne restreint aucune
-// donnée ni logique côté modèle, uniquement la visibilité des contrôles admin.
+// Toujours actif sur admin.html ; sur index.html activable via ?admin=1/0, persisté en localStorage.
+// Bascule purement l'affichage (.admin-only), ne restreint aucune donnée/logique modèle.
 function resolveAdminMode() {
     const params = new URLSearchParams(window.location.search);
     if (params.has("admin")) {
@@ -166,7 +155,6 @@ function resolveAdminMode() {
 async function init() {
     const isAdmin = resolveAdminMode();
 
-    // Sélection des éléments du DOM nécessaires à l'application.
     const canvas = document.getElementById("gameCanvas");
     initPlacementPanelToggle(canvas);
     initHelpPanelToggle();
@@ -227,7 +215,6 @@ async function init() {
         showAllPathCoverageCheckbox: document.getElementById("showAllPathCoverageCheckbox"),
     };
 
-    // État partagé entre les composants.
     const state = {
         isAdmin,
         selectedTroop: null,
@@ -239,24 +226,21 @@ async function init() {
         showPathCoverage: displaySettings.showPathCoverage ?? true,
         showAllPathCoverage: displaySettings.showAllPathCoverage ?? false,
         selectedPlayer: "player1",
-        // Filtre d'affichage uniquement (n'affecte jamais les données) : "all" ou "player1/2/3".
-        // Les troupes des autres joueurs restent en mémoire mais sont dessinées grisées.
+        // Filtre d'affichage uniquement, n'affecte jamais les données.
         playerFilter: "all",
         playerColors: {
             player1: "#FFD54A",
             player2: "#4A90E2",
             player3: "#E24A4A"
         },
-        // Surcharges de couleur par troupe, par joueur : playerTroopColors[player][troopName].
-        // playerColors sert de couleur par défaut tant qu'aucune surcharge n'existe pour ce couple.
+        // Surcharges par troupe/joueur : playerTroopColors[player][troopName]. playerColors = défaut.
         playerTroopColors: {},
         pointerX: 0,
         pointerY: 0,
         isPlacementValid: false,
         previewRange: 0,
         previewCollision: 0,
-        // Dessin de zones polygonales / pose de texte / tracé de chemin (admin) : purement local
-        // pour l'instant (non synchronisé en collab, non inclus dans le save/share — voir PathModel).
+        // Zones/texte/chemin (admin) : purement local, non synchronisé en collab ni sauvegardé.
         isDrawingPolygon: false,
         polygonDraftPoints: [],
         zoneColor: "#5b8cff",
@@ -265,7 +249,6 @@ async function init() {
         pathDraftPoints: []
     };
 
-    // Modèles métiers.
     const troopModel = new TroopModel();
     const mapModel = new MapModel();
     const placementModel = new PlacementModel();
@@ -273,10 +256,8 @@ async function init() {
     const textLabelModel = new TextLabelModel();
     const pathModel = new PathModel();
 
-    // Historique local (annulation des dernières actions), indépendant de la collaboration.
     const historyController = new HistoryController({ state, placementModel, polygonModel, textLabelModel, pathModel });
 
-    // Vue latérale et rendu de canvas.
     const sidebarView = new SidebarView({
         ...elements,
         canvas
@@ -285,7 +266,6 @@ async function init() {
     const canvasRenderer = new CanvasRenderer(canvas, mapModel, placementModel, polygonModel, textLabelModel, pathModel, state);
     const textLabelInputController = initTextLabelInput({ mapModel, textLabelModel, canvas });
 
-    // Contrôleurs pour la logique UI et les interactions.
     const uiController = new UIController({
         state,
         mapModel,
@@ -300,9 +280,7 @@ async function init() {
         historyController
     });
 
-    // Collaboration en temps réel : indisponible si Firebase n'est pas configuré,
-    // ce qui ne doit pas empêcher le reste de l'application de démarrer. Lancée sans attendre
-    // pour ne pas bloquer le chargement des données (troops/maps) derrière l'auth Firebase :
+    // Lancée sans attendre pour ne pas bloquer le chargement des données derrière l'auth Firebase ;
     // rien n'utilise db/auth avant un clic explicite sur "Create session"/"Join".
     const collabInitPromise = initCollab().catch((error) => {
         console.warn("Real-time collaboration unavailable (missing or invalid Firebase configuration):", error);
@@ -385,12 +363,10 @@ async function init() {
         }
     });
 
-    // Redimensionnement lorsque la fenêtre change de taille.
     window.addEventListener("resize", () => {
         canvasRenderer.resize();
     });
 
-    // Chargement des données de configuration.
     const data = await loadData();
     troopModel.setTroopData(data.troops);
     troopModel.setStatsData(data.stats);
@@ -399,7 +375,6 @@ async function init() {
     sidebarView.buildMapMenu(Object.keys(data.maps));
     sidebarView.buildTroopMenu();
 
-    // Restauration automatique de la dernière progression sauvegardée.
     const defaultMap = Object.keys(data.maps)[0];
     
     const searchParams = new URLSearchParams(window.location.search);
@@ -426,8 +401,7 @@ async function init() {
         await uiController.handleMapSelect(defaultMap);
     }
 
-    // Filtre joueur pré-sélectionné via ?p= (0=All, 1..3=playerN) : applicable quelle que soit
-    // la façon dont la carte a été chargée ci-dessus (data/map/autosave/défaut).
+    // Filtre joueur pré-sélectionné via ?p= (0=All, 1..3=playerN).
     if (searchParams.has("p")) {
         state.playerFilter = playerFilterFromParam(searchParams.get("p"));
         if (elements.playerFilterSelect) {
@@ -435,8 +409,6 @@ async function init() {
         }
     }
 
-    // Simple garde avant de considérer l'appli prête : ne bloque plus le rendu de la carte,
-    // déjà affichée à ce stade quel que soit l'état de la collaboration.
     await collabInitPromise;
 
     canvasRenderer.resize();
