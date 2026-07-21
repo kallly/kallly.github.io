@@ -75,6 +75,11 @@ export class MapModel {
         return this.getPaths().reduce((total, path) => total + polylineLength(path.points), 0);
     }
 
+    // Secondes nécessaires pour traverser tout le chemin à vitesse 1, ou null si absent (maps.json).
+    getPathDuration() {
+        return this.currentMap?.path?.duration ?? null;
+    }
+
     // Longueur du chemin contenue dans le cercle (cx, cy, radius) — la portée d'une tour.
     getPathLengthInCircle(cx, cy, radius) {
         let total = 0;

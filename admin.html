@@ -54,7 +54,7 @@
             <div class="stratContent">
                 <a
                     class="load"
-                    href="/index.html?data=N4IgbgpgTgzglgewHYgFwCYA0IC2BDABwDk8cI0QB1KCAFwGMALCAEwAIAxKZWkbWlmgDaIAMLcEAazYAhBDBh8QAEQBSshAlqMlAWVZx6SgCoBXKDV7YAyngBGWiOaUAlPEgDm0JaIQ58SCzeALrY9IKoIgDEAAwxAGbxcUpRiXGJKYkAHHExmUm5IKEgvJFCMZgVAIwxAOxVmLVZAGyVmFWh5W01WQCcjQAstd2dFdVVVQONWVjVo90xvQCsmDMNc5hC6%2B0Trc29rQ0dm2OYvQerVVkjm7M7VcNZS8NYx0J3NVX9T1OvnR-oOqNZorP63brodAAZka0MwYKEMPGzWGzywMLeSPadWuSyWUwxnSxNXxmGaQMJmym1RiAxhIJWFXQnWp2PQK32jPhLIWMWutShrSZPIqvSy-NqQu5VLaYqwtRid2Zmy5EyWDSyV3h0qEqq%2Bjxq2uVuu6VRBq3JRs6qshWCyA1BOr151WTytKohX0w%2BN%2BTohAywSxijuNNuagbp7sRpoDZPZmBhxuJ0L28cTRIheLJtX66ZlNIuQ22xqlEwG-VqkYaJdNksaivaOtLVywIOG1ZFq1jmuLnZm1xBp2ZwQAvkA">
+                    href="/index.html?data=N4IgbgpgTgzglgewHYgFwCYA0IC2BDABwDk8cI0QB1KCAFwGMALCAEwAIAxKZWkbWlmgDaIAMLcEAazYAhBDBh8QAEQBSshAlqMlAWVZx6SgCoBXKDV7YAyngBGWiOaUAlPEgDm0JaIQ58SCzeALrY9IKoIgDEAAwxAGbxcUpRiXGJKYkAHHExmUm5IKEgvJFCMZgALJgAjDEA7DWY9VkAbJgVNaHlVbUxWQCczZX1HbXdFdU109UtWJ0TvXUDAKyYWehNC5hCTWvTNe2tA%2B1NXTuTmAMn6zVZY%2BdCWPvTo1kro1iPz301Q%2B-VL7dH41dANZqtNZAnYg9DoADMzQRmGhQkRL1aow%2BWERj3RfRamBWK2quO6%2BLqJMwrXBZJ21SmMUqiMhawq6G6DL66DWxzZKM5Szi93q8Pa7MF1QGWRF9XFAvpvWlWHqMXmCqEaymNRWTSydxRGq1tT%2Bbzqho5O2N00h6xpFu61rhWCylShRqWf3%2B7wdVqWmyGJMBHqm6Eqzxi7stmv9rWezN9aKJJvD1J5mER0YpCKO6cz5OToOJ1PqQ3zisZNxGWw17W1lSG9QTTWjdZNcuaatqtc9G2pH270a5rpd0zGQ96G3ukIqEuKBA8wmKABs7EuAL5AA&p=0">
                     Load
                 </a>
                 <a
@@ -273,6 +273,9 @@
             <button id="optimizePlacement" title="Auto-place the selected tower at the best spot in each drawn zone (average path coverage across all its levels)" aria-label="Auto-place the selected tower optimally in every drawn zone" class="canvas-button admin-only">
                 🎯
             </button>
+            <button id="openAnalysis" title="Analyze a wave against currently placed towers (admin)" aria-label="Open wave analysis" class="canvas-button admin-only">
+                📊
+            </button>
         </div>
         <div id="canvasPlayerFilter">
             <label for="playerFilterSelect" title="Filter by player" aria-hidden="true">👥</label>
@@ -432,6 +435,10 @@
                     <span class="selected-info__label">Range</span>
                     <span id="selectedRange" class="selected-info__value">0</span>
                 </div>
+                <div class="selected-info__row">
+                    <span class="selected-info__label">DPS</span>
+                    <span id="selectedDps" class="selected-info__value">-</span>
+                </div>
                 <div class="selected-info__row" id="pathCoverageRow">
                     <span class="selected-info__label">Path in Range</span>
                     <span id="selectedPathCoverage" class="selected-info__value">-</span>
@@ -453,6 +460,21 @@
                 <label class="settings-checkbox"><input type="checkbox" id="showPathCoverageCheckbox"> Show Path Coverage Length</label>
                 <label class="settings-checkbox"><input type="checkbox" id="showAllPathCoverageCheckbox"> Show All Path Coverage Lengths</label>
             </div>
+        </div>
+
+        <div id="analysisPanel" class="panel-hidden">
+            <div class="floating-panel-header">
+                <h2 class="sidebar-section__title">Wave Analysis</h2>
+                <button id="analysisPanelClose" class="panel-close" aria-label="Close wave analysis">✕</button>
+            </div>
+
+            <div class="input-row">
+                <select id="waveSelect"></select>
+                <button id="scanWaves" class="btn btn-ghost" title="Scan from Wave 1 to the first HIGH risk wave">❯❯❯❯</button>
+            </div>
+
+            <p id="analysisStatus" class="collab-status"></p>
+            <div id="analysisResults" class="analysis-results"></div>
         </div>
 
     </main>

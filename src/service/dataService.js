@@ -1,9 +1,10 @@
 // Service de chargement des données JSON.
 // Ce module lit les fichiers de configuration et normalise les valeurs pour l'application.
 export async function loadData() {
-    const [mapsResponse, troopsResponse] = await Promise.all([
+    const [mapsResponse, troopsResponse, statsResponse] = await Promise.all([
         fetch("data/maps.json"),
-        fetch("data/troops.json")
+        fetch("data/troops.json"),
+        fetch("data/tds_stats.json")
     ]);
 
     if (!mapsResponse.ok) {
@@ -14,12 +15,17 @@ export async function loadData() {
         throw new Error(`Unable to load troops.json (${troopsResponse.status})`);
     }
 
+    if (!statsResponse.ok) {
+        throw new Error(`Unable to load tds_stats.json (${statsResponse.status})`);
+    }
+
     const maps = await mapsResponse.json();
     const troops = await troopsResponse.json();
+    const stats = await statsResponse.json();
 
     normalizeTroops(troops);
 
-    return { maps, troops };
+    return { maps, troops, stats };
 }
 
 // Normalise les données des troupes pour garantir que collision est un nombre

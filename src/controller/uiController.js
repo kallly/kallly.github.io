@@ -2,6 +2,7 @@ import { createSaveData, createCompactSaveData, parseSaveData, saveToStorage, lo
 import LZString from "../util/lz-string.js";
 import { isCircleInPolygon } from "../util/geometry.js";
 import { findBestPositionInPolygon } from "../util/placementOptimizer.js";
+import { evaluateWaveDamage, loadAnalysisData } from "../service/analysisService.js";
 
 // Ordre des index utilisés par le paramètre d'URL "p" (0 = All, 1..3 = playerN).
 // Partagé entre la génération des liens (handleShareUrl) et leur lecture (app.js).
@@ -33,8 +34,36 @@ export class UIController {
         this.canvasRenderer = canvasRenderer;
         this.collabController = collabController;
         this.historyController = historyController;
+        this.analysisData = null;
+        // Mode d'affichage du panneau d'analyse : "single" (une vague choisie dans waveSelect) ou
+        // "scan" (résultat du bouton ❯❯❯❯). Piloté par handleAnalyzeWave/handleScanWaves eux-mêmes
+        // (chacun se marque comme mode courant) et lu par handlePlacementChangeForAnalysis pour
+        // savoir lequel des deux relancer après une modification de troupe.
+        this.analysisMode = "single";
         this.attachViewCallbacks();
         this.canvasRenderer.setRenderCallback(() => this.saveCurrentState());
+        this.placementModel.onChange((event) => this.handlePlacementChangeForAnalysis(event));
+    }
+
+    // Relance l'analyse automatiquement après un ajout, une suppression ou un changement de level
+    // (une mise à jour ne touchant pas "level", ex. couleur/joueur, ne change pas les dégâts et ne
+    // justifie pas un recalcul). Reste dans le mode courant : si le dernier affichage était un scan
+    // (❯❯❯❯), on relance le scan complet plutôt que de revenir à la vague unique — seul un choix
+    // explicite dans waveSelect (handleAnalyzeWave) repasse en mode "single". No-op tant que le
+    // panneau d'analyse n'a jamais été ouvert (handleAnalyzeWave/handleScanWaves sortent tôt si
+    // analysisData est vide).
+    handlePlacementChangeForAnalysis({ type, previous }) {
+        const affectsAnalysis = type === "add" || type === "remove" || type === "clear"
+            || (type === "update" && previous && "level" in previous);
+        if (!affectsAnalysis) {
+            return;
+        }
+
+        if (this.analysisMode === "scan") {
+            this.handleScanWaves();
+        } else {
+            this.handleAnalyzeWave(this.sidebarView.getSelectedWave());
+        }
     }
 
     // Enregistre les callbacks provenant de la vue.
@@ -66,11 +95,15 @@ export class UIController {
         this.sidebarView.on("onTogglePathCoverageSetting", () => this.handleTogglePathCoverageSetting());
         this.sidebarView.on("onToggleAllPathCoverageSetting", () => this.handleToggleAllPathCoverageSetting());
         this.sidebarView.on("onOptimizePlacement", () => this.handleOptimizePlacement());
+        this.sidebarView.on("onOpenAnalysis", () => this.handleOpenAnalysis());
+        this.sidebarView.on("onAnalyzeWave", (wave) => this.handleAnalyzeWave(wave));
+        this.sidebarView.on("onScanWaves", () => this.handleScanWaves());
     }
 
     // Sélection d'une troupe depuis la liste.
     handleTroopSelected(troopName) {
         this.state.selectedTroop = troopName;
+        this.sidebarView.setLevelOptions(this.troopModel.getMaxLevel(troopName));
         this.state.selectedLevel = Number(this.sidebarView.elements.levelSelect.value);
         this.placementModel.select(null);
         this.sidebarView.updateTroopButtons();
@@ -464,9 +497,11 @@ export class UIController {
             this.sidebarView.updateSelectedTroopPanel({
                 troopName: selected.troop,
                 range: selected.range,
+                dps: this.getDps(selected.troop, selected.level),
                 ...this.getPathCoverage(selected.x, selected.y, selected.range),
                 allPathCoverage: this.getAllPathCoverage(selected.troop, selected.x, selected.y)
             });
+            this.sidebarView.setLevelOptions(this.troopModel.getMaxLevel(selected.troop));
             this.sidebarView.setSelectedLevel(selected.level);
             return;
         }
@@ -480,9 +515,15 @@ export class UIController {
         this.sidebarView.updateSelectedTroopPanel({
             troopName: this.state.selectedTroop,
             range,
+            dps: this.getDps(this.state.selectedTroop, this.state.selectedLevel),
             ...this.getPathCoverage(this.state.pointerX, this.state.pointerY, range),
             allPathCoverage: this.getAllPathCoverage(this.state.selectedTroop, this.state.pointerX, this.state.pointerY)
         });
+    }
+
+    // Retourne les DPS d'une troupe pour un niveau donné (délègue à TroopModel).
+    getDps(troopName, level) {
+        return this.troopModel.getDps(troopName, level);
     }
 
     // Longueur du chemin ennemi couverte par un cercle de portée (x, y, radius) et son % du chemin
@@ -591,6 +632,100 @@ export class UIController {
         if (skippedCount > 0) {
             alert(`Placed ${placedCount} tower(s). ${skippedCount} zone(s) were too small or fully occupied.`);
         }
+    }
+
+    // Charge (une fois, mis en cache) les données de vagues/DPS puis lance l'analyse de la vague
+    // actuellement sélectionnée dans le panneau. Chargement paresseux : jamais déclenché avant
+    // la première ouverture du panneau d'analyse (admin).
+    async handleOpenAnalysis() {
+        if (!this.analysisData) {
+            this.sidebarView.setAnalysisLoading(true);
+            try {
+                this.analysisData = await loadAnalysisData();
+                this.sidebarView.populateWaveSelect(this.analysisData.waves.map(w => w.wave));
+            } catch (error) {
+                console.error(error);
+                this.sidebarView.setAnalysisError("Unable to load wave/DPS data.");
+                return;
+            } finally {
+                this.sidebarView.setAnalysisLoading(false);
+            }
+        }
+        this.handleAnalyzeWave(this.sidebarView.getSelectedWave());
+    }
+
+    // Construit les tours `{dps, level, detections, pathCoverage}` attendues par evaluateWaveDamage,
+    // à partir des troupes actuellement posées. Factorisé car utilisé à l'identique par
+    // handleAnalyzeWave (une vague) et handleScanWaves (plusieurs vagues d'affilée).
+    buildTowersForAnalysis() {
+        const totalPathLength = this.mapModel.getTotalPathLength();
+        return this.placementModel.placedTroops.map(troop => ({
+            dps: this.analysisData.tdsStats[troop.troop]?.levels?.[troop.level]?.DPS ?? 0,
+            level: troop.level,
+            detections: this.analysisData.tdsStats[troop.troop]?.detections,
+            pathCoverage: totalPathLength > 0
+                ? this.mapModel.getPathLengthInCircle(troop.x, troop.y, troop.range) / totalPathLength
+                : 0
+        }));
+    }
+
+    // Analyse la vague `waveNumber` : pour chaque tour placée, calcule sa fraction de couverture du
+    // chemin (`pathCoverage`), puis évalue la vague ennemi par ennemi avec report du surplus de
+    // dégâts sur le suivant (cf. evaluateWaveDamage dans analysisService.js).
+    handleAnalyzeWave(waveNumber) {
+        if (!this.analysisData) {
+            return;
+        }
+        this.analysisMode = "single";
+
+        const duration = this.mapModel.getPathDuration();
+        if (!duration) {
+            this.sidebarView.setAnalysisError("This map has no path/duration data.");
+            return;
+        }
+
+        const wave = this.analysisData.waves.find(w => w.wave === Number(waveNumber));
+        if (!wave) {
+            this.sidebarView.setAnalysisError("Wave not found.");
+            return;
+        }
+
+        const towers = this.buildTowersForAnalysis();
+        const { groups, clearTime, allKilled, risk, waveTimerSeconds } = evaluateWaveDamage(wave, this.analysisData.enemies, duration, towers);
+
+        this.sidebarView.renderAnalysis({ wave: wave.wave, rows: groups, clearTime, allKilled, risk, waveTimerSeconds });
+    }
+
+    // Bouton "❯❯❯❯" : parcourt les vagues à partir de la Wave 1 (ordre croissant) et s'arrête à la
+    // première vague au risque HIGH (incluse). Les vagues LOW traversées en chemin ne sont pas
+    // affichées (rien à signaler) ; les vagues MEDIUM restent toutes affichées, pour repérer les
+    // vagues qui deviennent tendues avant la première vague qui échoue franchement.
+    handleScanWaves() {
+        if (!this.analysisData) {
+            return;
+        }
+        this.analysisMode = "scan";
+
+        const duration = this.mapModel.getPathDuration();
+        if (!duration) {
+            this.sidebarView.setAnalysisError("This map has no path/duration data.");
+            return;
+        }
+
+        const towers = this.buildTowersForAnalysis();
+        const sortedWaves = [...this.analysisData.waves].sort((a, b) => a.wave - b.wave);
+        const results = [];
+
+        for (const wave of sortedWaves) {
+            const evaluation = evaluateWaveDamage(wave, this.analysisData.enemies, duration, towers);
+            if (evaluation.risk === "LOW") {
+                continue;
+            }
+
+            results.push({ wave: wave.wave, ...evaluation });
+        }
+
+        this.sidebarView.renderWaveScan(results);
     }
 
     // Met à jour la couleur affichée pour le couple joueur/troupe actuellement sélectionné.

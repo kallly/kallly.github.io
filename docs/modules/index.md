@@ -12,11 +12,11 @@ One line per file. Open the layer doc linked for behavior/gotchas; open the sour
 
 ## view/ — see [view.md](view.md)
 - `canvasRenderer.js` (421 l) — rAF render loop; `resize()` reads `canvas.clientWidth/Height`
-- `sidebarView.js` (295 l) — all sidebar/toolbar DOM refs + `on`/`dispatch` wiring
+- `sidebarView.js` (292 l) — all sidebar/toolbar DOM refs + `on`/`dispatch` wiring
 
 ## controller/ — see [controller.md](controller.md)
 - `inputController.js` (549 l) — mouse/touch/keyboard canvas input, routes to whichever model is the active admin tool
-- `uiController.js` (674 l) — central hub: sidebar wiring, save/share, map switching, admin panels
+- `uiController.js` (670 l) — central hub: sidebar wiring, save/share, map switching, admin panels
 - `collabController.js` (147 l) — Firebase real-time sync, translates model ⇄ Firebase shapes
 - `historyController.js` (96 l) — undo stack across 4 models
 
@@ -24,11 +24,10 @@ One line per file. Open the layer doc linked for behavior/gotchas; open the sour
 - `dataService.js` (43 l) — fetches `maps.json`/`troops.json`
 - `saveService.js` (200 l) — verbose/compact save formats, localStorage autosave
 - `collabService.js` (182 l) — thin Firebase wrapper, no model/view knowledge
-- `analysisService.js` (45 l) — lazy-loads `tds_stats.json`/`hardcore_data.json`, `parseEnemySpeed`
-- `waveSimulationService.js` (289 l) — DPS coverage profile + wave simulation math
+- `analysisService.js` (131 l) — lazy-loads `tds_stats.json`/`hardcore_data.json`, `parseEnemySpeed`, `evaluateWaveDamage` (Wave Analysis)
 
 ## util/ — see [util.md](util.md)
-- `geometry.js` (100 l) — distance/point-in-polygon/segment-circle-clip primitives
+- `geometry.js` (93 l) — distance/point-in-polygon/segment-circle primitives
 - `lz-string.js` (506 l) — vendored compression, used for share URLs
 - `placementOptimizer.js` (41 l) — grid search for best tower spot in a drawn zone
 

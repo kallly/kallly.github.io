@@ -12,7 +12,4 @@ Two save/share shapes — `createSaveData` (verbose) and `createCompactSaveData`
 Thin Firebase Realtime Database wrapper. Deliberately knows nothing about `model/`/`controller/` shapes — all `{troop, level, x, y, color, player}` ⇄ app-placement translation happens in `CollabController`, not here. See [../features/collaboration.md](../features/collaboration.md).
 
 ## `analysisService`
-Lazily loads and caches `tds_stats.json`/`hardcore_data.json` (`loadAnalysisData()`, cached in module-level `cachedAnalysisData`) — only triggered by opening the admin Wave Analysis panel. Also owns `parseEnemySpeed()` for the free-text `Speed` field quirk (see [../data/hardcore-stats.md](../data/hardcore-stats.md)).
-
-## `waveSimulationService`
-The math behind Wave Analysis. `buildCoverageProfile(paths, towers, totalLength)` builds a DPS-vs-progress-fraction profile along the traced path(s) — expressed as a fraction of path progress (not time/distance) so one profile works for every enemy speed in a wave. `simulateWave(...)` runs a wave against that profile. Detail: [../features/wave-analysis.md](../features/wave-analysis.md).
+Lazily loads and caches `tds_stats.json`/`hardcore_data.json` (`loadAnalysisData()`, cached in module-level `cachedAnalysisData`) — only triggered by opening the admin Wave Analysis panel. Also owns `parseEnemySpeed()` for the free-text `Speed` field quirk (see [../data/hardcore-stats.md](../data/hardcore-stats.md)), and `evaluateWaveDamage(wave, enemies, duration, towers)` — the static per-tower damage formula + carry-over cascade behind Wave Analysis. Detail: [../features/wave-analysis.md](../features/wave-analysis.md).

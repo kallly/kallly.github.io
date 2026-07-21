@@ -1,7 +1,7 @@
 # util/
 
 ## `geometry.js`
-Primitives used across models/services: `distance`, `pointInPolygon`, `distanceToSegment`, `polylineLength`, `segmentClipInCircle`, `segmentLengthInCircle`, `isCircleInPolygon`. `segmentClipInCircle` is what `waveSimulationService` uses to find where a path segment enters/exits a tower's range circle.
+Primitives used across models/services: `distance`, `pointInPolygon`, `distanceToSegment`, `polylineLength`, `segmentLengthInCircle`, `isCircleInPolygon`. `segmentLengthInCircle` (length of a path segment inside a tower's range circle) backs `MapModel.getPathLengthInCircle`, used both by the Placement panel's "Path in Range" readout and by Wave Analysis's per-tower coverage fraction (see [../features/wave-analysis.md](../features/wave-analysis.md)).
 
 ## `lz-string.js`
 Vendored (pieroxy LZString), **not** an npm package — imported as a plain ESM default export. Used to compress the verbose save JSON into `?data=` share URLs. Edit the vendored copy directly if it ever needs a fix; don't try to `npm install` a replacement.

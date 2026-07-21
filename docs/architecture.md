@@ -6,7 +6,7 @@ The big picture. For per-file detail see [modules/index.md](modules/index.md); f
 - **model/** — pure state + change-notification, no DOM. `TroopModel`, `MapModel`, `PlacementModel`, `PolygonModel`, `TextLabelModel`, `PathModel`. Detail: [modules/model.md](modules/model.md).
 - **view/** — DOM/canvas only, no business logic. `CanvasRenderer` (rAF render loop), `SidebarView` (DOM refs + wiring). Detail: [modules/view.md](modules/view.md).
 - **controller/** — wires input to model mutations. `InputController`, `UIController` (central hub), `CollabController`, `HistoryController`. Detail: [modules/controller.md](modules/controller.md).
-- **service/** — no model/view knowledge, pure data/IO/algorithms. `dataService`, `saveService`, `collabService`, `analysisService`, `waveSimulationService`. Detail: [modules/service.md](modules/service.md).
+- **service/** — no model/view knowledge, pure data/IO/algorithms. `dataService`, `saveService`, `collabService`, `analysisService`. Detail: [modules/service.md](modules/service.md).
 - **util/** — `geometry.js`, vendored `lz-string.js`, `placementOptimizer.js`. Detail: [modules/util.md](modules/util.md).
 - **app.js** — entry point: builds the shared `state` object, constructs everything in dependency order, resolves admin mode, handles query-param bootstrap.
 

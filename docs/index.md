@@ -43,7 +43,7 @@ docs/
 │   ├── model.md             TroopModel, MapModel, PlacementModel, PolygonModel, TextLabelModel, PathModel
 │   ├── view.md               CanvasRenderer, SidebarView
 │   ├── controller.md         InputController, UIController, CollabController, HistoryController
-│   ├── service.md             dataService, saveService, collabService, analysisService, waveSimulationService
+│   ├── service.md             dataService, saveService, collabService, analysisService
 │   └── util.md                 geometry.js, lz-string.js, placementOptimizer.js
 └── features/
     ├── admin-mode.md                 resolveAdminMode, index/admin.html sync rule, admin tool isolation pattern

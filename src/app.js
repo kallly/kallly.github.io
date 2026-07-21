@@ -58,6 +58,20 @@ function initPlacementSettingsToggle() {
     closeButton.addEventListener("click", () => panel.classList.add("panel-hidden"));
 }
 
+// Popup d'analyse de vague (admin, ouvert via 📊) : même comportement purement manuel que
+// les autres panneaux flottants — le chargement des données se fait séparément (UIController).
+function initAnalysisPanelToggle() {
+    const panel = document.getElementById("analysisPanel");
+    const openButton = document.getElementById("openAnalysis");
+    const closeButton = document.getElementById("analysisPanelClose");
+    if (!panel || !openButton || !closeButton) {
+        return;
+    }
+
+    openButton.addEventListener("click", () => panel.classList.toggle("panel-hidden"));
+    closeButton.addEventListener("click", () => panel.classList.add("panel-hidden"));
+}
+
 // Saisie de texte pour les étiquettes de carte (20 caractères max, imposés par l'attribut
 // maxlength). Un champ overlay positionné au clic plutôt qu'un window.prompt() natif :
 // ce dernier est indisponible dans certains environnements embarqués/sandboxés (webview, iframe).
@@ -157,6 +171,7 @@ async function init() {
     initPlacementPanelToggle(canvas);
     initHelpPanelToggle();
     initPlacementSettingsToggle();
+    initAnalysisPanelToggle();
 
     const displaySettings = loadDisplaySettings() || {};
 
@@ -165,6 +180,7 @@ async function init() {
         levelSelect: document.getElementById("level"),
         selectedTroopText: document.getElementById("selectedTroop"),
         selectedRangeText: document.getElementById("selectedRange"),
+        selectedDpsText: document.getElementById("selectedDps"),
         selectedPathCoverage: document.getElementById("selectedPathCoverage"),
         jsonArea: document.getElementById("jsonArea"),
         troopSearch: document.getElementById("troopSearch"),
@@ -193,6 +209,11 @@ async function init() {
         collabLeaveSession: document.getElementById("collabLeaveSession"),
         tracePath: document.getElementById("tracePath"),
         optimizePlacement: document.getElementById("optimizePlacement"),
+        openAnalysis: document.getElementById("openAnalysis"),
+        waveSelect: document.getElementById("waveSelect"),
+        scanWaves: document.getElementById("scanWaves"),
+        analysisStatus: document.getElementById("analysisStatus"),
+        analysisResults: document.getElementById("analysisResults"),
         showPathJson: document.getElementById("showPathJson"),
         applyPathJson: document.getElementById("applyPathJson"),
         clearPath: document.getElementById("clearPath"),
@@ -332,11 +353,13 @@ async function init() {
             onSelectionChanged: (selected) => {
                 if (selected) {
                     state.selectedTroop = null;
+                    sidebarView.setLevelOptions(troopModel.getMaxLevel(selected.troop));
                     sidebarView.setSelectedLevel(selected.level);
                     sidebarView.setSelectedPlayer(selected.player || state.selectedPlayer);
                     sidebarView.updateSelectedTroopPanel({
                         troopName: selected.troop,
                         range: selected.range,
+                        dps: uiController.getDps(selected.troop, selected.level),
                         ...uiController.getPathCoverage(selected.x, selected.y, selected.range),
                         allPathCoverage: uiController.getAllPathCoverage(selected.troop, selected.x, selected.y)
                     });
@@ -370,6 +393,7 @@ async function init() {
     // Chargement des données de configuration.
     const data = await loadData();
     troopModel.setTroopData(data.troops);
+    troopModel.setStatsData(data.stats);
     mapModel.setMaps(data.maps);
 
     sidebarView.buildMapMenu(Object.keys(data.maps));
