@@ -2,9 +2,9 @@ import { createSaveData, createCompactSaveData, parseSaveData, saveToStorage, lo
 import LZString from "../util/lz-string.js";
 import { isCircleInPolygon } from "../util/geometry.js";
 import { findBestPositionInPolygon } from "../util/placementOptimizer.js";
+import { evaluateWaveDamage, loadAnalysisData } from "../service/analysisService.js";
 
-// Ordre des index utilisés par le paramètre d'URL "p" (0 = All, 1..3 = playerN).
-// Partagé entre la génération des liens (handleShareUrl) et leur lecture (app.js).
+// Ordre des index utilisés par le paramètre d'URL "p" (0 = All, 1..3 = playerN) ; partagé entre handleShareUrl et app.js.
 export const PLAYER_FILTER_VALUES = ["all", "player1", "player2", "player3"];
 
 export function playerFilterToParam(filter) {
@@ -17,8 +17,6 @@ export function playerFilterFromParam(param) {
     return PLAYER_FILTER_VALUES[index] || "all";
 }
 
-// Contrôleur central de l'application.
-// Il gère la synchronisation entre l'état, la vue et les modèles.
 export class UIController {
     constructor({ state, mapModel, troopModel, placementModel, polygonModel, textLabelModel, pathModel, sidebarView, canvas, canvasRenderer, collabController = null, historyController = null }) {
         this.state = state;
@@ -33,11 +31,29 @@ export class UIController {
         this.canvasRenderer = canvasRenderer;
         this.collabController = collabController;
         this.historyController = historyController;
+        this.analysisData = null;
+        // Mode du panneau d'analyse ("single" ou "scan"), lu par handlePlacementChangeForAnalysis pour relancer le bon mode.
+        this.analysisMode = "single";
         this.attachViewCallbacks();
         this.canvasRenderer.setRenderCallback(() => this.saveCurrentState());
+        this.placementModel.onChange((event) => this.handlePlacementChangeForAnalysis(event));
     }
 
-    // Enregistre les callbacks provenant de la vue.
+    // Relance l'analyse après add/remove/clear ou changement de "level" (autres updates n'affectent pas les dégâts), en restant dans le mode courant (single/scan).
+    handlePlacementChangeForAnalysis({ type, previous }) {
+        const affectsAnalysis = type === "add" || type === "remove" || type === "clear"
+            || (type === "update" && previous && "level" in previous);
+        if (!affectsAnalysis) {
+            return;
+        }
+
+        if (this.analysisMode === "scan") {
+            this.handleScanWaves();
+        } else {
+            this.handleAnalyzeWave(this.sidebarView.getSelectedWave());
+        }
+    }
+
     attachViewCallbacks() {
         this.sidebarView.on("onTroopSelected", (troopName) => this.handleTroopSelected(troopName));
         this.sidebarView.on("onLevelChange", (level) => this.handleLevelChange(level));
@@ -66,11 +82,14 @@ export class UIController {
         this.sidebarView.on("onTogglePathCoverageSetting", () => this.handleTogglePathCoverageSetting());
         this.sidebarView.on("onToggleAllPathCoverageSetting", () => this.handleToggleAllPathCoverageSetting());
         this.sidebarView.on("onOptimizePlacement", () => this.handleOptimizePlacement());
+        this.sidebarView.on("onOpenAnalysis", () => this.handleOpenAnalysis());
+        this.sidebarView.on("onAnalyzeWave", (wave) => this.handleAnalyzeWave(wave));
+        this.sidebarView.on("onScanWaves", () => this.handleScanWaves());
     }
 
-    // Sélection d'une troupe depuis la liste.
     handleTroopSelected(troopName) {
         this.state.selectedTroop = troopName;
+        this.sidebarView.setLevelOptions(this.troopModel.getMaxLevel(troopName));
         this.state.selectedLevel = Number(this.sidebarView.elements.levelSelect.value);
         this.placementModel.select(null);
         this.sidebarView.updateTroopButtons();
@@ -78,7 +97,6 @@ export class UIController {
         this.updateSelectedColor();
     }
 
-    // Changement de niveau appliqué à la sélection ou à l'aperçu.
     handleLevelChange(level) {
         this.state.selectedLevel = level;
         const selected = this.placementModel.getSelected();
@@ -90,12 +108,11 @@ export class UIController {
         this.updateSelectedTroopPanel();
     }
 
-    // Couleur effective pour un couple joueur/troupe : surcharge par troupe si elle existe, sinon couleur du joueur.
+    // Priorité : couleur troupe > couleur joueur > couleur sélectionnée par défaut.
     getColorFor(player, troopName) {
         return this.state.playerTroopColors[player]?.[troopName] || this.state.playerColors[player] || this.state.selectedColor || "#FFD54A";
     }
 
-    // Changement de joueur appliqué à la sélection ou à l'aperçu.
     handlePlayerChange(player) {
         this.state.selectedPlayer = player;
         const selected = this.placementModel.getSelected();
@@ -105,7 +122,7 @@ export class UIController {
         this.updateSelectedColor();
     }
 
-    // Changement de couleur appliqué aux troupes du même type ET du même joueur que la sélection.
+    // S'applique à toutes les troupes du même type ET du même joueur que la sélection.
     handleColorChange(color) {
         const selected = this.placementModel.getSelected();
         const selectedName = this.state.selectedTroop || selected?.troop;
@@ -124,38 +141,31 @@ export class UIController {
         }
     }
 
-    // Bascule l'affichage des portées.
     handleToggleRange() {
         this.state.showRanges = !this.state.showRanges;
         this.persistAndSyncDisplaySettings();
     }
-    // Bascule l'affichage des noms.
     handleToggleName() {
         this.state.showNames = !this.state.showNames;
         this.persistAndSyncDisplaySettings();
     }
-    // Bascule l'affichage des levels.
     handleToggleLevel() {
         this.state.showLevels = !this.state.showLevels;
         this.persistAndSyncDisplaySettings();
     }
 
-    // Bascule l'affichage de la ligne "Path in Range" (niveau actif) dans placementPanel.
     handleTogglePathCoverageSetting() {
         this.state.showPathCoverage = !this.state.showPathCoverage;
         this.persistAndSyncDisplaySettings();
         this.updateSelectedTroopPanel();
     }
 
-    // Bascule l'affichage du détail par niveau de la couverture de chemin dans placementPanel.
     handleToggleAllPathCoverageSetting() {
         this.state.showAllPathCoverage = !this.state.showAllPathCoverage;
         this.persistAndSyncDisplaySettings();
         this.updateSelectedTroopPanel();
     }
 
-    // Sauvegarde les 5 réglages d'affichage (checkboxes du panneau ⚙️) dans localStorage et
-    // resynchronise leur état visuel (checkboxes + boutons actifs de la toolbar).
     persistAndSyncDisplaySettings() {
         saveDisplaySettings({
             showRanges: this.state.showRanges,
@@ -167,7 +177,6 @@ export class UIController {
         this.sidebarView.syncDisplaySettings(this.state);
     }
 
-    // Annule la dernière action locale (placement, suppression, modification ou vidage).
     handleUndo() {
         if (!this.historyController?.undo()) {
             return;
@@ -175,7 +184,6 @@ export class UIController {
         this.updateSelectedTroopPanel();
     }
 
-    // Supprime la troupe sélectionnée, sinon le texte sélectionné, sinon la zone sélectionnée.
     handleDeleteSelected() {
         const selected = this.placementModel.getSelected();
         if (selected) {
@@ -199,7 +207,6 @@ export class UIController {
         }
     }
 
-    // Vide la carte de toutes les troupes, zones et textes.
     handleClearMap() {
         this.placementModel.clear();
         this.polygonModel.clear();
@@ -207,8 +214,7 @@ export class UIController {
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
     }
 
-    // Désélectionne tout et quitte les modes dessin de zone / placement de texte en cours,
-    // pour garder ces trois modes mutuellement exclusifs.
+    // Garde les modes dessin de zone / placement de texte / tracé de chemin mutuellement exclusifs.
     resetDrawingModes() {
         this.state.isDrawingPolygon = false;
         this.state.polygonDraftPoints = [];
@@ -227,7 +233,6 @@ export class UIController {
         this.sidebarView.setPathTraceActive(false);
     }
 
-    // Bascule le mode dessin de zone ; désélectionne tout et quitte les autres modes en l'activant.
     handleToggleDrawZone() {
         const activate = !this.state.isDrawingPolygon;
         this.resetDrawingModes();
@@ -235,7 +240,6 @@ export class UIController {
         this.sidebarView.setDrawZoneActive(activate);
     }
 
-    // Bascule le mode "placer un texte" ; désélectionne tout et quitte les autres modes en l'activant.
     handleToggleAddText() {
         const activate = !this.state.isPlacingText;
         this.resetDrawingModes();
@@ -243,7 +247,6 @@ export class UIController {
         this.sidebarView.setAddTextActive(activate);
     }
 
-    // Bascule le mode "tracer le chemin" (admin) ; désélectionne tout et quitte les autres modes en l'activant.
     handleTogglePathTrace() {
         const activate = !this.state.isTracingPath;
         this.resetDrawingModes();
@@ -251,7 +254,6 @@ export class UIController {
         this.sidebarView.setPathTraceActive(activate);
     }
 
-    // Couleur de la prochaine zone dessinée, ou de la zone actuellement sélectionnée.
     handleZoneColorChange(color) {
         this.state.zoneColor = color;
         const selected = this.polygonModel.getSelected();
@@ -260,7 +262,6 @@ export class UIController {
         }
     }
 
-    // Télécharge le plan actuel en PNG.
     handleExportPng() {
         const mapPart = (this.state.currentMap || "map").trim().toLowerCase().replace(/\s+/g, "-");
         this.canvasRenderer.exportPng(`tds-mapper-${mapPart}.png`);
@@ -282,13 +283,12 @@ export class UIController {
             .then(() => alert("URL copied!"))
             .catch(err => alert("Unable to copy: " + err));
     }
-    // Sauve l'état actuel uniquement dans le textarea JSON.
+    // N'écrit que dans le textarea JSON, pas dans le localStorage/autosave.
     handleSave() {
         const payload = createSaveData(this.placementModel.placedTroops, this.state.currentMap, this.polygonModel.polygons, this.textLabelModel.labels);
         this.sidebarView.setJsonArea(JSON.stringify(payload, null, 4));
     }
 
-    // Charge un état depuis le textarea JSON.
     handleLoad() {
         try {
             const parsed = parseSaveData(this.sidebarView.getJsonArea());
@@ -337,8 +337,7 @@ export class UIController {
         }
     }
 
-    // Affiche le(s) chemin(s) actuel(s) en JSON dans le textarea dédié — volontairement isolé
-    // de createSaveData/handleSave : ce JSON ne fait jamais partie du save/share/autosave.
+    // Volontairement isolé de createSaveData/handleSave : ce JSON ne fait jamais partie du save/share/autosave.
     handleShowPathJson() {
         const payload = {
             version: 1,
@@ -349,8 +348,7 @@ export class UIController {
         this.sidebarView.setPathJsonArea(JSON.stringify(payload, null, 4));
     }
 
-    // Recharge le(s) chemin(s) depuis le textarea JSON dédié (admin) ; accepte un tableau brut
-    // ou l'enveloppe { version, paths } produite par handleShowPathJson, pour rester tolérant.
+    // Accepte un tableau brut ou l'enveloppe { version, paths } produite par handleShowPathJson.
     handleApplyPathJson() {
         try {
             const parsed = JSON.parse(this.sidebarView.getPathJsonArea());
@@ -371,13 +369,11 @@ export class UIController {
         }
     }
 
-    // Vide uniquement le chemin tracé (admin). Ne touche jamais placementModel/polygonModel/
-    // textLabelModel ni handleClearMap : le chemin reste isolé du reste du plan par décision de scope.
+    // Ne touche jamais placementModel/polygonModel/textLabelModel : le chemin reste isolé du reste du plan.
     handleClearPath() {
         this.pathModel.clear();
     }
 
-    // Change de carte et redimensionne le canvas.
     async handleMapSelect(mapName) {
         this.state.currentMap = mapName;
         await this.mapModel.loadMap(mapName, this.canvas);
@@ -386,12 +382,11 @@ export class UIController {
         this.collabController?.notifyMapChanged(mapName);
     }
 
-    // Filtre d'affichage par joueur : purement visuel, ne modifie aucune donnée de placement.
+    // Purement visuel, ne modifie aucune donnée de placement.
     handlePlayerFilterChange(player) {
         this.state.playerFilter = player;
     }
 
-    // Réinitialise la position de la carte.
     handleResetMapPosition() {
         this.mapModel.resetPosition(this.canvas);
     }
@@ -446,27 +441,26 @@ export class UIController {
         this.sidebarView.updateSelectedTroopPanel({ troopName: null, range: 0 });
         return true
     }
-    // Charge le dernier état auto-sauvegardé depuis localStorage.
     async loadAutoSave(defaultMapName) {
         const stored = loadFromStorage();
         return this.loadFromData(defaultMapName, stored);
     }
-    // Charge l'état depuis le Base64.
     async loadLZString(defaultMapName, lzString) {
         const data = loadFromLZString(lzString);
         return this.loadFromData(defaultMapName, data);
     }
 
-    // Met à jour le panneau de la troupe sélectionnée ou l'aperçu.
     updateSelectedTroopPanel() {
         const selected = this.placementModel.getSelected();
         if (selected) {
             this.sidebarView.updateSelectedTroopPanel({
                 troopName: selected.troop,
                 range: selected.range,
+                dps: this.getDps(selected.troop, selected.level),
                 ...this.getPathCoverage(selected.x, selected.y, selected.range),
                 allPathCoverage: this.getAllPathCoverage(selected.troop, selected.x, selected.y)
             });
+            this.sidebarView.setLevelOptions(this.troopModel.getMaxLevel(selected.troop));
             this.sidebarView.setSelectedLevel(selected.level);
             return;
         }
@@ -480,18 +474,18 @@ export class UIController {
         this.sidebarView.updateSelectedTroopPanel({
             troopName: this.state.selectedTroop,
             range,
+            dps: this.getDps(this.state.selectedTroop, this.state.selectedLevel),
             ...this.getPathCoverage(this.state.pointerX, this.state.pointerY, range),
             allPathCoverage: this.getAllPathCoverage(this.state.selectedTroop, this.state.pointerX, this.state.pointerY)
         });
     }
 
-    // Longueur du chemin ennemi couverte par un cercle de portée (x, y, radius) et son % du chemin
-    // total. La longueur est renvoyée normalisée en studs (divisée par rangeMapMult, la constante de
-    // calibration pixels/stud propre à chaque carte) : sans ça le nombre affiché ne serait qu'un
-    // comptage de pixels arbitraire, différent d'une carte à l'autre pour la même distance de jeu.
-    // Le pourcentage, lui, est un ratio de deux longueurs en pixels donc rangeMapMult s'y annule déjà.
-    // Renvoie des valeurs null si la carte actuelle n'a pas de "path" (maps.json) — le panneau
-    // affiche alors "-" plutôt qu'un calcul basé sur une longueur totale de 0.
+    getDps(troopName, level) {
+        return this.troopModel.getDps(troopName, level);
+    }
+
+    // pathLength est normalisée en studs (÷ rangeMapMult) sinon ce serait un comptage de pixels arbitraire ; pathPercent n'a pas besoin de cette division (ratio de pixels).
+    // null si la carte n'a pas de "path" (maps.json) — le panneau affiche "-" plutôt qu'un calcul sur une longueur totale de 0.
     getPathCoverage(x, y, radius) {
         const totalLength = this.mapModel.getTotalPathLength();
         if (totalLength <= 0) {
@@ -504,9 +498,7 @@ export class UIController {
         };
     }
 
-    // Détail par niveau (0 à troop.rangeMultiplier.length - 1) de la couverture de chemin en (x, y).
-    // Renvoie null si le réglage "Show All Path Coverage Lengths" est désactivé ou si la troupe
-    // est inconnue — le panneau masque alors la liste plutôt que d'afficher des lignes vides.
+    // null si le réglage "Show All Path Coverage Lengths" est désactivé ou la troupe inconnue — le panneau masque alors la liste.
     getAllPathCoverage(troopName, x, y) {
         if (!this.state.showAllPathCoverage) {
             return null;
@@ -523,8 +515,7 @@ export class UIController {
         return rows;
     }
 
-    // Moyenne, sur tous les niveaux de la troupe, de la longueur de chemin couverte en (x, y).
-    // Utilisée comme score à maximiser par handleOptimizePlacement (pas d'affichage direct).
+    // Score à maximiser par handleOptimizePlacement (pas d'affichage direct).
     computeAverageCoverage(troopName, x, y) {
         const troop = this.troopModel.getTroop(troopName);
         if (!troop) {
@@ -538,11 +529,7 @@ export class UIController {
         return total / troop.rangeMultiplier.length;
     }
 
-    // Place automatiquement la troupe armée à la meilleure position (moyenne de couverture de
-    // chemin sur tous ses niveaux) dans CHAQUE zone déjà dessinée, sans jamais laisser son cercle
-    // de collision dépasser la zone ni chevaucher une troupe déjà posée. Admin uniquement (bouton
-    // .admin-only) ; asynchrone et cède la main régulièrement (findBestPositionInPolygon) pour ne
-    // jamais geler le navigateur, même sur de grandes zones.
+    // Admin uniquement ; asynchrone et cède la main régulièrement (findBestPositionInPolygon) pour ne jamais geler le navigateur sur de grandes zones.
     async handleOptimizePlacement() {
         if (!this.state.selectedTroop) {
             alert("Select a tower first.");
@@ -593,7 +580,91 @@ export class UIController {
         }
     }
 
-    // Met à jour la couleur affichée pour le couple joueur/troupe actuellement sélectionné.
+    // Chargement paresseux des données vagues/DPS, mis en cache, jamais déclenché avant la première ouverture du panneau.
+    async handleOpenAnalysis() {
+        if (!this.analysisData) {
+            this.sidebarView.setAnalysisLoading(true);
+            try {
+                this.analysisData = await loadAnalysisData();
+                this.sidebarView.populateWaveSelect(this.analysisData.waves.map(w => w.wave));
+            } catch (error) {
+                console.error(error);
+                this.sidebarView.setAnalysisError("Unable to load wave/DPS data.");
+                return;
+            } finally {
+                this.sidebarView.setAnalysisLoading(false);
+            }
+        }
+        this.handleAnalyzeWave(this.sidebarView.getSelectedWave());
+    }
+
+    // Construit les tours attendues par evaluateWaveDamage ; factorisé pour handleAnalyzeWave et handleScanWaves.
+    buildTowersForAnalysis() {
+        const totalPathLength = this.mapModel.getTotalPathLength();
+        return this.placementModel.placedTroops.map(troop => ({
+            dps: this.analysisData.tdsStats[troop.troop]?.levels?.[troop.level]?.DPS ?? 0,
+            level: troop.level,
+            detections: this.analysisData.tdsStats[troop.troop]?.detections,
+            pathCoverage: totalPathLength > 0
+                ? this.mapModel.getPathLengthInCircle(troop.x, troop.y, troop.range) / totalPathLength
+                : 0
+        }));
+    }
+
+    // Évalue la vague ennemi par ennemi avec report du surplus de dégâts sur le suivant (cf. evaluateWaveDamage).
+    handleAnalyzeWave(waveNumber) {
+        if (!this.analysisData) {
+            return;
+        }
+        this.analysisMode = "single";
+
+        const duration = this.mapModel.getPathDuration();
+        if (!duration) {
+            this.sidebarView.setAnalysisError("This map has no path/duration data.");
+            return;
+        }
+
+        const wave = this.analysisData.waves.find(w => w.wave === Number(waveNumber));
+        if (!wave) {
+            this.sidebarView.setAnalysisError("Wave not found.");
+            return;
+        }
+
+        const towers = this.buildTowersForAnalysis();
+        const { groups, clearTime, allKilled, risk, waveTimerSeconds } = evaluateWaveDamage(wave, this.analysisData.enemies, duration, towers);
+
+        this.sidebarView.renderAnalysis({ wave: wave.wave, rows: groups, clearTime, allKilled, risk, waveTimerSeconds });
+    }
+
+    // Parcourt les vagues en ordre croissant ; les vagues LOW sont omises, MEDIUM et HIGH restent affichées (arrêt implicite au premier HIGH côté UI).
+    handleScanWaves() {
+        if (!this.analysisData) {
+            return;
+        }
+        this.analysisMode = "scan";
+
+        const duration = this.mapModel.getPathDuration();
+        if (!duration) {
+            this.sidebarView.setAnalysisError("This map has no path/duration data.");
+            return;
+        }
+
+        const towers = this.buildTowersForAnalysis();
+        const sortedWaves = [...this.analysisData.waves].sort((a, b) => a.wave - b.wave);
+        const results = [];
+
+        for (const wave of sortedWaves) {
+            const evaluation = evaluateWaveDamage(wave, this.analysisData.enemies, duration, towers);
+            if (evaluation.risk === "LOW") {
+                continue;
+            }
+
+            results.push({ wave: wave.wave, ...evaluation });
+        }
+
+        this.sidebarView.renderWaveScan(results);
+    }
+
     updateSelectedColor() {
         const selected = this.placementModel.getSelected();
         const selectedName = this.state.selectedTroop || selected?.troop;

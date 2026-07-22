@@ -1,6 +1,4 @@
-// Recherche par grille (grossière puis affinée) du point maximisant `score(x,y)` parmi ceux où
-// `isValid(x,y)` est vrai, à l'intérieur de la boîte englobante de `points`. Cède périodiquement
-// la main (setTimeout 0) pour ne jamais bloquer le thread principal, même sur une grande zone.
+// Recherche par grille (grossière puis affinée) du point maximisant score(x,y) ; cède périodiquement la main pour ne jamais bloquer le thread principal.
 export async function findBestPositionInPolygon({ points, isValid, score, yieldEvery = 200 }) {
     const xs = points.map(p => p.x);
     const ys = points.map(p => p.y);
@@ -27,15 +25,13 @@ export async function findBestPositionInPolygon({ points, isValid, score, yieldE
         }
     }
 
-    // Passe grossière : ~40 pas sur la plus grande dimension de la boîte englobante.
     const coarseStep = Math.max(4, Math.max(maxX - minX, maxY - minY) / 40);
     await scan(minX, maxX, minY, maxY, coarseStep);
 
     if (best) {
-        // Raffinement autour du meilleur point grossier, sur un pas ~8x plus fin.
         const fineStep = Math.max(2, coarseStep / 8);
         await scan(best.x - coarseStep, best.x + coarseStep, best.y - coarseStep, best.y + coarseStep, fineStep);
     }
 
-    return best; // { x, y, score } ou null si aucun point valide
+    return best;
 }

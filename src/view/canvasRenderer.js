@@ -1,8 +1,6 @@
-// Couleur fixe du tracé de chemin (route ennemie) — pas de personnalisation, contrairement aux zones.
+// Pas de personnalisation, contrairement aux zones.
 const PATH_COLOR = "#ff3b3b";
 
-// Composant de rendu pour le canvas.
-// Il dessine la carte, les troupes, la sélection active et l'aperçu de placement.
 export class CanvasRenderer {
     constructor(canvas, mapModel, placementModel, polygonModel, textLabelModel, pathModel, state) {
         this.canvas = canvas;
@@ -22,9 +20,7 @@ export class CanvasRenderer {
         this.onRenderCallback = callback;
     }
 
-    // Exporte le plan à la résolution native de l'image de carte (pas celle de l'écran) :
-    // dessine sur un canvas hors-DOM avec scale=1/offset=0 en réutilisant drawMap/drawTroops
-    // tels quels, puisqu'ils ne lisent que this.ctx et this.mapModel.* à chaque appel.
+    // Exporte à la résolution native de l'image (pas celle de l'écran) : dessine sur un canvas hors-DOM avec scale=1/offset=0, réutilisant drawMap/drawTroops tels quels puisqu'ils relisent this.ctx/this.mapModel.* à chaque appel.
     exportPng(filename = "tds-mapper-plan.png") {
         if (!this.mapModel.image.complete) {
             return;
@@ -58,7 +54,6 @@ export class CanvasRenderer {
         this.downloadCanvas(exportCanvas, filename);
     }
 
-    // Déclenche le téléchargement du contenu d'un canvas.
     downloadCanvas(canvas, filename) {
         try {
             const link = document.createElement("a");
@@ -71,24 +66,20 @@ export class CanvasRenderer {
         }
     }
 
-    // Actualise la taille du canvas avec sa taille CSS.
     resize() {
         this.canvas.width = this.canvas.clientWidth;
         this.canvas.height = this.canvas.clientHeight;
         this.mapModel.resizeCanvas(this.canvas);
     }
 
-    // Lance la boucle d'animation.
     start() {
         this.render();
     }
 
-    // Efface la surface de dessin.
     clear() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    // Boucle de rendu principale.
     render() {
         this.clear();
         this.drawMap();
@@ -106,7 +97,6 @@ export class CanvasRenderer {
         requestAnimationFrame(this.render)
     }
 
-    // Affiche l'image de la carte à l'endroit et à l'échelle.
     drawMap() {
         if (!this.mapModel.image.complete) {
             return;
@@ -117,14 +107,12 @@ export class CanvasRenderer {
         this.ctx.drawImage(this.mapModel.image, this.mapModel.offsetX, this.mapModel.offsetY, width, height);
     }
 
-    // Dessine toutes les zones (polygones) posées.
     drawPolygons() {
         for (const polygon of this.polygonModel.polygons) {
             this.drawPolygon(polygon);
         }
     }
 
-    // Trace un polygone (remplissage semi-transparent + contour), sommets en coordonnées monde.
     drawPolygon(polygon) {
         if (polygon.points.length < 3) {
             return;
@@ -152,14 +140,12 @@ export class CanvasRenderer {
         this.ctx.stroke();
     }
 
-    // Dessine tous les chemins tracés (routes ennemies).
     drawPaths() {
         for (const path of this.pathModel.paths) {
             this.drawPath(path);
         }
     }
 
-    // Trace une polyligne ouverte (segments droits), sommets en coordonnées monde.
     drawPath(path) {
         if (path.points.length < 2) {
             return;
@@ -180,8 +166,7 @@ export class CanvasRenderer {
         this.ctx.stroke();
     }
 
-    // Affiche le tracé en cours (mode "Draw zone") : segments déjà posés + segment fantôme
-    // jusqu'au pointeur, et un marqueur sur le premier sommet indiquant où fermer la forme.
+    // Marqueur sur le premier sommet indiquant où fermer la forme.
     drawPolygonDraft() {
         const draft = this.state.polygonDraftPoints;
         if (!this.state.isDrawingPolygon || !draft || draft.length === 0) {
@@ -211,9 +196,7 @@ export class CanvasRenderer {
         this.ctx.fill();
     }
 
-    // Affiche le tracé de chemin en cours (mode "Trace path") : segments déjà posés + segment
-    // fantôme jusqu'au pointeur. Contrairement à drawPolygonDraft, jamais de marqueur de fermeture :
-    // un chemin est une polyligne ouverte, pas une forme fermée qui se referme sur son premier point.
+    // Contrairement à drawPolygonDraft, jamais de marqueur de fermeture : un chemin est une polyligne ouverte.
     drawPathDraft() {
         const draft = this.state.pathDraftPoints;
         if (!this.state.isTracingPath || !draft || draft.length === 0) {
@@ -237,7 +220,6 @@ export class CanvasRenderer {
         this.ctx.setLineDash([]);
     }
 
-    // Dessine toutes les troupes posées.
     drawTroops() {
         for (const troop of this.placementModel.placedTroops) {
             this.drawTroop(troop);
@@ -261,9 +243,7 @@ export class CanvasRenderer {
         return this.imagesCache[imageName];
     }
 
-    // Dessine une troupe avec sa collision, sa portée et son étiquette.
-    // Le filtre joueur (state.playerFilter) est purement visuel : il grise les troupes
-    // des autres joueurs sans jamais toucher aux données de placement.
+    // Le filtre joueur (state.playerFilter) est purement visuel : grise les troupes des autres joueurs sans toucher aux données de placement.
     drawTroop(troop) {
         const screen = this.mapModel.worldToScreen(troop.x, troop.y);
         const isDimmed = this.state.playerFilter && this.state.playerFilter !== "all" && troop.player !== this.state.playerFilter;
@@ -322,17 +302,14 @@ export class CanvasRenderer {
         }
     }
 
-    // Dessine toutes les étiquettes de texte posées.
     drawTextLabels() {
         for (const label of this.textLabelModel.labels) {
             this.drawTextLabel(label);
         }
-        // Réinitialisé pour ne pas affecter le textBaseline "alphabetic" implicite
-        // utilisé par drawTroop d'une frame à l'autre (le contexte persiste entre les rendus).
+        // Réinitialisé car le contexte persiste entre les rendus, et drawTroop suppose le textBaseline "alphabetic" implicite.
         this.ctx.textBaseline = "alphabetic";
     }
 
-    // Trace une étiquette de texte centrée sur son point d'ancrage, avec un fond pour la lisibilité.
     drawTextLabel(label) {
         const screen = this.mapModel.worldToScreen(label.x, label.y);
         const fontSize = 16 * this.mapModel.scale;
@@ -358,8 +335,7 @@ export class CanvasRenderer {
         this.ctx.fillText(label.text, screen.x, screen.y);
     }
 
-    // Dessine le cercle de sélection autour de la troupe actuelle, ainsi que sa portée
-    // (toujours visible pour la troupe sélectionnée, même si l'affichage global des portées est désactivé).
+    // Portée toujours visible pour la troupe sélectionnée, même si l'affichage global des portées est désactivé.
     drawSelection() {
         const selected = this.placementModel.getSelected();
         if (!selected) {
@@ -385,7 +361,6 @@ export class CanvasRenderer {
         this.ctx.stroke();
     }
 
-    // Affiche l'aperçu de placement sous la souris.
     drawPlacementPreview() {
         if (!this.state.selectedTroop) {
             return;

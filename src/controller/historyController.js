@@ -1,7 +1,5 @@
-// Historique des actions locales sur le placement des troupes (ajout/suppression/modification/
-// vidage), pour permettre d'annuler (rollback) les dernières actions les unes après les autres.
-// N'enregistre que les mutations locales : les mutations reçues d'un coéquipier (collaboration)
-// ne sont pas ajoutées à cet historique, pour ne jamais annuler l'action de quelqu'un d'autre.
+// Historique d'annulation des mutations locales. N'enregistre pas les mutations reçues
+// d'un coéquipier (collaboration), pour ne jamais annuler l'action de quelqu'un d'autre.
 const MAX_HISTORY = 50;
 
 export class HistoryController {
@@ -20,8 +18,7 @@ export class HistoryController {
         this.pathModel?.onChange((event) => this.recordChange("path", event.type, event.path, event.previous));
     }
 
-    // Empile l'action inverse de la mutation reçue, sauf si elle vient d'un undo ou du réseau.
-    // `source` indique quel modèle (troupes ou zones) rejouer lors d'un undo.
+    // Ignore les mutations issues d'un undo ou du réseau ; `source` indique le modèle à rejouer.
     recordChange(source, type, item, previous) {
         if (this.isApplyingUndo || this.state.isApplyingRemoteChange) {
             return;

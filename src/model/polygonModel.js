@@ -1,8 +1,5 @@
 import { pointInPolygon } from "../util/geometry.js";
 
-// Modèle des zones polygonales dessinées sur la carte.
-// Même pattern que PlacementModel (onChange/emitChange), pour que HistoryController
-// et d'autres abonnés puissent le traiter comme n'importe quelle autre mutation.
 export class PolygonModel {
     constructor() {
         this.polygons = [];
@@ -20,7 +17,6 @@ export class PolygonModel {
         }
     }
 
-    // Ajoute une nouvelle zone et la sélectionne. `polygon.points` : [{x,y}, ...] en coordonnées monde.
     add(polygon) {
         if (!polygon.id) {
             polygon.id = crypto.randomUUID();
@@ -65,7 +61,6 @@ export class PolygonModel {
         return this.selectedPolygon;
     }
 
-    // Dernière zone dessinée au-dessus qui contient (x, y).
     findAt(x, y) {
         for (let i = this.polygons.length - 1; i >= 0; i--) {
             if (pointInPolygon(x, y, this.polygons[i].points)) {

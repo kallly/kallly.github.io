@@ -1,6 +1,4 @@
-// Service de collaboration en temps réel, basé sur Firebase Realtime Database.
-// Ce module ne connaît que Firebase : il ne touche jamais directement aux
-// modèles de l'application (voir collabController.js pour la colle).
+// Ce module ne connaît que Firebase : il ne touche jamais aux modèles de l'app (voir collabController.js).
 import { initializeApp } from "firebase/app";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import {
@@ -32,7 +30,6 @@ const remoteCallbacks = {
     onMapChanged: null
 };
 
-// Initialise Firebase et authentifie l'utilisateur de façon anonyme.
 // Doit être appelé une seule fois, avant createSession/joinSession.
 export async function initCollab() {
     if (app) {
@@ -56,13 +53,11 @@ function sessionRef(roomCode) {
     return ref(db, `sessions/${roomCode}`);
 }
 
-// Vérifie qu'une room existe déjà.
 export async function sessionExists(roomCode) {
     const snapshot = await get(sessionRef(roomCode));
     return snapshot.exists();
 }
 
-// Attache les écouteurs temps réel sur la room courante.
 function attachListeners(roomCode) {
     const troopsRef = ref(db, `sessions/${roomCode}/troops`);
     const mapRef = ref(db, `sessions/${roomCode}/mapName`);
@@ -88,7 +83,6 @@ function detachListeners(roomCode) {
     off(ref(db, `sessions/${roomCode}/mapName`));
 }
 
-// Crée une nouvelle session à partir de l'état local actuel et retourne son code.
 // payload: { mapName, troops: { [id]: { troop, level, x, y, color } } }
 export async function createSession(payload) {
     let code = generateRoomCode();
@@ -106,13 +100,13 @@ export async function createSession(payload) {
     return code;
 }
 
-// Rejoint une session existante (l'existence doit avoir été vérifiée via sessionExists).
+// L'existence doit avoir été vérifiée via sessionExists.
 export function joinSession(roomCode) {
     currentRoomCode = roomCode;
     attachListeners(roomCode);
 }
 
-// Quitte la session courante : détache les écouteurs, ne supprime pas la room côté serveur.
+// Ne supprime pas la room côté serveur.
 export function leaveSession() {
     if (!currentRoomCode) {
         return;
@@ -157,7 +151,6 @@ export function pushMapChange(mapName) {
     set(ref(db, `sessions/${currentRoomCode}/mapName`), mapName);
 }
 
-// Supprime toutes les troupes de la room courante (équivalent réseau de "Vider la carte").
 export function pushClearAll() {
     if (!currentRoomCode) {
         return;

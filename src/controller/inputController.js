@@ -1,5 +1,4 @@
-// Contrôleur des interactions utilisateur.
-// Il gère la souris, le clavier et les événements de zoom/pan sur le canvas.
+// Contrôleur des interactions utilisateur : souris, clavier, zoom/pan sur le canvas.
 export class InputController {
     constructor({ canvas, mapModel, placementModel, polygonModel, textLabelModel, pathModel, troopModel, state, callbacks }) {
         this.canvas = canvas;
@@ -21,8 +20,7 @@ export class InputController {
     // Attache tous les écouteurs d'événements.
     attachEvents() {
         this.canvas.addEventListener("mousemove", (event) => this.handleMouseMove(event));
-        // Après un geste tactile, le navigateur peut synthétiser un clic souris fantôme sur le
-        // même point ; on l'ignore pour ne jamais poser une troupe en double (voir handleTouchEnd).
+        // Ignore le clic fantôme que le navigateur synthétise après un tap (voir handleTouchEnd).
         this.canvas.addEventListener("click", () => {
             if (performance.now() - this.lastTouchEndTime < 500) {
                 return;
@@ -33,21 +31,17 @@ export class InputController {
         this.canvas.addEventListener("wheel", (event) => this.handleWheel(event));
         document.addEventListener("keydown", (event) => this.handleKeyDown(event));
 
-        // Tactile : un doigt pour déplacer/sélectionner/poser, deux doigts pour zoomer (pincement).
         this.canvas.addEventListener("touchstart", (event) => this.handleTouchStart(event), { passive: false });
         this.canvas.addEventListener("touchmove", (event) => this.handleTouchMove(event), { passive: false });
         this.canvas.addEventListener("touchend", (event) => this.handleTouchEnd(event), { passive: false });
         this.canvas.addEventListener("touchcancel", (event) => this.handleTouchCancel(event), { passive: false });
     }
-    // Met à jour les coordonnées du pointeur et le mode d'aperçu.
     updatePointer(event) {
         this.updatePointerFromClient(event.clientX, event.clientY);
     }
 
-    // Même logique que updatePointer, mais à partir de coordonnées client brutes (souris ou tactile).
-    // Suppose que le canvas n'a ni bordure ni padding et n'est pas mis à l'échelle par le devicePixelRatio
-    // (cf. CanvasRenderer.resize) : sinon les deltas tactiles (en pixels CSS) et offsetX/offsetY
-    // (dans le même repère que canvas.width/height) cesseraient de coïncider.
+    // Suppose le canvas sans bordure/padding et non mis à l'échelle par le devicePixelRatio
+    // (cf. CanvasRenderer.resize), sinon les deltas tactiles et offsetX/offsetY divergeraient.
     updatePointerFromClient(clientX, clientY) {
         const rect = this.canvas.getBoundingClientRect();
         this.mouse.x = clientX - rect.left;
@@ -58,7 +52,6 @@ export class InputController {
         this.updatePreviewValues();
     }
 
-    // Calcule la portée et la validité de placement pour l'aperçu.
     updatePreviewValues() {
         if (!this.state.selectedTroop) {
             this.state.isPlacementValid = false;
@@ -177,9 +170,7 @@ export class InputController {
         }
     }
 
-    // Quitte le mode armé et délègue la saisie du texte (20 caractères max) à un champ overlay
-    // positionné par l'appelant — window.prompt() est indisponible dans certains environnements
-    // embarqués/sandboxés, d'où ce champ overlay plutôt qu'une invite native.
+    // Délègue la saisie du texte à un champ overlay positionné par l'appelant (voir app.js).
     handleTextPlacementClick() {
         const { pointerX, pointerY } = this.state;
         this.state.isPlacingText = false;
@@ -192,7 +183,6 @@ export class InputController {
         }
     }
 
-    // Quitte le mode "placer un texte" sans rien poser.
     cancelTextPlacement() {
         this.state.isPlacingText = false;
         if (typeof this.callbacks?.onTextPlacementEnded === "function") {
@@ -218,7 +208,6 @@ export class InputController {
         draft.push({ x: pointerX, y: pointerY });
     }
 
-    // Valide le tracé en cours en une nouvelle zone et quitte le mode dessin.
     finishPolygonDraft() {
         const points = this.state.polygonDraftPoints;
         this.state.polygonDraftPoints = [];
@@ -230,7 +219,6 @@ export class InputController {
         }
     }
 
-    // Abandonne le tracé en cours sans créer de zone, et quitte le mode dessin.
     cancelPolygonDraft() {
         this.state.polygonDraftPoints = [];
         this.state.isDrawingPolygon = false;
@@ -239,14 +227,12 @@ export class InputController {
         }
     }
 
-    // Ajoute un sommet au tracé de chemin en cours — jamais de fermeture automatique
-    // (contrairement à un polygone, un chemin est une polyligne ouverte).
+    // Contrairement à un polygone, jamais de fermeture automatique : un chemin est une polyligne ouverte.
     handlePathDraftClick() {
         const { pointerX, pointerY } = this.state;
         this.state.pathDraftPoints.push({ x: pointerX, y: pointerY });
     }
 
-    // Valide le tracé en cours en un nouveau chemin et quitte le mode tracé.
     finishPathDraft() {
         const points = this.state.pathDraftPoints;
         this.state.pathDraftPoints = [];
@@ -258,7 +244,6 @@ export class InputController {
         }
     }
 
-    // Abandonne le tracé en cours sans créer de chemin, et quitte le mode tracé.
     cancelPathDraft() {
         this.state.pathDraftPoints = [];
         this.state.isTracingPath = false;
@@ -267,8 +252,6 @@ export class InputController {
         }
     }
 
-    // Clic droit : annule un tracé de zone ou un placement de texte en cours (termine un tracé de
-    // chemin s'il a assez de points, sinon l'annule), sinon la sélection de placement.
     handleContextMenu(event) {
         event.preventDefault();
 
@@ -299,7 +282,6 @@ export class InputController {
         }
     }
 
-    // Roulette de la souris : zoom autour du pointeur.
     handleWheel(event) {
         event.preventDefault();
         const factor = event.deltaY < 0 ? 1.15 : 1 / 1.15;
@@ -309,12 +291,10 @@ export class InputController {
         }
     }
 
-    // Distance entre deux doigts (pour le pincement).
     getTouchDistance(touches) {
         return Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY);
     }
 
-    // Point médian entre deux doigts, en coordonnées locales au canvas.
     getTouchMidpoint(touches) {
         const rect = this.canvas.getBoundingClientRect();
         return {
@@ -323,8 +303,7 @@ export class InputController {
         };
     }
 
-    // Début d'un geste tactile : un doigt prépare un tap/glisser, deux doigts préparent un pincement.
-    // Un troisième doigt (paume, coque du téléphone...) gèle le geste plutôt que de le laisser indéfini.
+    // Un 3e doigt (paume, coque...) gèle le geste plutôt que de le laisser indéfini.
     handleTouchStart(event) {
         event.preventDefault();
 
@@ -346,7 +325,6 @@ export class InputController {
         }
     }
 
-    // Déplacement tactile : un doigt déplace la vue, deux doigts zooment autour de leur point médian.
     handleTouchMove(event) {
         event.preventDefault();
 
@@ -380,7 +358,6 @@ export class InputController {
         }
     }
 
-    // Fin d'un geste tactile : un tap sans glissement déclenche la sélection/le placement.
     handleTouchEnd(event) {
         event.preventDefault();
         this.lastTouchEndTime = performance.now();
@@ -392,22 +369,19 @@ export class InputController {
         this.resumeTouchAfterGesture(event);
     }
 
-    // Annulation d'un geste (appel entrant, geste système...) : on réinitialise l'état sans
-    // jamais déclencher de tap, contrairement à handleTouchEnd — le geste n'a pas été complété.
+    // Contrairement à handleTouchEnd, ne déclenche jamais de tap : le geste n'a pas été complété.
     handleTouchCancel(event) {
         event.preventDefault();
         this.lastTouchEndTime = performance.now();
         this.resumeTouchAfterGesture(event);
     }
 
-    // Repart proprement selon le nombre de doigts restants après un touchend/touchcancel.
     resumeTouchAfterGesture(event) {
         if (event.touches.length === 0) {
             this.touch.mode = null;
         }
         else if (event.touches.length === 1) {
-            // Sortie d'un pincement (ou d'un geste à 3+ doigts) : repart d'un pan
-            // sans déclencher de tap fantôme au prochain relâchement.
+            // Sortie d'un pincement : repart d'un pan sans tap fantôme au prochain relâchement.
             const touch = event.touches[0];
             this.touch.mode = "pan";
             this.touch.lastX = touch.clientX;
@@ -432,7 +406,6 @@ export class InputController {
         return true;
     }
 
-    // Clavier : navigation de la carte, suppression et raccourcis.
     handleKeyDown(event) {
         const moveAmount = this.canvas.width * 0.05;
         let moved = false;
@@ -524,7 +497,7 @@ export class InputController {
             }
         }
 
-        // Ctrl+Z : uniquement hors saisie, pour laisser l'annulation native fonctionner dans les champs texte.
+        // Ctrl+Z hors saisie uniquement, pour laisser l'annulation native fonctionner dans les champs texte.
         if (this.isMouseOnCanvas(event) && event.ctrlKey && event.key.toLowerCase() === "z") {
             event.preventDefault();
             if (typeof this.callbacks?.onUndoRequested === "function") {

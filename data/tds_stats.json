@@ -1809,9 +1809,9 @@
         "Cash Shot": 6,
         "Income": 30,
         "Range": 13,
-        "DPS": null,
-        "Cost Efficiency": null,
-        "Income Per Second": null,
+        "DPS": 2.5714285714285716,
+        "Cost Efficiency": 213.88888888888889,
+        "Income Per Second": 4.285714285714286,
         "Income Efficiency": 2.6666666666666665
       },
       {
@@ -1823,9 +1823,9 @@
         "Cash Shot": 6,
         "Income": 30,
         "Range": 15,
-        "DPS": null,
-        "Cost Efficiency": null,
-        "Income Per Second": null,
+        "DPS": 3.130434782608696,
+        "Cost Efficiency": 239.58333333333331,
+        "Income Per Second": 5.217391304347826,
         "Income Efficiency": 2.6666666666666665
       },
       {
@@ -1837,9 +1837,9 @@
         "Cash Shot": 6,
         "Income": 50,
         "Range": 15,
-        "DPS": null,
-        "Cost Efficiency": null,
-        "Income Per Second": null,
+        "DPS": 5.217391304347826,
+        "Cost Efficiency": 258.75,
+        "Income Per Second": 8.695652173913043,
         "Income Efficiency": 2.6666666666666665
       },
       {
@@ -1851,9 +1851,9 @@
         "Cash Shot": 6,
         "Income": 50,
         "Range": 17.5,
-        "DPS": null,
-        "Cost Efficiency": null,
-        "Income Per Second": null,
+        "DPS": 15.0,
+        "Cost Efficiency": 223.33333333333334,
+        "Income Per Second": 12.5,
         "Income Efficiency": 1.8333333333333333
       },
       {
@@ -1865,9 +1865,9 @@
         "Cash Shot": 12,
         "Income": 125,
         "Range": 20,
-        "DPS": null,
-        "Cost Efficiency": null,
-        "Income Per Second": null,
+        "DPS": 24.742268041237114,
+        "Cost Efficiency": 256.6458333333333,
+        "Income Per Second": 25.77319587628866,
         "Income Efficiency": 2.0416666666666665
       },
       {
@@ -1879,9 +1879,9 @@
         "Cash Shot": 12,
         "Income": 185,
         "Range": 20,
-        "DPS": null,
-        "Cost Efficiency": null,
-        "Income Per Second": null,
+        "DPS": 59.381443298969074,
+        "Cost Efficiency": 237.90260416666666,
+        "Income Per Second": 38.144329896907216,
         "Income Efficiency": 1.6423611111111112
       }
     ]
@@ -4246,9 +4246,9 @@
         "Cash Shot": 6,
         "Income": 35,
         "Range": 13,
-        "DPS": null,
-        "Cost Efficiency": null,
-        "Income Per Second": null,
+        "DPS": 2.769230769230769,
+        "Cost Efficiency": 216.66666666666669,
+        "Income Per Second": 5.384615384615385,
         "Income Efficiency": 2.9444444444444446
       },
       {
@@ -4260,9 +4260,9 @@
         "Cash Shot": 6,
         "Income": 35,
         "Range": 15,
-        "DPS": null,
-        "Cost Efficiency": null,
-        "Income Per Second": null,
+        "DPS": 3.4285714285714284,
+        "Cost Efficiency": 233.33333333333334,
+        "Income Per Second": 6.666666666666667,
         "Income Efficiency": 2.9444444444444446
       },
       {
@@ -4274,9 +4274,9 @@
         "Cash Shot": 6,
         "Income": 60,
         "Range": 15,
-        "DPS": null,
-        "Cost Efficiency": null,
-        "Income Per Second": null,
+        "DPS": 5.714285714285714,
+        "Cost Efficiency": 253.75,
+        "Income Per Second": 11.428571428571429,
         "Income Efficiency": 3.0
       },
       {
@@ -4288,9 +4288,9 @@
         "Cash Shot": 6,
         "Income": 60,
         "Range": 17.5,
-        "DPS": null,
-        "Cost Efficiency": null,
-        "Income Per Second": null,
+        "DPS": 16.941176470588236,
+        "Cost Efficiency": 227.25694444444443,
+        "Income Per Second": 14.117647058823529,
         "Income Efficiency": 1.8333333333333333
       },
       {
@@ -4302,9 +4302,9 @@
         "Cash Shot": 12,
         "Income": 150,
         "Range": 20,
-        "DPS": null,
-        "Cost Efficiency": null,
-        "Income Per Second": null,
+        "DPS": 31.64835164835165,
+        "Cost Efficiency": 255.9375,
+        "Income Per Second": 32.96703296703297,
         "Income Efficiency": 2.0416666666666665
       },
       {
@@ -4316,9 +4316,9 @@
         "Cash Shot": 12,
         "Income": 225,
         "Range": 20,
-        "DPS": null,
-        "Cost Efficiency": null,
-        "Income Per Second": null,
+        "DPS": 72.55813953488372,
+        "Cost Efficiency": 246.0096153846154,
+        "Income Per Second": 52.32558139534884,
         "Income Efficiency": 1.7211538461538463
       }
     ]
@@ -4715,8 +4715,8 @@
         "EV": null,
         "Max Stack": null,
         "Range": 5,
-        "DPS": null,
-        "Cost Efficiency": null
+        "DPS": 33.33333333333333,
+        "Cost Efficiency": 72.00000000000001
       },
       {
         "Level": 1,
@@ -4731,8 +4731,8 @@
         "EV": null,
         "Max Stack": null,
         "Range": 5,
-        "DPS": null,
-        "Cost Efficiency": null
+        "DPS": 46.66666666666666,
+        "Cost Efficiency": 72.85714285714288
       },
       {
         "Level": 2,
@@ -4747,8 +4747,8 @@
         "EV": 0.2,
         "Max Stack": 450,
         "Range": 5,
-        "DPS": null,
-        "Cost Efficiency": null
+        "DPS": 31.66666666666667,
+        "Cost Efficiency": 258.9473684210526
       },
       {
         "Level": 3,
@@ -4763,8 +4763,8 @@
         "EV": 0.2,
         "Max Stack": 450,
         "Range": 5,
-        "DPS": null,
-        "Cost Efficiency": null
+        "DPS": 65.45454545454545,
+        "Cost Efficiency": 293.37916666666666
       },
       {
         "Level": 4,
@@ -4779,8 +4779,8 @@
         "EV": 0.2,
         "Max Stack": 450,
         "Range": 5,
-        "DPS": null,
-        "Cost Efficiency": null
+        "DPS": 152.0,
+        "Cost Efficiency": 389.49342105263156
       }
     ]
   },
@@ -5873,8 +5873,8 @@
         "Range": 12,
         "Burn Time": 2,
         "Total Elapsed Damage": 20.0,
-        "DPS": null,
-        "Cost Efficiency": null
+        "DPS": 19.0,
+        "Cost Efficiency": 105.26315789473684
       },
       {
         "Level": 1,
@@ -5888,8 +5888,8 @@
         "Range": 15,
         "Burn Time": 3,
         "Total Elapsed Damage": 48.0,
-        "DPS": null,
-        "Cost Efficiency": null
+        "DPS": 32.666666666666664,
+        "Cost Efficiency": 107.14285714285715
       },
       {
         "Level": 2,
@@ -5903,8 +5903,8 @@
         "Range": 17,
         "Burn Time": 4,
         "Total Elapsed Damage": 64.0,
-        "DPS": null,
-        "Cost Efficiency": null
+        "DPS": 49.33333333333333,
+        "Cost Efficiency": 152.02702702702703
       },
       {
         "Level": 3,
@@ -5918,8 +5918,8 @@
         "Range": 17,
         "Burn Time": 2,
         "Total Elapsed Damage": 80.0,
-        "DPS": null,
-        "Cost Efficiency": null
+        "DPS": 86.15384615384616,
+        "Cost Efficiency": 179.91071428571428
       },
       {
         "Level": 4,
@@ -5933,8 +5933,8 @@
         "Range": 17,
         "Burn Time": 4,
         "Total Elapsed Damage": 160.0,
-        "DPS": null,
-        "Cost Efficiency": null
+        "DPS": 137.3913043478261,
+        "Cost Efficiency": 221.99367088607593
       }
     ]
   },

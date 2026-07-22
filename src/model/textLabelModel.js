@@ -3,8 +3,7 @@ import { distance } from "../util/geometry.js";
 // Rayon de détection au clic, en coordonnées monde (même logique que la collision d'une troupe).
 const LABEL_HIT_RADIUS = 18;
 
-// Modèle des étiquettes de texte posées sur la carte (20 caractères max, imposé à l'ajout).
-// Même pattern que PlacementModel/PolygonModel (onChange/emitChange).
+// 20 caractères max, imposé à l'ajout.
 export class TextLabelModel {
     constructor() {
         this.labels = [];
@@ -22,7 +21,6 @@ export class TextLabelModel {
         }
     }
 
-    // Ajoute une nouvelle étiquette et la sélectionne. `label` : { text, x, y }.
     add(label) {
         if (!label.id) {
             label.id = crypto.randomUUID();

@@ -1,7 +1,6 @@
 import * as collabService from "../service/collabService.js";
 
-// Relie le PlacementModel local à collabService : mutations locales -> Firebase,
-// événements Firebase -> mutations locales. Ne connaît pas les détails Firebase.
+// Relie PlacementModel local <-> collabService (Firebase), sans connaître les détails Firebase.
 export class CollabController {
     constructor({ state, mapModel, troopModel, placementModel, uiController, sidebarView }) {
         this.state = state;
@@ -20,8 +19,7 @@ export class CollabController {
         collabService.onRemoteMapChanged((mapName) => this.applyRemoteMapChange(mapName));
     }
 
-    // Ne conserve que les champs pertinents pour le réseau (collision/range sont
-    // recalculés localement à partir de troop+level, comme le fait déjà uiController).
+    // collision/range sont recalculés localement à partir de troop+level, pas envoyés.
     extractSyncFields(placement) {
         return {
             troop: placement.troop,

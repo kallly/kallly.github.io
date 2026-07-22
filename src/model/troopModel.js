@@ -1,16 +1,17 @@
-// Modèle métier des troupes.
-// Ce module gère les données des troupes et les calculs liés au niveau.
 export class TroopModel {
-    constructor(troopData = {}) {
+    constructor(troopData = {}, statsData = {}) {
         this.troopData = troopData;
+        this.statsData = statsData;
     }
 
-    // Met à jour les données de toutes les troupes.
     setTroopData(troopData) {
         this.troopData = troopData;
     }
 
-    // Retourne les noms des troupes filtrés par recherche.
+    setStatsData(statsData) {
+        this.statsData = statsData;
+    }
+
     getNames(filter = "") {
         const search = filter.toLowerCase();
         return Object.keys(this.troopData).filter(name =>
@@ -18,17 +19,20 @@ export class TroopModel {
         );
     }
 
-    // Retourne les données d'une troupe par nom.
     getTroop(name) {
         return this.troopData[name] || null;
     }
 
-    // Retourne la valeur de collision d'une troupe.
     getCollision(name) {
         return this.getTroop(name)?.collision ?? 0;
     }
 
-    // Retourne la portée de la troupe pour un niveau donné.
+    // Dernier index de rangeMultiplier.
+    getMaxLevel(name) {
+        const troop = this.getTroop(name);
+        return troop ? troop.rangeMultiplier.length - 1 : 10;
+    }
+
     getRange(name, level) {
         const troop = this.getTroop(name);
         if (!troop) {
@@ -37,5 +41,16 @@ export class TroopModel {
 
         const index = Math.min(level, troop.rangeMultiplier.length - 1);
         return troop.rangeMultiplier[index] ?? 0;
+    }
+
+    // null si inconnue ou sans DPS (ex: Farm).
+    getDps(name, level) {
+        const troop = this.statsData[name];
+        if (!troop) {
+            return null;
+        }
+
+        const index = Math.min(level, troop.levels.length - 1);
+        return troop.levels[index]?.DPS ?? null;
     }
 }

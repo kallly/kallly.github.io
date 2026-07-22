@@ -3,12 +3,7 @@ import { distanceToSegment } from "../util/geometry.js";
 // Rayon de détection au clic, en coordonnées monde (même logique que TextLabelModel.LABEL_HIT_RADIUS).
 const PATH_HIT_RADIUS = 18;
 
-// Modèle des chemins (routes ennemies) tracés sur la carte — fonctionnalité admin uniquement.
-// Même pattern que PolygonModel/TextLabelModel (onChange/emitChange), pour que HistoryController
-// puisse le traiter comme n'importe quelle autre mutation.
-// Volontairement isolé du pipeline save/share : ce modèle n'est jamais lu ni écrit par
-// createSaveData/parseSaveData/loadFromStorage (voir saveService.js) ; il n'est exposé que via
-// son propre textarea JSON dans UIController.handleShowPathJson/handleApplyPathJson.
+// Volontairement isolé du pipeline save/share : jamais lu ni écrit par createSaveData/parseSaveData/loadFromStorage, exposé seulement via UIController.handleShowPathJson/handleApplyPathJson.
 export class PathModel {
     constructor() {
         this.paths = [];
@@ -26,7 +21,6 @@ export class PathModel {
         }
     }
 
-    // Ajoute un nouveau chemin et le sélectionne. `path.points` : [{x,y}, ...] en coordonnées monde.
     add(path) {
         if (!path.id) {
             path.id = crypto.randomUUID();
@@ -71,9 +65,7 @@ export class PathModel {
         return this.selectedPath;
     }
 
-    // Dernier chemin au-dessus dont un segment passe à moins de PATH_HIT_RADIUS de (x, y).
-    // Pas de test "point-dans-forme" : un chemin est une polyligne ouverte, pas une zone fermée
-    // — chaque segment est testé individuellement via distanceToSegment.
+    // Pas de test "point-dans-forme" : un chemin est une polyligne ouverte, chaque segment est testé via distanceToSegment.
     findAt(x, y) {
         for (let i = this.paths.length - 1; i >= 0; i--) {
             const points = this.paths[i].points;
